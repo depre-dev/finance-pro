@@ -149,9 +149,10 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
       const response = await apiRequest(method, url, projectData);
       return response.json();
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/metrics"] });
+    onSuccess: async () => {
+      // Force refetch of projects and dashboard data
+      await queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
+      await queryClient.invalidateQueries({ queryKey: ["/api/dashboard/metrics"] });
       toast({
         title: "Success",
         description: project ? "Project updated successfully" : "Project created successfully",
