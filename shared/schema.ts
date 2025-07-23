@@ -1,0 +1,124 @@
+import { pgTable, text, serial, integer, boolean, decimal, timestamp, varchar } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
+import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
+
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  username: text("username").notNull().unique(),
+  password: text("password").notNull(),
+  name: text("name").notNull(),
+  role: text("role").notNull().default("Financial Analyst"),
+});
+
+export const projects = pgTable("projects", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  client: text("client"),
+  description: text("description"),
+  totalBudget: decimal("total_budget", { precision: 12, scale: 2 }).notNull(),
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  status: varchar("status", { length: 50 }).notNull().default("active"),
+  userId: integer("user_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const financialRecords = pgTable("financial_records", {
+  id: serial("id").primaryKey(),
+  projectId: integer("project_id").notNull(),
+  type: varchar("type", { length: 20 }).notNull(), // 'income' or 'expense'
+  category: text("category").notNull(),
+  description: text("description").notNull(),
+  amount: decimal("amount", { precision: 12, scale: 2 }).notNull(),
+  date: timestamp("date").notNull(),
+  userId: integer("user_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const budgetCategories = pgTable("budget_categories", {
+  id: serial("id").primaryKey(),
+  projectId: integer("project_id").notNull(),
+  name: text("name").notNull(),
+  budgetedAmount: decimal("budgeted_amount", { precision: 12, scale: 2 }).notNull(),
+  actualAmount: decimal("actual_amount", { precision: 12, scale: 2 }).default("0"),
+  userId: integer("user_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Relations
+export const projectsRelations = relations(projects, ({ one, many }) => ({
+  user: one(users, {
+    fields: [projects.userId],
+    references: [users.id],
+  }),
+  financialRecords: many(financialRecords),
+  budgetCategories: many(budgetCategories),
+}));
+
+export const financialRecordsRelations = relations(financialRecords, ({ one }) => ({
+  project: one(projects, {
+    fields: [financialRecords.projectId],
+    references: [projects.id],
+  }),
+  user: one(users, {
+    fields: [financialRecords.userId],
+    references: [users.id],
+  }),
+}));
+
+export const budgetCategoriesRelations = relations(budgetCategories, ({ one }) => ({
+  project: one(projects, {
+    fields: [budgetCategories.projectId],
+    references: [projects.id],
+  }),
+  user: one(users, {
+    fields: [budgetCategories.userId],
+    references: [users.id],
+  }),
+}));
+
+export const usersRelations = relations(users, ({ many }) => ({
+  projects: many(projects),
+  financialRecords: many(financialRecords),
+  budgetCategories: many(budgetCategories),
+}));
+
+// Insert schemas
+export const insertUserSchema = createInsertSchema(users).omit({
+  id: true,
+});
+
+export const insertProjectSchema = createInsertSchema(projects).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertFinancialRecordSchema = createInsertSchema(financialRecords).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertBudgetCategorySchema = createInsertSchema(budgetCategories).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// Types
+export type InsertUser = z.infer<typeof insertUserSchema>;
+export type User = typeof users.$inferSelect;
+
+export type InsertProject = z.infer<typeof insertProjectSchema>;
+export type Project = typeof projects.$inferSelect;
+
+export type InsertFinancialRecord = z.infer<typeof insertFinancialRecordSchema>;
+export type FinancialRecord = typeof financialRecords.$inferSelect;
+
+export type InsertBudgetCategory = z.infer<typeof insertBudgetCategorySchema>;
+export type BudgetCategory = typeof budgetCategories.$inferSelect;
