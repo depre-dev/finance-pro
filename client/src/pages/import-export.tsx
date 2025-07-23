@@ -54,6 +54,56 @@ const parseWithXLSX = (arrayBuffer: ArrayBuffer, resolve: (value: string) => voi
   }
 };
 
+// Function to detect columns from CSV data
+const detectColumns = (csvData: string): string[] => {
+  const lines = csvData.trim().split('\n');
+  if (lines.length === 0) return [];
+  
+  // Get the first line (header row)
+  const headers = lines[0].split(',').map(header => 
+    header.replace(/"/g, '').trim()
+  );
+  
+  return headers;
+};
+
+// Required columns for financial data
+const REQUIRED_COLUMNS = {
+  date: 'Date',
+  type: 'Type',
+  category: 'Category', 
+  description: 'Description',
+  amount: 'Amount'
+};
+
+// Enhanced column matching function
+const createInitialMapping = (columns: string[]): Record<string, string> => {
+  const initialMapping: Record<string, string> = {};
+  Object.entries(REQUIRED_COLUMNS).forEach(([key, value]) => {
+    const match = columns.find(col => {
+      const colLower = col.toLowerCase();
+      const valueLower = value.toLowerCase();
+      
+      return (
+        colLower.includes(valueLower) ||
+        valueLower.includes(colLower) ||
+        // Date field matching
+        (key === 'date' && (colLower.includes('date') || colLower.includes('created') || colLower.includes('time'))) ||
+        // Amount/cost field matching  
+        (key === 'amount' && (colLower.includes('amount') || colLower.includes('cost') || colLower.includes('price') || colLower.includes('value') || colLower.includes('budget') || colLower.includes('effort'))) ||
+        // Description field matching
+        (key === 'description' && (colLower.includes('description') || colLower.includes('title') || colLower.includes('name') || colLower.includes('summary') || colLower.includes('details'))) ||
+        // Type field matching
+        (key === 'type' && (colLower.includes('type') || colLower.includes('category') || colLower.includes('kind') || colLower.includes('status'))) ||
+        // Category field matching
+        (key === 'category' && (colLower.includes('category') || colLower.includes('area') || colLower.includes('department') || colLower.includes('group')))
+      );
+    });
+    initialMapping[key] = match || '';
+  });
+  return initialMapping;
+};
+
 // Extend Window interface for XLSX
 declare global {
   interface Window {
@@ -72,6 +122,9 @@ export default function ImportExport() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [fileType, setFileType] = useState<string>("");
   const [fileName, setFileName] = useState<string>("");
+  const [detectedColumns, setDetectedColumns] = useState<string[]>([]);
+  const [columnMapping, setColumnMapping] = useState<Record<string, string>>({});
+  const [showColumnMapping, setShowColumnMapping] = useState(false);
 
   const { data: projects } = useQuery<Project[]>({
     queryKey: ["/api/projects"],
@@ -121,6 +174,26 @@ export default function ImportExport() {
         reader.onload = (e) => {
           csvContent = e.target?.result as string;
           setCsvPreview(csvContent);
+          
+          // Detect columns from CSV
+          const columns = detectColumns(csvContent);
+          setDetectedColumns(columns);
+          
+          // Check if we need column mapping
+          const hasStandardColumns = Object.values(REQUIRED_COLUMNS).every(col => 
+            columns.some(detectedCol => 
+              detectedCol.toLowerCase().includes(col.toLowerCase()) ||
+              col.toLowerCase().includes(detectedCol.toLowerCase())
+            )
+          );
+          
+          if (!hasStandardColumns && columns.length > 0) {
+            setShowColumnMapping(true);
+            setColumnMapping(createInitialMapping(columns));
+          } else {
+            setShowColumnMapping(false);
+          }
+          
           setIsProcessing(false);
         };
         reader.readAsText(file);
@@ -129,9 +202,29 @@ export default function ImportExport() {
         try {
           csvContent = await parseExcelToCSV(file);
           setCsvPreview(csvContent);
+          
+          // Detect columns from the converted CSV
+          const columns = detectColumns(csvContent);
+          setDetectedColumns(columns);
+          
+          // Check if we need column mapping
+          const hasStandardColumns = Object.values(REQUIRED_COLUMNS).every(col => 
+            columns.some(detectedCol => 
+              detectedCol.toLowerCase().includes(col.toLowerCase()) ||
+              col.toLowerCase().includes(detectedCol.toLowerCase())
+            )
+          );
+          
+          if (!hasStandardColumns && columns.length > 0) {
+            setShowColumnMapping(true);
+            setColumnMapping(createInitialMapping(columns));
+          } else {
+            setShowColumnMapping(false);
+          }
+          
           toast({
             title: "Excel File Converted",
-            description: "Excel file successfully converted to CSV format",
+            description: `Found ${columns.length} columns. ${hasStandardColumns ? 'Standard format detected.' : 'Column mapping required.'}`,
           });
         } catch (error) {
           toast({
@@ -163,21 +256,80 @@ export default function ImportExport() {
     if (!csvPreview || !selectedProject) {
       toast({
         title: "Missing Information",
-        description: "Please select a project and upload a CSV file",
+        description: "Please select a project and upload a file",
         variant: "destructive",
       });
       return;
     }
 
+    // Check if column mapping is complete
+    if (showColumnMapping) {
+      const missingMappings = Object.entries(columnMapping).filter(([key, value]) => !value);
+      if (missingMappings.length > 0) {
+        toast({
+          title: "Incomplete Column Mapping",
+          description: "Please map all required columns before importing",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
+    let processedCsvData = csvPreview;
+
+    // If column mapping is required, transform the data
+    if (showColumnMapping) {
+      processedCsvData = transformDataWithMapping(csvPreview, columnMapping);
+    }
+
     setIsProcessing(true);
     try {
       await importMutation.mutateAsync({
-        csvData: csvPreview,
+        csvData: processedCsvData,
         projectId: selectedProject
       });
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  // Function to transform data based on column mapping
+  const transformDataWithMapping = (csvData: string, mapping: Record<string, string>): string => {
+    const lines = csvData.trim().split('\n');
+    if (lines.length === 0) return csvData;
+
+    const originalHeaders = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
+    const newHeaders = ['Date', 'Type', 'Category', 'Description', 'Amount'];
+    
+    // Create index mapping
+    const indexMapping: Record<string, number> = {};
+    Object.entries(mapping).forEach(([requiredCol, mappedCol]) => {
+      if (mappedCol) {
+        const index = originalHeaders.findIndex(h => h === mappedCol);
+        if (index !== -1) {
+          indexMapping[requiredCol] = index;
+        }
+      }
+    });
+
+    // Transform each row
+    const transformedLines = [newHeaders.join(',')];
+    
+    for (let i = 1; i < lines.length; i++) {
+      const row = lines[i].split(',').map(cell => cell.replace(/"/g, '').trim());
+      const newRow = new Array(newHeaders.length).fill('');
+      
+      // Map the data
+      if (indexMapping.date !== undefined) newRow[0] = row[indexMapping.date] || '';
+      if (indexMapping.type !== undefined) newRow[1] = row[indexMapping.type] || 'expense';
+      if (indexMapping.category !== undefined) newRow[2] = row[indexMapping.category] || 'Other';
+      if (indexMapping.description !== undefined) newRow[3] = row[indexMapping.description] || '';
+      if (indexMapping.amount !== undefined) newRow[4] = row[indexMapping.amount] || '0';
+      
+      transformedLines.push(newRow.map(cell => `"${cell}"`).join(','));
+    }
+
+    return transformedLines.join('\n');
   };
 
   const handleExport = async (projectId?: string) => {
@@ -322,6 +474,47 @@ export default function ImportExport() {
                     rows={6}
                     className="font-mono text-xs"
                   />
+                </div>
+              )}
+
+              {/* Column Mapping Interface */}
+              {showColumnMapping && detectedColumns.length > 0 && (
+                <div className="space-y-4 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
+                  <div className="flex items-center space-x-2">
+                    <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                    <h4 className="font-medium text-blue-900 dark:text-blue-100">Column Mapping Required</h4>
+                  </div>
+                  <p className="text-sm text-blue-700 dark:text-blue-200">
+                    Your file has different column names. Please map them to the required fields:
+                  </p>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {Object.entries(REQUIRED_COLUMNS).map(([key, label]) => (
+                      <div key={key} className="space-y-2">
+                        <Label className="text-blue-900 dark:text-blue-100">
+                          {label} <span className="text-red-500">*</span>
+                        </Label>
+                        <Select 
+                          value={columnMapping[key] || ""} 
+                          onValueChange={(value) => setColumnMapping(prev => ({ ...prev, [key]: value }))}
+                        >
+                          <SelectTrigger className="bg-white dark:bg-gray-800">
+                            <SelectValue placeholder={`Select column for ${label}`} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="">-- Select Column --</SelectItem>
+                            {detectedColumns.map((col) => (
+                              <SelectItem key={col} value={col}>{col}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="text-xs text-blue-600 dark:text-blue-300">
+                    <p><strong>Detected columns:</strong> {detectedColumns.join(', ')}</p>
+                  </div>
                 </div>
               )}
 
