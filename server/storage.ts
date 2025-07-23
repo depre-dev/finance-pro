@@ -232,24 +232,19 @@ export class DatabaseStorage implements IStorage {
         )
       );
 
-    // Over budget projects count
+    // Over budget projects count using actualCost field
     const overBudgetQuery = await db
       .select({
         projectId: projects.id,
         totalBudget: projects.totalBudget,
-        totalSpent: sum(financialRecords.amount).as('totalSpent')
+        actualCost: projects.actualCost
       })
       .from(projects)
-      .leftJoin(financialRecords, and(
-        eq(financialRecords.projectId, projects.id),
-        eq(financialRecords.type, 'expense')
-      ))
-      .where(eq(projects.userId, userId))
-      .groupBy(projects.id, projects.totalBudget);
+      .where(eq(projects.userId, userId));
 
     let overBudgetCount = 0;
     for (const project of overBudgetQuery) {
-      const spent = parseFloat(project.totalSpent || '0');
+      const spent = parseFloat(project.actualCost || '0');
       const budget = parseFloat(project.totalBudget);
       if (spent > budget) {
         overBudgetCount++;

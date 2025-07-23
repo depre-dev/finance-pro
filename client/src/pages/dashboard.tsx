@@ -50,7 +50,7 @@ export default function Dashboard() {
 
   const filteredProjects = projects?.filter(project =>
     project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    project.client?.toLowerCase().includes(searchTerm.toLowerCase())
+    project.businessUnit?.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
 
   const formatCurrency = (amount: string | number) => {
@@ -61,9 +61,8 @@ export default function Dashboard() {
   };
 
   const getProjectStatus = (project: Project) => {
-    // This would normally calculate from financial records
     const budget = Number(project.totalBudget);
-    const spent = budget * 0.7; // Mock calculation
+    const spent = Number(project.actualCost || 0);
     const remaining = budget - spent;
     
     if (remaining < 0) return { status: "Over Budget", variant: "destructive" as const };
@@ -318,7 +317,7 @@ export default function Dashboard() {
                   ) : (
                     filteredProjects.slice(0, 5).map((project) => {
                       const budget = Number(project.totalBudget);
-                      const spent = budget * 0.7; // Mock calculation
+                      const spent = Number(project.actualCost || 0);
                       const remaining = budget - spent;
                       const statusInfo = getProjectStatus(project);
 
@@ -331,7 +330,7 @@ export default function Dashboard() {
                               </div>
                               <div>
                                 <div className="text-sm font-medium text-foreground">{project.name}</div>
-                                <div className="text-sm text-neutral-50">{project.client || "No client"}</div>
+                                <div className="text-sm text-muted-foreground">{project.businessUnit || "No business unit"}</div>
                               </div>
                             </div>
                           </td>
