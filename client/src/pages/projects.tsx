@@ -1,9 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Separator } from "@/components/ui/separator";
+import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
 import { 
   Plus, 
@@ -11,18 +15,33 @@ import {
   Folder, 
   Edit,
   Eye,
-  Trash2
+  Trash2,
+  Calendar,
+  DollarSign,
+  TrendingUp,
+  CreditCard,
+  X,
+  AlertTriangle
 } from "lucide-react";
-import type { Project } from "@shared/schema";
+import type { Project, ChargeHistory } from "@shared/schema";
 import ProjectModal from "@/components/modals/project-modal";
+import { format } from "date-fns";
 
 export default function Projects() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | undefined>(undefined);
+  const [viewingProject, setViewingProject] = useState<Project | undefined>(undefined);
+  const [isDetailViewOpen, setIsDetailViewOpen] = useState(false);
 
   const { data: projects, isLoading } = useQuery<Project[]>({
     queryKey: ["/api/projects"],
+  });
+
+  // Fetch charge history for the viewing project
+  const { data: chargeHistory = [] } = useQuery<ChargeHistory[]>({
+    queryKey: ["/api/projects", viewingProject?.id, "charge-history"],
+    enabled: !!viewingProject?.id,
   });
 
   const filteredProjects = projects?.filter(project =>
@@ -44,6 +63,35 @@ export default function Projects() {
       case 'on-hold': return 'outline';
       default: return 'default';
     }
+  };
+
+  const handleViewProject = (project: Project) => {
+    setViewingProject(project);
+    setIsDetailViewOpen(true);
+  };
+
+  const handleEditProject = (project: Project) => {
+    setEditingProject(project);
+    setIsProjectModalOpen(true);
+  };
+
+  const calculateBudgetUsage = (totalBudget: string, actualCost: string) => {
+    const budget = parseFloat(totalBudget || "0");
+    const spent = parseFloat(actualCost || "0");
+    if (budget === 0) return 0;
+    return Math.min((spent / budget) * 100, 100);
+  };
+
+  const getRemainingBudget = (totalBudget: string, actualCost: string) => {
+    const budget = parseFloat(totalBudget || "0");
+    const spent = parseFloat(actualCost || "0");
+    return budget - spent;
+  };
+
+  const getTotalChargesForProject = (projectId: number) => {
+    return chargeHistory
+      .filter(charge => charge.projectId === projectId)
+      .reduce((total, charge) => total + parseFloat(charge.amount || "0"), 0);
   };
 
   return (
@@ -194,7 +242,11 @@ export default function Projects() {
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="sm">
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => handleViewProject(project)}
+                      >
                         <Eye className="h-4 w-4" />
                       </Button>
                       <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
@@ -220,6 +272,233 @@ export default function Projects() {
         }}
         project={editingProject}
       />
+
+      {/* Detailed Project View Modal */}
+      <Dialog open={isDetailViewOpen} onOpenChange={setIsDetailViewOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mr-4">
+                  <Folder className="text-primary h-6 w-6" />
+                </div>
+                <div>
+                  <DialogTitle className="text-2xl">{viewingProject?.name}</DialogTitle>
+                  <DialogDescription className="text-lg">
+                    {viewingProject?.businessUnit || "No business unit specified"}
+                  </DialogDescription>
+                </div>
+              </div>
+              <Badge variant={getStatusVariant(viewingProject?.status || "active")} className="text-sm px-3 py-1">
+                {viewingProject?.status}
+              </Badge>
+            </div>
+          </DialogHeader>
+
+          {viewingProject && (
+            <div className="space-y-6">
+              {/* Project Details */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Calendar className="mr-2 h-5 w-5" />
+                    Project Information
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">Project ID</label>
+                        <p className="text-lg">{viewingProject.projectId || "Not specified"}</p>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">WBS Code</label>
+                        <p className="text-lg">{viewingProject.wbs || "Not specified"}</p>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">Target Release</label>
+                        <p className="text-lg">{viewingProject.targetRelease || "Not specified"}</p>
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">Total PDs</label>
+                        <p className="text-lg">{viewingProject.totalPds || "Not specified"}</p>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">External PDs</label>
+                        <p className="text-lg">{viewingProject.totalExternalPds || "Not specified"}</p>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">Created</label>
+                        <p className="text-lg">{format(new Date(viewingProject.createdAt), "MMM dd, yyyy")}</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Budget Overview */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <DollarSign className="mr-2 h-5 w-5" />
+                    Budget Overview
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div className="text-center p-4 bg-blue-50 rounded-lg">
+                      <div className="text-2xl font-bold text-blue-600">
+                        {formatCurrency(viewingProject.totalBudget)}
+                      </div>
+                      <div className="text-sm text-blue-600 font-medium">Total Budget</div>
+                    </div>
+                    <div className="text-center p-4 bg-orange-50 rounded-lg">
+                      <div className="text-2xl font-bold text-orange-600">
+                        {formatCurrency(viewingProject.actualCost || "0")}
+                      </div>
+                      <div className="text-sm text-orange-600 font-medium">Actual Cost</div>
+                    </div>
+                    <div className="text-center p-4 bg-green-50 rounded-lg">
+                      <div className={`text-2xl font-bold ${
+                        getRemainingBudget(viewingProject.totalBudget, viewingProject.actualCost || "0") < 0 
+                          ? "text-red-600" 
+                          : "text-green-600"
+                      }`}>
+                        {formatCurrency(Math.abs(getRemainingBudget(viewingProject.totalBudget, viewingProject.actualCost || "0")))}
+                      </div>
+                      <div className={`text-sm font-medium ${
+                        getRemainingBudget(viewingProject.totalBudget, viewingProject.actualCost || "0") < 0 
+                          ? "text-red-600" 
+                          : "text-green-600"
+                      }`}>
+                        {getRemainingBudget(viewingProject.totalBudget, viewingProject.actualCost || "0") < 0 
+                          ? "Over Budget" 
+                          : "Remaining"}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span>Budget Usage</span>
+                      <span>{calculateBudgetUsage(viewingProject.totalBudget, viewingProject.actualCost || "0").toFixed(1)}%</span>
+                    </div>
+                    <Progress 
+                      value={calculateBudgetUsage(viewingProject.totalBudget, viewingProject.actualCost || "0")} 
+                      className="h-3"
+                    />
+                    {calculateBudgetUsage(viewingProject.totalBudget, viewingProject.actualCost || "0") > 90 && (
+                      <div className="flex items-center text-amber-600 text-sm">
+                        <AlertTriangle className="mr-1 h-4 w-4" />
+                        Budget is nearly exhausted
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Charge History */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <CreditCard className="mr-2 h-5 w-5" />
+                    Charge History
+                  </CardTitle>
+                  <CardDescription>
+                    Complete record of all expenses and costs for this project
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {chargeHistory.length === 0 ? (
+                    <div className="text-center py-8">
+                      <CreditCard className="mx-auto h-12 w-12 text-gray-400" />
+                      <h3 className="mt-2 text-sm font-semibold text-gray-900">No charges recorded</h3>
+                      <p className="mt-1 text-sm text-gray-500">
+                        No expenses have been recorded for this project yet.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div className="text-center p-3 bg-slate-50 rounded-lg">
+                          <div className="text-lg font-bold text-slate-600">
+                            {chargeHistory.length}
+                          </div>
+                          <div className="text-sm text-slate-600">Total Charges</div>
+                        </div>
+                        <div className="text-center p-3 bg-purple-50 rounded-lg">
+                          <div className="text-lg font-bold text-purple-600">
+                            {formatCurrency(getTotalChargesForProject(viewingProject.id))}
+                          </div>
+                          <div className="text-sm text-purple-600">Total Amount</div>
+                        </div>
+                        <div className="text-center p-3 bg-indigo-50 rounded-lg">
+                          <div className="text-lg font-bold text-indigo-600">
+                            {format(new Date(chargeHistory[0]?.date), "MMM dd")}
+                          </div>
+                          <div className="text-sm text-indigo-600">Latest Charge</div>
+                        </div>
+                      </div>
+
+                      <div className="overflow-x-auto">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Date</TableHead>
+                              <TableHead>Description</TableHead>
+                              <TableHead>Category</TableHead>
+                              <TableHead className="text-right">Amount</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {chargeHistory.map((charge) => (
+                              <TableRow key={charge.id}>
+                                <TableCell>
+                                  {format(new Date(charge.date), "MMM dd, yyyy")}
+                                </TableCell>
+                                <TableCell className="max-w-xs">
+                                  <div className="truncate" title={charge.description}>
+                                    {charge.description}
+                                  </div>
+                                </TableCell>
+                                <TableCell>
+                                  <Badge variant="outline">
+                                    {charge.category || "General"}
+                                  </Badge>
+                                </TableCell>
+                                <TableCell className="text-right font-mono">
+                                  {formatCurrency(charge.amount)}
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Action Buttons */}
+              <div className="flex justify-end space-x-2 pt-4 border-t">
+                <Button variant="outline" onClick={() => setIsDetailViewOpen(false)}>
+                  Close
+                </Button>
+                <Button onClick={() => {
+                  setIsDetailViewOpen(false);
+                  handleEditProject(viewingProject);
+                }}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  Edit Project
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
