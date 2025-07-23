@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Request } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { 
@@ -7,6 +7,15 @@ import {
   insertBudgetCategorySchema 
 } from "@shared/schema";
 import { z } from "zod";
+
+// Extend Express Request type to include user
+declare global {
+  namespace Express {
+    interface Request {
+      user: { id: number };
+    }
+  }
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Middleware to simulate user authentication (replace with real auth in production)
@@ -149,6 +158,112 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ message: "Financial record deleted successfully" });
     } catch (error) {
       res.status(500).json({ message: "Failed to delete financial record" });
+    }
+  });
+
+  // Import/Export endpoints
+  app.post("/api/import/financial-records", async (req, res) => {
+    try {
+      const { csvData, projectId } = req.body;
+      
+      if (!csvData || !projectId) {
+        return res.status(400).json({ message: "CSV data and project ID are required" });
+      }
+
+      // Parse CSV data
+      const lines = csvData.trim().split('\n');
+      const headers = lines[0].split(',').map((h: string) => h.trim().toLowerCase());
+      
+      // Validate headers
+      const requiredHeaders = ['date', 'type', 'category', 'description', 'amount'];
+      const missingHeaders = requiredHeaders.filter(h => !headers.includes(h));
+      if (missingHeaders.length > 0) {
+        return res.status(400).json({ 
+          message: `Missing required headers: ${missingHeaders.join(', ')}` 
+        });
+      }
+
+      const records = [];
+      const errors = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        try {
+          const values = lines[i].split(',').map((v: string) => v.trim());
+          const record: any = {};
+          
+          headers.forEach((header, index) => {
+            record[header] = values[index];
+          });
+
+          // Validate and format record
+          const validatedRecord = {
+            projectId: parseInt(projectId),
+            type: record.type.toLowerCase() === 'income' ? 'income' : 'expense',
+            category: record.category,
+            description: record.description,
+            amount: record.amount,
+            date: new Date(record.date),
+            userId: req.user.id
+          };
+
+          const financialRecord = await storage.createFinancialRecord(validatedRecord);
+          records.push(financialRecord);
+        } catch (error) {
+          errors.push(`Line ${i + 1}: ${error instanceof Error ? error.message : 'Invalid data'}`);
+        }
+      }
+
+      res.json({
+        message: `Successfully imported ${records.length} records`,
+        imported: records.length,
+        errors: errors.length,
+        errorDetails: errors
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to import financial records" });
+    }
+  });
+
+  app.get("/api/export/financial-records", async (req, res) => {
+    try {
+      const { projectId } = req.query;
+      let records;
+
+      if (projectId) {
+        records = await storage.getFinancialRecords(parseInt(projectId as string), req.user.id);
+      } else {
+        // Get all records for user across all projects
+        const projects = await storage.getProjects(req.user.id);
+        records = [];
+        for (const project of projects) {
+          const projectRecords = await storage.getFinancialRecords(project.id, req.user.id);
+          records.push(...projectRecords);
+        }
+      }
+
+      // Generate CSV
+      const headers = ['Date', 'Type', 'Category', 'Description', 'Amount', 'Project ID'];
+      const csvRows = [headers.join(',')];
+      
+      records.forEach(record => {
+        const row = [
+          new Date(record.date).toISOString().split('T')[0],
+          record.type,
+          record.category,
+          `"${record.description.replace(/"/g, '""')}"`,
+          record.amount,
+          record.projectId
+        ];
+        csvRows.push(row.join(','));
+      });
+
+      const csvContent = csvRows.join('\n');
+      
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename="financial-records.csv"');
+      res.send(csvContent);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to export financial records" });
     }
   });
 

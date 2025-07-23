@@ -106,7 +106,7 @@ export class DatabaseStorage implements IStorage {
     const result = await db
       .delete(projects)
       .where(and(eq(projects.id, id), eq(projects.userId, userId)));
-    return result.rowCount > 0;
+    return (result.rowCount ?? 0) > 0;
   }
 
   async getFinancialRecords(projectId: number, userId: number): Promise<FinancialRecord[]> {
@@ -146,7 +146,7 @@ export class DatabaseStorage implements IStorage {
     const result = await db
       .delete(financialRecords)
       .where(and(eq(financialRecords.id, id), eq(financialRecords.userId, userId)));
-    return result.rowCount > 0;
+    return (result.rowCount ?? 0) > 0;
   }
 
   async getBudgetCategories(projectId: number, userId: number): Promise<BudgetCategory[]> {
@@ -178,7 +178,7 @@ export class DatabaseStorage implements IStorage {
     const result = await db
       .delete(budgetCategories)
       .where(and(eq(budgetCategories.id, id), eq(budgetCategories.userId, userId)));
-    return result.rowCount > 0;
+    return (result.rowCount ?? 0) > 0;
   }
 
   async getDashboardMetrics(userId: number): Promise<{
