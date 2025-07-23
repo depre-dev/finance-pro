@@ -21,6 +21,7 @@ export const projects = pgTable("projects", {
   totalPds: text("total_pds"), // Total PDs from Excel
   totalExternalPds: text("total_external_pds"), // Total External PDs from Excel
   targetRelease: text("target_release"), // Target Release from Excel
+  actualCost: decimal("actual_cost", { precision: 12, scale: 2 }).default("0"), // Actual cost spent
   status: varchar("status", { length: 50 }).notNull().default("active"),
   userId: integer("user_id").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),

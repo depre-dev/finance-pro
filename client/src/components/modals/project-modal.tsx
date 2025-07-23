@@ -82,6 +82,7 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
           form.setValue("totalPds", excelData["Total PDs"] || "");
           form.setValue("totalExternalPds", excelData["Total External PDs"] || "");
           form.setValue("targetRelease", excelData["Target Release"] || "");
+          form.setValue("actualCost", project?.actualCost || "0");
         }
       }
     } catch (error) {
@@ -100,6 +101,7 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
       totalPds: project?.totalPds || "",
       totalExternalPds: project?.totalExternalPds || "",
       targetRelease: project?.targetRelease || "",
+      actualCost: project?.actualCost || "0",
       status: project?.status || "active",
     },
   });
@@ -116,6 +118,7 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
         totalPds: project.totalPds || "",
         totalExternalPds: project.totalExternalPds || "",
         targetRelease: project.targetRelease || "",
+        actualCost: project.actualCost || "0",
         status: project.status || "active",
       });
     } else {
@@ -128,6 +131,7 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
         totalPds: "",
         totalExternalPds: "",
         targetRelease: "",
+        actualCost: "0",
         status: "active",
       });
     }
@@ -310,12 +314,53 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
               
               <FormField
                 control={form.control}
+                name="actualCost"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Actual Cost Spent</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-50">CHF</span>
+                        <Input 
+                          type="number" 
+                          min="0" 
+                          step="0.01"
+                          className="pl-12"
+                          placeholder="0.00" 
+                          {...field} 
+                          value={field.value || "0"}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
                 name="businessUnit"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Business Unit</FormLabel>
                     <FormControl>
                       <Input placeholder="Enter business unit" {...field} value={field.value || ""} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="projectId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Project ID</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter project ID" {...field} value={field.value || ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
