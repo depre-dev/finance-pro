@@ -64,6 +64,18 @@ export const chargeHistory = pgTable("charge_history", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const projectNotes = pgTable("project_notes", {
+  id: serial("id").primaryKey(),
+  projectId: integer("project_id").references(() => projects.id),
+  content: text("content").notNull(),
+  authorName: text("author_name").notNull(),
+  color: text("color").default("yellow"),
+  position: json("position").$type<{ x: number; y: number }>(),
+  isPrivate: boolean("is_private").default(false),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 // Table for storing uploaded data before project assignment
 export const uploadedData = pgTable("uploaded_data", {
   id: serial("id").primaryKey(),
@@ -85,6 +97,7 @@ export const projectsRelations = relations(projects, ({ one, many }) => ({
   financialRecords: many(financialRecords),
   budgetCategories: many(budgetCategories),
   chargeHistory: many(chargeHistory),
+  projectNotes: many(projectNotes),
 }));
 
 export const financialRecordsRelations = relations(financialRecords, ({ one }) => ({
@@ -117,6 +130,13 @@ export const budgetCategoriesRelations = relations(budgetCategories, ({ one }) =
   user: one(users, {
     fields: [budgetCategories.userId],
     references: [users.id],
+  }),
+}));
+
+export const projectNotesRelations = relations(projectNotes, ({ one }) => ({
+  project: one(projects, {
+    fields: [projectNotes.projectId],
+    references: [projects.id],
   }),
 }));
 
@@ -159,6 +179,12 @@ export const insertUploadedDataSchema = createInsertSchema(uploadedData).omit({
   uploadedAt: true,
 });
 
+export const insertProjectNoteSchema = createInsertSchema(projectNotes).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -177,3 +203,6 @@ export type ChargeHistory = typeof chargeHistory.$inferSelect;
 
 export type InsertUploadedData = z.infer<typeof insertUploadedDataSchema>;
 export type UploadedData = typeof uploadedData.$inferSelect;
+
+export type InsertProjectNote = z.infer<typeof insertProjectNoteSchema>;
+export type ProjectNote = typeof projectNotes.$inferSelect;

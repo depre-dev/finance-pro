@@ -5,6 +5,7 @@ import {
   budgetCategories,
   chargeHistory,
   uploadedData,
+  projectNotes,
   type User, 
   type InsertUser,
   type Project,
@@ -16,7 +17,9 @@ import {
   type ChargeHistory,
   type InsertChargeHistory,
   type UploadedData,
-  type InsertUploadedData
+  type InsertUploadedData,
+  type ProjectNote,
+  type InsertProjectNote
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, sql, sum } from "drizzle-orm";
@@ -72,6 +75,12 @@ export interface IStorage {
   getUploadedData(userId: number): Promise<UploadedData[]>;
   getUploadedDataById(id: number, userId: number): Promise<UploadedData | undefined>;
   deleteUploadedData(id: number, userId: number): Promise<boolean>;
+
+  // Project notes methods
+  getProjectNotes(projectId: number): Promise<ProjectNote[]>;
+  createProjectNote(note: InsertProjectNote): Promise<ProjectNote>;
+  updateProjectNote(id: number, note: Partial<InsertProjectNote>): Promise<ProjectNote | undefined>;
+  deleteProjectNote(id: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -405,6 +414,37 @@ export class DatabaseStorage implements IStorage {
       .delete(uploadedData)
       .where(and(eq(uploadedData.id, id), eq(uploadedData.userId, userId)));
     return (result.rowCount ?? 0) > 0;
+  }
+
+  // Project notes methods
+  async getProjectNotes(projectId: number): Promise<ProjectNote[]> {
+    return await db
+      .select()
+      .from(projectNotes)
+      .where(eq(projectNotes.projectId, projectId))
+      .orderBy(desc(projectNotes.createdAt));
+  }
+
+  async createProjectNote(insertNote: InsertProjectNote): Promise<ProjectNote> {
+    const [note] = await db
+      .insert(projectNotes)
+      .values(insertNote)
+      .returning();
+    return note;
+  }
+
+  async updateProjectNote(id: number, updateNote: Partial<InsertProjectNote>): Promise<ProjectNote | undefined> {
+    const [note] = await db
+      .update(projectNotes)
+      .set({ ...updateNote, updatedAt: new Date() })
+      .where(eq(projectNotes.id, id))
+      .returning();
+    return note || undefined;
+  }
+
+  async deleteProjectNote(id: number): Promise<boolean> {
+    const result = await db.delete(projectNotes).where(eq(projectNotes.id, id));
+    return result.rowCount! > 0;
   }
 }
 

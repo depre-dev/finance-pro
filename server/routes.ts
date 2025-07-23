@@ -4,7 +4,8 @@ import { storage } from "./storage";
 import { 
   insertProjectSchema,
   insertFinancialRecordSchema,
-  insertBudgetCategorySchema 
+  insertBudgetCategorySchema,
+  insertProjectNoteSchema
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -512,6 +513,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Convert data error:", error);
       res.status(500).json({ message: "Failed to convert uploaded data" });
+    }
+  });
+
+  // Project notes endpoints
+  app.get("/api/projects/:projectId/notes", async (req, res) => {
+    try {
+      const projectId = parseInt(req.params.projectId);
+      const notes = await storage.getProjectNotes(projectId);
+      res.json(notes);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch project notes" });
+    }
+  });
+
+  app.post("/api/projects/:projectId/notes", async (req, res) => {
+    try {
+      const projectId = parseInt(req.params.projectId);
+      const validatedData = insertProjectNoteSchema.parse({
+        ...req.body,
+        projectId
+      });
+      const note = await storage.createProjectNote(validatedData);
+      res.status(201).json(note);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid note data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create note" });
+    }
+  });
+
+  app.put("/api/notes/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const validatedData = insertProjectNoteSchema.partial().parse(req.body);
+      const note = await storage.updateProjectNote(id, validatedData);
+      if (!note) {
+        return res.status(404).json({ message: "Note not found" });
+      }
+      res.json(note);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid note data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update note" });
+    }
+  });
+
+  app.delete("/api/notes/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteProjectNote(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Note not found" });
+      }
+      res.json({ message: "Note deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete note" });
     }
   });
 

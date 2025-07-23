@@ -25,11 +25,13 @@ import {
   CreditCard,
   X,
   AlertTriangle,
-  Zap
+  Zap,
+  MessageSquare
 } from "lucide-react";
 import type { Project, ChargeHistory } from "@shared/schema";
 import ProjectModal from "@/components/modals/project-modal";
 import BudgetSnapshot from "@/components/budget-snapshot";
+import CollaborativeNotes from "@/components/collaborative-notes";
 import { format } from "date-fns";
 
 export default function Projects() {
@@ -538,6 +540,25 @@ export default function Projects() {
                       </div>
                     </div>
                   )}
+                </CardContent>
+              </Card>
+
+              {/* Collaborative Notes */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <MessageSquare className="mr-2 h-5 w-5" />
+                    Team Notes
+                  </CardTitle>
+                  <CardDescription>
+                    Collaborative project communication and updates
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <CollaborativeNotes 
+                    projectId={viewingProject.id} 
+                    projectName={viewingProject.name} 
+                  />
                 </CardContent>
               </Card>
 
