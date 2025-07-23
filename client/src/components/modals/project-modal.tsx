@@ -66,16 +66,40 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
     queryKey: ["/api/excel-project-names"],
   });
 
+  // Function to populate form with Excel data
+  const populateFromExcel = async (projectName: string) => {
+    try {
+      const response = await fetch(`/api/excel-project-data/${encodeURIComponent(projectName)}`);
+      if (response.ok) {
+        const excelData = await response.json();
+        if (excelData) {
+          // Auto-populate form fields with Excel data
+          form.setValue("name", excelData.Name || "");
+          form.setValue("projectId", excelData["Project ID"] || "");
+          form.setValue("businessUnit", excelData["Business Unit"] || "");
+          form.setValue("wbs", excelData.WBS || "");
+          form.setValue("totalBudget", excelData["Total Budget (CHF)"] || "");
+          form.setValue("totalPds", excelData["Total PDs"] || "");
+          form.setValue("totalExternalPds", excelData["Total External PDs"] || "");
+          form.setValue("targetRelease", excelData["Target Release"] || "");
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch Excel project data:", error);
+    }
+  };
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: project?.name || "",
-      client: project?.client || "",
-      description: project?.description || "",
+      projectId: project?.projectId || "",
+      businessUnit: project?.businessUnit || "",
+      wbs: project?.wbs || "",
       totalBudget: project?.totalBudget || "",
-      startDate: project?.startDate 
-        ? new Date(project.startDate).toISOString().split('T')[0] 
-        : "",
+      totalPds: project?.totalPds || "",
+      totalExternalPds: project?.totalExternalPds || "",
+      targetRelease: project?.targetRelease || "",
       status: project?.status || "active",
     },
   });
@@ -85,21 +109,25 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
     if (project) {
       form.reset({
         name: project.name || "",
-        client: project.client || "",
-        description: project.description || "",
+        projectId: project.projectId || "",
+        businessUnit: project.businessUnit || "",
+        wbs: project.wbs || "",
         totalBudget: project.totalBudget || "",
-        startDate: project.startDate 
-          ? new Date(project.startDate).toISOString().split('T')[0] 
-          : "",
+        totalPds: project.totalPds || "",
+        totalExternalPds: project.totalExternalPds || "",
+        targetRelease: project.targetRelease || "",
         status: project.status || "active",
       });
     } else {
       form.reset({
         name: "",
-        client: "",
-        description: "",
+        projectId: "",
+        businessUnit: "",
+        wbs: "",
         totalBudget: "",
-        startDate: "",
+        totalPds: "",
+        totalExternalPds: "",
+        targetRelease: "",
         status: "active",
       });
     }
@@ -110,7 +138,6 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
       const projectData = {
         ...data,
         totalBudget: data.totalBudget,
-        startDate: data.startDate ? new Date(data.startDate) : null,
       };
       
       const method = project ? "PUT" : "POST";
@@ -217,6 +244,7 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
                                       value={projectName}
                                       onSelect={(currentValue) => {
                                         field.onChange(currentValue);
+                                        populateFromExcel(currentValue);
                                         setOpen(false);
                                       }}
                                     >
@@ -242,12 +270,12 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
               
               <FormField
                 control={form.control}
-                name="client"
+                name="projectId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Client</FormLabel>
+                    <FormLabel>Project ID</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter client name" {...field} />
+                      <Input placeholder="Enter project ID" {...field} value={field.value || ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -282,12 +310,12 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
               
               <FormField
                 control={form.control}
-                name="startDate"
+                name="businessUnit"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Start Date</FormLabel>
+                    <FormLabel>Business Unit</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <Input placeholder="Enter business unit" {...field} value={field.value || ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -295,23 +323,65 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
               />
             </div>
             
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      rows={4}
-                      placeholder="Enter project description" 
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="wbs"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>WBS</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter WBS code" {...field} value={field.value || ""} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="targetRelease"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Target Release</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter target release" {...field} value={field.value || ""} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="totalPds"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Total PDs</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter total PDs" {...field} value={field.value || ""} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="totalExternalPds"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Total External PDs</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter total external PDs" {...field} value={field.value || ""} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             
             <div className="flex justify-end space-x-4 pt-4">
               <Button type="button" variant="outline" onClick={handleClose}>

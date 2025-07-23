@@ -52,6 +52,9 @@ export interface IStorage {
 
   // Excel project names
   getExcelProjectNames(userId: number): Promise<string[]>;
+  
+  // Excel project data
+  getExcelProjectData(userId: number, projectName: string): Promise<any>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -282,6 +285,21 @@ export class DatabaseStorage implements IStorage {
     }
 
     return Array.from(projectNames).sort();
+  }
+
+  async getExcelProjectData(userId: number, projectName: string): Promise<any> {
+    const records = await db
+      .select({ originalData: financialRecords.originalData })
+      .from(financialRecords)
+      .where(
+        and(
+          eq(financialRecords.userId, userId),
+          sql`${financialRecords.originalData}->>'Name' = ${projectName}`
+        )
+      )
+      .limit(1);
+
+    return records.length > 0 ? records[0].originalData : null;
   }
 }
 

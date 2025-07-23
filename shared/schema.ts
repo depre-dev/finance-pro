@@ -14,11 +14,13 @@ export const users = pgTable("users", {
 export const projects = pgTable("projects", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
-  client: text("client"),
-  description: text("description"),
-  totalBudget: decimal("total_budget", { precision: 12, scale: 2 }).notNull(),
-  startDate: timestamp("start_date"),
-  endDate: timestamp("end_date"),
+  projectId: text("project_id"), // Project ID from Excel
+  businessUnit: text("business_unit"), // Business Unit from Excel
+  wbs: text("wbs"), // WBS from Excel
+  totalBudget: decimal("total_budget", { precision: 12, scale: 2 }).notNull(), // Total Budget (CHF)
+  totalPds: text("total_pds"), // Total PDs from Excel
+  totalExternalPds: text("total_external_pds"), // Total External PDs from Excel
+  targetRelease: text("target_release"), // Target Release from Excel
   status: varchar("status", { length: 50 }).notNull().default("active"),
   userId: integer("user_id").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
