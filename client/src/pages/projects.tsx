@@ -19,6 +19,7 @@ import ProjectModal from "@/components/modals/project-modal";
 export default function Projects() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
+  const [editingProject, setEditingProject] = useState<Project | undefined>(undefined);
 
   const { data: projects, isLoading } = useQuery<Project[]>({
     queryKey: ["/api/projects"],
@@ -64,7 +65,10 @@ export default function Projects() {
               />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-50 h-4 w-4" />
             </div>
-            <Button onClick={() => setIsProjectModalOpen(true)}>
+            <Button onClick={() => {
+              setEditingProject(undefined);
+              setIsProjectModalOpen(true);
+            }}>
               <Plus className="mr-2 h-4 w-4" />
               New Project
             </Button>
@@ -110,7 +114,10 @@ export default function Projects() {
             <p className="text-neutral-50 mb-6">
               {searchTerm ? "No projects match your search criteria." : "Create your first project to get started."}
             </p>
-            <Button onClick={() => setIsProjectModalOpen(true)}>
+            <Button onClick={() => {
+              setEditingProject(undefined);
+              setIsProjectModalOpen(true);
+            }}>
               <Plus className="mr-2 h-4 w-4" />
               Create Project
             </Button>
@@ -157,7 +164,14 @@ export default function Projects() {
                   
                   <div className="flex items-center justify-between pt-4 border-t border-neutral-20">
                     <div className="flex items-center space-x-2">
-                      <Button variant="ghost" size="sm">
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => {
+                          setEditingProject(project);
+                          setIsProjectModalOpen(true);
+                        }}
+                      >
                         <Edit className="h-4 w-4" />
                       </Button>
                       <Button variant="ghost" size="sm">
@@ -180,7 +194,11 @@ export default function Projects() {
 
       <ProjectModal
         isOpen={isProjectModalOpen}
-        onClose={() => setIsProjectModalOpen(false)}
+        onClose={() => {
+          setIsProjectModalOpen(false);
+          setEditingProject(undefined);
+        }}
+        project={editingProject}
       />
     </>
   );

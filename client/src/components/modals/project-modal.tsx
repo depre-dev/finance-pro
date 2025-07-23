@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,7 +22,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { insertProjectSchema } from "@shared/schema";
+import { insertProjectSchema, type Project } from "@shared/schema";
 
 const formSchema = insertProjectSchema.extend({
   totalBudget: z.string().min(1, "Budget is required"),
@@ -38,9 +38,10 @@ type FormData = z.infer<typeof formSchema>;
 interface ProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
+  project?: Project;
 }
 
-export default function ProjectModal({ isOpen, onClose }: ProjectModalProps) {
+export default function ProjectModal({ isOpen, onClose, project }: ProjectModalProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -48,16 +49,43 @@ export default function ProjectModal({ isOpen, onClose }: ProjectModalProps) {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      client: "",
-      description: "",
-      totalBudget: "",
-      startDate: "",
-      status: "active",
+      name: project?.name || "",
+      client: project?.client || "",
+      description: project?.description || "",
+      totalBudget: project?.totalBudget || "",
+      startDate: project?.startDate 
+        ? new Date(project.startDate).toISOString().split('T')[0] 
+        : "",
+      status: project?.status || "active",
     },
   });
 
-  const createProjectMutation = useMutation({
+  // Update form values when project prop changes
+  useEffect(() => {
+    if (project) {
+      form.reset({
+        name: project.name || "",
+        client: project.client || "",
+        description: project.description || "",
+        totalBudget: project.totalBudget || "",
+        startDate: project.startDate 
+          ? new Date(project.startDate).toISOString().split('T')[0] 
+          : "",
+        status: project.status || "active",
+      });
+    } else {
+      form.reset({
+        name: "",
+        client: "",
+        description: "",
+        totalBudget: "",
+        startDate: "",
+        status: "active",
+      });
+    }
+  }, [project, form]);
+
+  const saveProjectMutation = useMutation({
     mutationFn: async (data: FormData) => {
       const projectData = {
         ...data,
@@ -65,7 +93,9 @@ export default function ProjectModal({ isOpen, onClose }: ProjectModalProps) {
         startDate: data.startDate ? new Date(data.startDate) : null,
       };
       
-      const response = await apiRequest("POST", "/api/projects", projectData);
+      const method = project ? "PUT" : "POST";
+      const url = project ? `/api/projects/${project.id}` : "/api/projects";
+      const response = await apiRequest(method, url, projectData);
       return response.json();
     },
     onSuccess: () => {
@@ -73,7 +103,7 @@ export default function ProjectModal({ isOpen, onClose }: ProjectModalProps) {
       queryClient.invalidateQueries({ queryKey: ["/api/dashboard/metrics"] });
       toast({
         title: "Success",
-        description: "Project created successfully",
+        description: project ? "Project updated successfully" : "Project created successfully",
       });
       form.reset();
       onClose();
@@ -81,7 +111,7 @@ export default function ProjectModal({ isOpen, onClose }: ProjectModalProps) {
     onError: (error: any) => {
       toast({
         title: "Error",
-        description: error.message || "Failed to create project",
+        description: error.message || (project ? "Failed to update project" : "Failed to create project"),
         variant: "destructive",
       });
     },
@@ -90,7 +120,7 @@ export default function ProjectModal({ isOpen, onClose }: ProjectModalProps) {
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     try {
-      await createProjectMutation.mutateAsync(data);
+      await saveProjectMutation.mutateAsync(data);
     } finally {
       setIsSubmitting(false);
     }
@@ -105,7 +135,7 @@ export default function ProjectModal({ isOpen, onClose }: ProjectModalProps) {
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Create New Project</DialogTitle>
+          <DialogTitle>{project ? "Edit Project" : "Create New Project"}</DialogTitle>
         </DialogHeader>
         
         <Form {...form}>
@@ -203,7 +233,10 @@ export default function ProjectModal({ isOpen, onClose }: ProjectModalProps) {
                 Cancel
               </Button>
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Creating..." : "Create Project"}
+                {isSubmitting 
+                  ? (project ? "Updating..." : "Creating...") 
+                  : (project ? "Update Project" : "Create Project")
+                }
               </Button>
             </div>
           </form>
