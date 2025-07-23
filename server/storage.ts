@@ -3,6 +3,7 @@ import {
   projects, 
   financialRecords, 
   budgetCategories,
+  chargeHistory,
   type User, 
   type InsertUser,
   type Project,
@@ -10,7 +11,9 @@ import {
   type FinancialRecord,
   type InsertFinancialRecord,
   type BudgetCategory,
-  type InsertBudgetCategory
+  type InsertBudgetCategory,
+  type ChargeHistory,
+  type InsertChargeHistory
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, sql, sum } from "drizzle-orm";
@@ -41,6 +44,11 @@ export interface IStorage {
   createBudgetCategory(category: InsertBudgetCategory): Promise<BudgetCategory>;
   updateBudgetCategory(id: number, userId: number, category: Partial<InsertBudgetCategory>): Promise<BudgetCategory | undefined>;
   deleteBudgetCategory(id: number, userId: number): Promise<boolean>;
+
+  // Charge history methods
+  getChargeHistory(projectId: number, userId: number): Promise<ChargeHistory[]>;
+  getAllChargeHistory(userId: number): Promise<ChargeHistory[]>;
+  createChargeHistory(charge: InsertChargeHistory): Promise<ChargeHistory>;
 
   // Dashboard metrics
   getDashboardMetrics(userId: number): Promise<{
@@ -295,6 +303,30 @@ export class DatabaseStorage implements IStorage {
       .limit(1);
 
     return records.length > 0 ? records[0].originalData : null;
+  }
+
+  async getChargeHistory(projectId: number, userId: number): Promise<ChargeHistory[]> {
+    return await db
+      .select()
+      .from(chargeHistory)
+      .where(and(eq(chargeHistory.projectId, projectId), eq(chargeHistory.userId, userId)))
+      .orderBy(desc(chargeHistory.date));
+  }
+
+  async getAllChargeHistory(userId: number): Promise<ChargeHistory[]> {
+    return await db
+      .select()
+      .from(chargeHistory)
+      .where(eq(chargeHistory.userId, userId))
+      .orderBy(desc(chargeHistory.date));
+  }
+
+  async createChargeHistory(charge: InsertChargeHistory): Promise<ChargeHistory> {
+    const [newCharge] = await db
+      .insert(chargeHistory)
+      .values(charge)
+      .returning();
+    return newCharge;
   }
 }
 

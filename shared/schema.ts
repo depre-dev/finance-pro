@@ -53,6 +53,17 @@ export const budgetCategories = pgTable("budget_categories", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const chargeHistory = pgTable("charge_history", {
+  id: serial("id").primaryKey(),
+  projectId: integer("project_id").notNull(),
+  amount: decimal("amount", { precision: 12, scale: 2 }).notNull(),
+  description: text("description").notNull(),
+  category: text("category").default("General"),
+  date: timestamp("date").defaultNow().notNull(),
+  userId: integer("user_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Relations
 export const projectsRelations = relations(projects, ({ one, many }) => ({
   user: one(users, {
@@ -61,6 +72,7 @@ export const projectsRelations = relations(projects, ({ one, many }) => ({
   }),
   financialRecords: many(financialRecords),
   budgetCategories: many(budgetCategories),
+  chargeHistory: many(chargeHistory),
 }));
 
 export const financialRecordsRelations = relations(financialRecords, ({ one }) => ({
@@ -70,6 +82,17 @@ export const financialRecordsRelations = relations(financialRecords, ({ one }) =
   }),
   user: one(users, {
     fields: [financialRecords.userId],
+    references: [users.id],
+  }),
+}));
+
+export const chargeHistoryRelations = relations(chargeHistory, ({ one }) => ({
+  project: one(projects, {
+    fields: [chargeHistory.projectId],
+    references: [projects.id],
+  }),
+  user: one(users, {
+    fields: [chargeHistory.userId],
     references: [users.id],
   }),
 }));
@@ -114,6 +137,11 @@ export const insertBudgetCategorySchema = createInsertSchema(budgetCategories).o
   updatedAt: true,
 });
 
+export const insertChargeHistorySchema = createInsertSchema(chargeHistory).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -126,3 +154,6 @@ export type FinancialRecord = typeof financialRecords.$inferSelect;
 
 export type InsertBudgetCategory = z.infer<typeof insertBudgetCategorySchema>;
 export type BudgetCategory = typeof budgetCategories.$inferSelect;
+
+export type InsertChargeHistory = z.infer<typeof insertChargeHistorySchema>;
+export type ChargeHistory = typeof chargeHistory.$inferSelect;

@@ -7,6 +7,7 @@ import {
   Folder, 
   Receipt, 
   TrendingUp, 
+  CreditCard,
   User 
 } from "lucide-react";
 
@@ -15,6 +16,7 @@ const navigation = [
   { name: "Projects", href: "/projects", icon: Folder },
   { name: "Budget Planning", href: "/budget-planning", icon: Calculator },
   { name: "Financial Records", href: "/financial-records", icon: Receipt },
+  { name: "Charge History", href: "/charge-history", icon: CreditCard },
   { name: "Reports", href: "/reports", icon: TrendingUp },
   { name: "Import/Export", href: "/import-export", icon: Download },
 ];

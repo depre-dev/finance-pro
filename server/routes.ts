@@ -371,6 +371,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Charge history endpoints
+  app.get("/api/charge-history", async (req, res) => {
+    try {
+      const userId = 1; // Mock user ID
+      const charges = await storage.getAllChargeHistory(userId);
+      res.json(charges);
+    } catch (error) {
+      console.error("Error fetching charge history:", error);
+      res.status(500).json({ error: "Failed to fetch charge history" });
+    }
+  });
+
+  app.get("/api/projects/:id/charge-history", async (req, res) => {
+    try {
+      const userId = 1; // Mock user ID
+      const projectId = parseInt(req.params.id);
+      const charges = await storage.getChargeHistory(projectId, userId);
+      res.json(charges);
+    } catch (error) {
+      console.error("Error fetching project charge history:", error);
+      res.status(500).json({ error: "Failed to fetch project charge history" });
+    }
+  });
+
+  app.post("/api/charge-history", async (req, res) => {
+    try {
+      const userId = 1; // Mock user ID
+      const chargeData = { ...req.body, userId };
+      const newCharge = await storage.createChargeHistory(chargeData);
+      res.status(201).json(newCharge);
+    } catch (error) {
+      console.error("Error creating charge history:", error);
+      res.status(500).json({ error: "Failed to create charge history" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
