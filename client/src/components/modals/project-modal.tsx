@@ -27,6 +27,8 @@ import { insertProjectSchema } from "@shared/schema";
 const formSchema = insertProjectSchema.extend({
   totalBudget: z.string().min(1, "Budget is required"),
   startDate: z.string().optional(),
+  client: z.string().optional(),
+  description: z.string().optional(),
 }).omit({
   userId: true,
 });
