@@ -27,7 +27,7 @@ export default function Projects() {
 
   const filteredProjects = projects?.filter(project =>
     project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    project.client?.toLowerCase().includes(searchTerm.toLowerCase())
+    project.businessUnit?.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
 
   const formatCurrency = (amount: string | number) => {
@@ -52,7 +52,7 @@ export default function Projects() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-semibold text-foreground">Projects</h2>
-            <p className="text-sm text-neutral-50">Manage your financial projects</p>
+            <p className="text-sm text-muted-foreground">Manage your financial projects</p>
           </div>
           <div className="flex items-center space-x-4">
             <div className="relative">
@@ -63,7 +63,7 @@ export default function Projects() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 pr-4 py-2"
               />
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-50 h-4 w-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             </div>
             <Button onClick={() => {
               setEditingProject(undefined);
@@ -134,7 +134,7 @@ export default function Projects() {
                       </div>
                       <div>
                         <h3 className="font-semibold text-foreground">{project.name}</h3>
-                        <p className="text-sm text-neutral-50">{project.client || "No client"}</p>
+                        <p className="text-sm text-muted-foreground">{project.businessUnit || "No business unit"}</p>
                       </div>
                     </div>
                     <Badge variant={getStatusVariant(project.status)}>
@@ -142,24 +142,42 @@ export default function Projects() {
                     </Badge>
                   </div>
                   
-                  <p className="text-sm text-neutral-50 mb-4 line-clamp-2">
-                    {project.description || "No description"}
-                  </p>
+                  <div className="text-sm text-muted-foreground mb-4">
+                    <p><strong>Project ID:</strong> {project.projectId || "Not set"}</p>
+                    <p><strong>WBS:</strong> {project.wbs || "Not set"}</p>
+                  </div>
                   
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     <div>
-                      <p className="text-xs text-neutral-50 mb-1">Budget</p>
+                      <p className="text-xs text-muted-foreground mb-1">Total Budget</p>
                       <p className="font-semibold">{formatCurrency(project.totalBudget)}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-neutral-50 mb-1">Start Date</p>
-                      <p className="font-semibold">
-                        {project.startDate 
-                          ? new Date(project.startDate).toLocaleDateString()
-                          : "Not set"
-                        }
-                      </p>
+                      <p className="text-xs text-muted-foreground mb-1">Actual Cost</p>
+                      <p className="font-semibold">{formatCurrency(project.actualCost || 0)}</p>
                     </div>
+                  </div>
+                  
+                  <div className="mb-4">
+                    {(() => {
+                      const totalBudget = parseFloat(project.totalBudget);
+                      const actualCost = parseFloat(project.actualCost || "0");
+                      const remainingBudget = totalBudget - actualCost;
+                      const isOverBudget = remainingBudget < 0;
+                      
+                      return (
+                        <div className={`text-sm px-3 py-2 rounded ${
+                          isOverBudget 
+                            ? 'bg-red-50 text-red-700 border border-red-200' 
+                            : 'bg-green-50 text-green-700 border border-green-200'
+                        }`}>
+                          <span className="font-medium">
+                            {isOverBudget ? 'Over Budget: ' : 'Remaining: '}
+                            {formatCurrency(Math.abs(remainingBudget))}
+                          </span>
+                        </div>
+                      );
+                    })()}
                   </div>
                   
                   <div className="flex items-center justify-between pt-4 border-t border-neutral-20">

@@ -296,7 +296,7 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
                     <FormLabel>Total Budget *</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-50">CHF</span>
+                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">CHF</span>
                         <Input 
                           type="number" 
                           min="0" 
@@ -315,26 +315,47 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
               <FormField
                 control={form.control}
                 name="actualCost"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Actual Cost Spent</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-50">CHF</span>
-                        <Input 
-                          type="number" 
-                          min="0" 
-                          step="0.01"
-                          className="pl-12"
-                          placeholder="0.00" 
-                          {...field} 
-                          value={field.value || "0"}
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  const totalBudget = parseFloat(form.watch("totalBudget") || "0");
+                  const actualCost = parseFloat(field.value || "0");
+                  const remainingBudget = totalBudget - actualCost;
+                  const isOverBudget = remainingBudget < 0;
+                  
+                  return (
+                    <FormItem>
+                      <FormLabel>Actual Cost Spent</FormLabel>
+                      <FormControl>
+                        <div className="space-y-2">
+                          <div className="relative">
+                            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">CHF</span>
+                            <Input 
+                              type="number" 
+                              min="0" 
+                              step="0.01"
+                              className="pl-12"
+                              placeholder="0.00" 
+                              {...field} 
+                              value={field.value || "0"}
+                            />
+                          </div>
+                          {totalBudget > 0 && (
+                            <div className={`text-sm px-3 py-1 rounded ${
+                              isOverBudget 
+                                ? 'bg-red-50 text-red-700 border border-red-200' 
+                                : 'bg-green-50 text-green-700 border border-green-200'
+                            }`}>
+                              <span className="font-medium">
+                                {isOverBudget ? 'Over Budget: ' : 'Remaining: '}
+                                CHF {Math.abs(remainingBudget).toFixed(2)}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
               />
             </div>
             
