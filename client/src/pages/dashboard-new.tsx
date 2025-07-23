@@ -84,7 +84,7 @@ export default function Dashboard() {
 
   if (metricsLoading || projectsLoading) {
     return (
-      <div className="flex-1 space-y-6 p-6">
+      <div className="flex-1 overflow-y-auto space-y-6 p-6">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <Card key={i}>
@@ -104,7 +104,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex-1 space-y-6 p-6">
+    <div className="flex-1 overflow-y-auto space-y-6 p-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
