@@ -173,7 +173,7 @@ export default function FinancialRecords() {
                           
                           <div className="flex items-center space-x-2">
                             <DollarSign className="h-4 w-4 text-neutral-50" />
-                            <span className="font-medium">${record.amount}</span>
+                            <span className="font-medium">CHF {record.amount}</span>
                           </div>
                           
                           <div className="text-sm text-neutral-50">

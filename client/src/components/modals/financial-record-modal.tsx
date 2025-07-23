@@ -229,12 +229,12 @@ export default function FinancialRecordModal({ isOpen, onClose }: FinancialRecor
                     <FormLabel>Amount *</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-50">$</span>
+                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-50">CHF</span>
                         <Input 
                           type="number" 
                           min="0" 
                           step="0.01"
-                          className="pl-8"
+                          className="pl-12"
                           placeholder="0.00" 
                           {...field} 
                         />

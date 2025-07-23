@@ -54,9 +54,9 @@ export default function Dashboard() {
   ) || [];
 
   const formatCurrency = (amount: string | number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('de-CH', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'CHF'
     }).format(Number(amount));
   };
 

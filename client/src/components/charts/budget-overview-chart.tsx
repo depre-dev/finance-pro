@@ -23,7 +23,7 @@ export default function BudgetOverviewChart() {
           <YAxis 
             stroke="hsl(var(--muted-foreground))"
             fontSize={12}
-            tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+            tickFormatter={(value) => `CHF ${(value / 1000).toFixed(0)}k`}
           />
           <Tooltip 
             contentStyle={{
@@ -31,7 +31,7 @@ export default function BudgetOverviewChart() {
               border: '1px solid hsl(var(--border))',
               borderRadius: '6px'
             }}
-            formatter={(value) => [`$${Number(value).toLocaleString()}`, '']}
+            formatter={(value) => [`CHF ${Number(value).toLocaleString()}`, '']}
           />
           <Legend />
           <Line 
