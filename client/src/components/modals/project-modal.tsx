@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -9,6 +9,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import {
   Form,
   FormControl,
@@ -20,6 +33,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { insertProjectSchema, type Project } from "@shared/schema";
@@ -45,6 +59,12 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  // Fetch Excel project names
+  const { data: excelProjectNames } = useQuery<string[]>({
+    queryKey: ["/api/excel-project-names"],
+  });
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -148,7 +168,72 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
                   <FormItem>
                     <FormLabel>Project Name *</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter project name" {...field} />
+                      <Popover open={open} onOpenChange={setOpen}>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={open}
+                            className="w-full justify-between"
+                          >
+                            {field.value
+                              ? field.value
+                              : "Select or enter project name..."}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full p-0">
+                          <Command>
+                            <CommandInput 
+                              placeholder="Search or type new project name..." 
+                              onValueChange={(value) => {
+                                field.onChange(value);
+                              }}
+                            />
+                            <CommandList>
+                              <CommandEmpty>
+                                <div className="p-2">
+                                  <p className="text-sm text-muted-foreground mb-2">
+                                    No matching projects found.
+                                  </p>
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    className="w-full"
+                                    onClick={() => {
+                                      setOpen(false);
+                                    }}
+                                  >
+                                    Use current input
+                                  </Button>
+                                </div>
+                              </CommandEmpty>
+                              {excelProjectNames && excelProjectNames.length > 0 && (
+                                <CommandGroup heading="From Excel Data">
+                                  {excelProjectNames.map((projectName) => (
+                                    <CommandItem
+                                      key={projectName}
+                                      value={projectName}
+                                      onSelect={(currentValue) => {
+                                        field.onChange(currentValue);
+                                        setOpen(false);
+                                      }}
+                                    >
+                                      <Check
+                                        className={`mr-2 h-4 w-4 ${
+                                          field.value === projectName ? "opacity-100" : "opacity-0"
+                                        }`}
+                                      />
+                                      {projectName}
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              )}
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -35,6 +35,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get unique project names from Excel data
+  app.get("/api/excel-project-names", async (req, res) => {
+    try {
+      const projectNames = await storage.getExcelProjectNames(req.user.id);
+      res.json(projectNames);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch project names from Excel data" });
+    }
+  });
+
   // Projects endpoints
   app.get("/api/projects", async (req, res) => {
     try {

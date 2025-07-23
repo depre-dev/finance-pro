@@ -49,6 +49,9 @@ export interface IStorage {
     monthlySpent: string;
     overBudgetProjects: number;
   }>;
+
+  // Excel project names
+  getExcelProjectNames(userId: number): Promise<string[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -256,6 +259,29 @@ export class DatabaseStorage implements IStorage {
       monthlySpent: monthlySpentResult.total || '0',
       overBudgetProjects: overBudgetCount,
     };
+  }
+
+  async getExcelProjectNames(userId: number): Promise<string[]> {
+    const records = await db
+      .select({ originalData: financialRecords.originalData })
+      .from(financialRecords)
+      .where(
+        and(
+          eq(financialRecords.userId, userId),
+          sql`${financialRecords.originalData} IS NOT NULL`
+        )
+      );
+
+    const projectNames = new Set<string>();
+    
+    for (const record of records) {
+      const data = record.originalData as any;
+      if (data && data.Name) {
+        projectNames.add(data.Name);
+      }
+    }
+
+    return Array.from(projectNames).sort();
   }
 }
 
