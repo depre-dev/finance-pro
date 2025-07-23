@@ -176,7 +176,7 @@ export default function Dashboard() {
                   <BarChart3 className="h-6 w-6 text-warning" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm text-neutral-50">Spent This Month</p>
+                  <p className="text-sm text-neutral-50">Spend This Month</p>
                   {metricsLoading ? (
                     <Skeleton className="h-8 w-24" />
                   ) : (

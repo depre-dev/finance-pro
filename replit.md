@@ -21,6 +21,8 @@ Preferred communication style: Simple, everyday language.
 - **Excel Upload Workflow Redesign**: Modified system to store Excel data first in uploadedData table, then allow project creation from stored data
 - **Project Creation from Uploaded Data**: Added blue banner in project modal showing available Excel project names for easy selection
 - **Updated Upload Process**: Users can now upload Excel files without selecting projects first - data is stored and projects created later
+- **Project Deletion Feature**: Added delete functionality with confirmation dialog for safe project removal
+- **Terminology Update**: Changed all "Actual Cost" labels to "Budget Spend" and "spent" to "spend" for consistent terminology throughout the application
 
 ## System Architecture
 

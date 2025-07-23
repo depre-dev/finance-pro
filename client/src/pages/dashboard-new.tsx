@@ -70,7 +70,7 @@ export default function Dashboard() {
   })) || [];
 
   const budgetStatusData = [
-    { name: "Spent", value: totalSpent, color: "#f59e0b" },
+    { name: "Spend", value: totalSpent, color: "#f59e0b" },
     { name: "Remaining", value: remainingBudget > 0 ? remainingBudget : 0, color: "#10b981" },
     { name: "Over Budget", value: remainingBudget < 0 ? Math.abs(remainingBudget) : 0, color: "#ef4444" },
   ].filter(item => item.value > 0);
@@ -149,7 +149,7 @@ export default function Dashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Spent</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Spend</CardTitle>
             <CreditCard className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -202,7 +202,7 @@ export default function Dashboard() {
               </div>
               <div className="text-right space-y-1 flex-1">
                 <p className="text-sm text-muted-foreground break-words">
-                  {formatCurrency(totalSpent)} of {formatCurrency(totalBudget)}
+                  {formatCurrency(totalSpent)} spend of {formatCurrency(totalBudget)}
                 </p>
                 <p className={`text-sm font-medium break-words ${remainingBudget < 0 ? 'text-red-600' : 'text-green-600'}`}>
                   {remainingBudget < 0 ? 'Over by ' : 'Remaining: '} 
@@ -350,7 +350,7 @@ export default function Dashboard() {
                       </div>
                       <div className="space-y-1">
                         <div className="flex justify-between text-xs text-muted-foreground">
-                          <span>{formatCurrency(spent)} spent</span>
+                          <span>{formatCurrency(spent)} spend</span>
                           <span>{formatCurrency(budget)} budget</span>
                         </div>
                         <Progress value={Math.min(usage, 100)} className="h-2" />
