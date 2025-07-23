@@ -48,6 +48,7 @@ export const queryClient = new QueryClient({
       refetchInterval: false,
       refetchOnWindowFocus: false,
       staleTime: 0, // Allow queries to become stale immediately so they can be refetched
+      gcTime: 0, // Don't cache data (gcTime is the new property name in v5)
       retry: false,
     },
     mutations: {

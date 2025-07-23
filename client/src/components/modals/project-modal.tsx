@@ -150,9 +150,14 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
       return response.json();
     },
     onSuccess: async () => {
+      console.log("Project mutation success - invalidating caches");
       // Force refetch of projects and dashboard data
       await queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       await queryClient.invalidateQueries({ queryKey: ["/api/dashboard/metrics"] });
+      // Also refetch to ensure fresh data
+      await queryClient.refetchQueries({ queryKey: ["/api/projects"] });
+      await queryClient.refetchQueries({ queryKey: ["/api/dashboard/metrics"] });
+      console.log("Cache invalidation and refetch complete");
       toast({
         title: "Success",
         description: project ? "Project updated successfully" : "Project created successfully",
