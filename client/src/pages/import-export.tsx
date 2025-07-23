@@ -178,21 +178,7 @@ export default function ImportExport() {
           // Detect columns from CSV
           const columns = detectColumns(csvContent);
           setDetectedColumns(columns);
-          
-          // Check if we need column mapping
-          const hasStandardColumns = Object.values(REQUIRED_COLUMNS).every(col => 
-            columns.some(detectedCol => 
-              detectedCol.toLowerCase().includes(col.toLowerCase()) ||
-              col.toLowerCase().includes(detectedCol.toLowerCase())
-            )
-          );
-          
-          if (!hasStandardColumns && columns.length > 0) {
-            setShowColumnMapping(true);
-            setColumnMapping(createInitialMapping(columns));
-          } else {
-            setShowColumnMapping(false);
-          }
+          setShowColumnMapping(false); // Disable column mapping, use direct import
           
           setIsProcessing(false);
         };
@@ -206,25 +192,11 @@ export default function ImportExport() {
           // Detect columns from the converted CSV
           const columns = detectColumns(csvContent);
           setDetectedColumns(columns);
-          
-          // Check if we need column mapping
-          const hasStandardColumns = Object.values(REQUIRED_COLUMNS).every(col => 
-            columns.some(detectedCol => 
-              detectedCol.toLowerCase().includes(col.toLowerCase()) ||
-              col.toLowerCase().includes(detectedCol.toLowerCase())
-            )
-          );
-          
-          if (!hasStandardColumns && columns.length > 0) {
-            setShowColumnMapping(true);
-            setColumnMapping(createInitialMapping(columns));
-          } else {
-            setShowColumnMapping(false);
-          }
+          setShowColumnMapping(false); // Use direct import without column mapping
           
           toast({
             title: "Excel File Converted",
-            description: `Found ${columns.length} columns. ${hasStandardColumns ? 'Standard format detected.' : 'Column mapping required.'}`,
+            description: `Found ${columns.length} columns. Ready to import with your existing column structure.`,
           });
         } catch (error) {
           toast({
@@ -262,30 +234,10 @@ export default function ImportExport() {
       return;
     }
 
-    // Check if column mapping is complete
-    if (showColumnMapping) {
-      const missingMappings = Object.entries(columnMapping).filter(([key, value]) => !value);
-      if (missingMappings.length > 0) {
-        toast({
-          title: "Incomplete Column Mapping",
-          description: "Please map all required columns before importing",
-          variant: "destructive",
-        });
-        return;
-      }
-    }
-
-    let processedCsvData = csvPreview;
-
-    // If column mapping is required, transform the data
-    if (showColumnMapping) {
-      processedCsvData = transformDataWithMapping(csvPreview, columnMapping);
-    }
-
     setIsProcessing(true);
     try {
       await importMutation.mutateAsync({
-        csvData: processedCsvData,
+        csvData: csvPreview,
         projectId: selectedProject
       });
     } finally {
@@ -293,44 +245,7 @@ export default function ImportExport() {
     }
   };
 
-  // Function to transform data based on column mapping
-  const transformDataWithMapping = (csvData: string, mapping: Record<string, string>): string => {
-    const lines = csvData.trim().split('\n');
-    if (lines.length === 0) return csvData;
 
-    const originalHeaders = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
-    const newHeaders = ['Date', 'Type', 'Category', 'Description', 'Amount'];
-    
-    // Create index mapping
-    const indexMapping: Record<string, number> = {};
-    Object.entries(mapping).forEach(([requiredCol, mappedCol]) => {
-      if (mappedCol) {
-        const index = originalHeaders.findIndex(h => h === mappedCol);
-        if (index !== -1) {
-          indexMapping[requiredCol] = index;
-        }
-      }
-    });
-
-    // Transform each row
-    const transformedLines = [newHeaders.join(',')];
-    
-    for (let i = 1; i < lines.length; i++) {
-      const row = lines[i].split(',').map(cell => cell.replace(/"/g, '').trim());
-      const newRow = new Array(newHeaders.length).fill('');
-      
-      // Map the data
-      if (indexMapping.date !== undefined) newRow[0] = row[indexMapping.date] || '';
-      if (indexMapping.type !== undefined) newRow[1] = row[indexMapping.type] || 'expense';
-      if (indexMapping.category !== undefined) newRow[2] = row[indexMapping.category] || 'Other';
-      if (indexMapping.description !== undefined) newRow[3] = row[indexMapping.description] || '';
-      if (indexMapping.amount !== undefined) newRow[4] = row[indexMapping.amount] || '0';
-      
-      transformedLines.push(newRow.map(cell => `"${cell}"`).join(','));
-    }
-
-    return transformedLines.join('\n');
-  };
 
   const handleExport = async (projectId?: string) => {
     try {
@@ -477,42 +392,17 @@ export default function ImportExport() {
                 </div>
               )}
 
-              {/* Column Mapping Interface */}
-              {showColumnMapping && detectedColumns.length > 0 && (
-                <div className="space-y-4 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
+              {/* Detected Columns Display */}
+              {detectedColumns.length > 0 && (
+                <div className="space-y-2 p-3 bg-green-50 dark:bg-green-950 rounded-lg border border-green-200 dark:border-green-800">
                   <div className="flex items-center space-x-2">
-                    <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                    <h4 className="font-medium text-blue-900 dark:text-blue-100">Column Mapping Required</h4>
+                    <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+                    <h4 className="font-medium text-green-900 dark:text-green-100">Ready to Import</h4>
                   </div>
-                  <p className="text-sm text-blue-700 dark:text-blue-200">
-                    Your file has different column names. Please map them to the required fields:
+                  <p className="text-sm text-green-700 dark:text-green-200">
+                    Your file structure will be preserved exactly as is. No column mapping required.
                   </p>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {Object.entries(REQUIRED_COLUMNS).map(([key, label]) => (
-                      <div key={key} className="space-y-2">
-                        <Label className="text-blue-900 dark:text-blue-100">
-                          {label} <span className="text-red-500">*</span>
-                        </Label>
-                        <Select 
-                          value={columnMapping[key] || ""} 
-                          onValueChange={(value) => setColumnMapping(prev => ({ ...prev, [key]: value }))}
-                        >
-                          <SelectTrigger className="bg-white dark:bg-gray-800">
-                            <SelectValue placeholder={`Select column for ${label}`} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="">-- Select Column --</SelectItem>
-                            {detectedColumns.map((col) => (
-                              <SelectItem key={col} value={col}>{col}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    ))}
-                  </div>
-                  
-                  <div className="text-xs text-blue-600 dark:text-blue-300">
+                  <div className="text-xs text-green-600 dark:text-green-300">
                     <p><strong>Detected columns:</strong> {detectedColumns.join(', ')}</p>
                   </div>
                 </div>
@@ -618,7 +508,7 @@ export default function ImportExport() {
                     <h4 className="font-medium">CSV Files (.csv)</h4>
                   </div>
                   <p className="text-sm text-neutral-50">
-                    Comma-separated values files that can be created in Excel, Google Sheets, or any text editor.
+                    Comma-separated values files. Your existing column structure will be preserved.
                   </p>
                 </div>
                 
@@ -628,46 +518,31 @@ export default function ImportExport() {
                     <h4 className="font-medium">Excel Files (.xlsx, .xls)</h4>
                   </div>
                   <p className="text-sm text-neutral-50">
-                    Microsoft Excel spreadsheet files. The first sheet will be used for import.
+                    Microsoft Excel spreadsheet files. Your existing column structure will be preserved.
                   </p>
                 </div>
               </div>
               
-              <div>
-                <h4 className="font-medium mb-2">Required Columns</h4>
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
-                  {["Date", "Type", "Category", "Description", "Amount"].map((column) => (
-                    <Badge key={column} variant="outline">{column}</Badge>
-                  ))}
-                </div>
-              </div>
-              
-              <div>
-                <h4 className="font-medium mb-2">Example Format</h4>
-                <pre className="bg-neutral-10 p-3 rounded text-xs overflow-x-auto">
-                  {csvExample}
-                </pre>
-              </div>
-              
-              <div className="text-sm text-neutral-50 space-y-1">
-                <p>• <strong>Date:</strong> Format as YYYY-MM-DD (e.g., 2024-01-15)</p>
-                <p>• <strong>Type:</strong> Either "income" or "expense"</p>
-                <p>• <strong>Category:</strong> Expense categories like "Materials", "Travel", etc.</p>
-                <p>• <strong>Description:</strong> Brief description of the transaction</p>
-                <p>• <strong>Amount:</strong> Numerical value (e.g., 125.50)</p>
-              </div>
-              
-              <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg">
+              <div className="bg-green-50 dark:bg-green-950 p-4 rounded-lg">
                 <div className="flex items-start space-x-2">
-                  <Info className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5" />
+                  <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400 mt-0.5" />
                   <div className="text-sm">
-                    <p className="font-medium text-blue-900 dark:text-blue-100">Excel Import Notes</p>
-                    <p className="text-blue-700 dark:text-blue-200">
-                      Excel files are automatically converted to CSV format during import. 
-                      Only the first worksheet is processed. Make sure your data follows the same column structure.
+                    <p className="font-medium text-green-900 dark:text-green-100">Flexible Import System</p>
+                    <p className="text-green-700 dark:text-green-200">
+                      Upload any Excel or CSV file with any column structure. The system will automatically detect your columns and import the data exactly as it is in your file. No formatting or column mapping required.
                     </p>
                   </div>
                 </div>
+              </div>
+              
+              <div className="text-sm text-neutral-50 space-y-2">
+                <h4 className="font-medium">How it works:</h4>
+                <ul className="space-y-1 list-disc list-inside">
+                  <li>Upload your Excel or CSV file with any column names</li>
+                  <li>The system detects all columns automatically</li>  
+                  <li>Data is imported preserving your original structure</li>
+                  <li>View your imported data in the Financial Records section</li>
+                </ul>
               </div>
             </div>
           </CardContent>

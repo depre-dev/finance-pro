@@ -164,7 +164,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Import/Export endpoints
   app.post("/api/import/financial-records", async (req, res) => {
     try {
-      const { csvData, projectId } = req.body;
+      const { csvData, projectId, columnMapping } = req.body;
       
       if (!csvData || !projectId) {
         return res.status(400).json({ message: "CSV data and project ID are required" });
@@ -172,39 +172,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Parse CSV data
       const lines = csvData.trim().split('\n');
-      const headers = lines[0].split(',').map((h: string) => h.trim().toLowerCase());
-      
-      // Validate headers
-      const requiredHeaders = ['date', 'type', 'category', 'description', 'amount'];
-      const missingHeaders = requiredHeaders.filter(h => !headers.includes(h));
-      if (missingHeaders.length > 0) {
-        return res.status(400).json({ 
-          message: `Missing required headers: ${missingHeaders.join(', ')}` 
-        });
+      if (lines.length < 2) {
+        return res.status(400).json({ message: "CSV must contain at least a header and one data row" });
       }
 
+      const headers = lines[0].split(',').map((h: string) => h.trim().replace(/"/g, ''));
       const records = [];
       const errors = [];
 
       for (let i = 1; i < lines.length; i++) {
         try {
-          const values = lines[i].split(',').map((v: string) => v.trim());
-          const record: any = {};
+          const values = lines[i].split(',').map((v: string) => v.trim().replace(/"/g, ''));
+          if (values.length === 0 || values.every((v: string) => !v)) continue; // Skip empty rows
           
-          headers.forEach((header, index) => {
-            record[header] = values[index];
+          const record: any = {};
+          headers.forEach((header: string, index: number) => {
+            record[header] = values[index] || '';
           });
 
-          // Validate and format record
-          const validatedRecord = {
-            projectId: parseInt(projectId),
-            type: record.type.toLowerCase() === 'income' ? 'income' : 'expense',
-            category: record.category,
-            description: record.description,
-            amount: record.amount,
-            date: new Date(record.date),
-            userId: req.user.id
-          };
+          // Create financial record with flexible structure
+          // If columnMapping is provided, use mapped values, otherwise use original column names
+          let validatedRecord;
+          
+          if (columnMapping) {
+            // Use column mapping to extract required fields
+            validatedRecord = {
+              projectId: parseInt(projectId),
+              type: 'expense', // Default to expense, can be customized
+              category: record[columnMapping.category] || 'Other',
+              description: record[columnMapping.description] || record[columnMapping.title] || 'Imported item',
+              amount: (parseFloat(record[columnMapping.amount] || '0') || 0).toString(),
+              date: new Date(record[columnMapping.date] || Date.now()),
+              userId: req.user.id
+            };
+          } else {
+            // Use any available data and create a flexible record
+            const firstCol = headers[0];
+            const secondCol = headers[1];
+            const thirdCol = headers[2];
+            
+            validatedRecord = {
+              projectId: parseInt(projectId),
+              type: 'expense',
+              category: record[thirdCol] || record[secondCol] || 'Other',
+              description: record[firstCol] || record[secondCol] || `Imported: ${Object.values(record).join(' - ')}`,
+              amount: (parseFloat(Object.values(record).find((val: any) => !isNaN(parseFloat(val))) as string || '0') || 0).toString(),
+              date: new Date(),
+              userId: req.user.id
+            };
+          }
 
           const financialRecord = await storage.createFinancialRecord(validatedRecord);
           records.push(financialRecord);
@@ -217,7 +233,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         message: `Successfully imported ${records.length} records`,
         imported: records.length,
         errors: errors.length,
-        errorDetails: errors
+        errorDetails: errors,
+        detectedColumns: headers
       });
     } catch (error) {
       res.status(500).json({ message: "Failed to import financial records" });
