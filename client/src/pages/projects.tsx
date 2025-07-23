@@ -24,10 +24,12 @@ import {
   TrendingUp,
   CreditCard,
   X,
-  AlertTriangle
+  AlertTriangle,
+  Zap
 } from "lucide-react";
 import type { Project, ChargeHistory } from "@shared/schema";
 import ProjectModal from "@/components/modals/project-modal";
+import BudgetSnapshot from "@/components/budget-snapshot";
 import { format } from "date-fns";
 
 export default function Projects() {
@@ -40,6 +42,8 @@ export default function Projects() {
   const [isDetailViewOpen, setIsDetailViewOpen] = useState(false);
   const [deletingProject, setDeletingProject] = useState<Project | undefined>(undefined);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [snapshotProject, setSnapshotProject] = useState<Project | undefined>(undefined);
+  const [isSnapshotOpen, setIsSnapshotOpen] = useState(false);
 
   const { data: projects, isLoading } = useQuery<Project[]>({
     queryKey: ["/api/projects"],
@@ -85,6 +89,11 @@ export default function Projects() {
   const handleDeleteProject = (project: Project) => {
     setDeletingProject(project);
     setIsDeleteDialogOpen(true);
+  };
+
+  const handleBudgetSnapshot = (project: Project) => {
+    setSnapshotProject(project);
+    setIsSnapshotOpen(true);
   };
 
   const deleteProjectMutation = useMutation({
@@ -268,6 +277,15 @@ export default function Projects() {
                   
                   <div className="flex items-center justify-between pt-4 border-t border-neutral-20">
                     <div className="flex items-center space-x-2">
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => handleBudgetSnapshot(project)}
+                        className="text-primary hover:text-primary"
+                        title="Quick Budget Snapshot"
+                      >
+                        <Zap className="h-4 w-4" />
+                      </Button>
                       <Button 
                         variant="ghost" 
                         size="sm"
@@ -540,6 +558,18 @@ export default function Projects() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Budget Snapshot Modal */}
+      {snapshotProject && (
+        <BudgetSnapshot
+          project={snapshotProject}
+          isOpen={isSnapshotOpen}
+          onClose={() => {
+            setIsSnapshotOpen(false);
+            setSnapshotProject(undefined);
+          }}
+        />
+      )}
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>

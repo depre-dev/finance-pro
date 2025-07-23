@@ -20,10 +20,12 @@ import {
   Wallet,
   ChevronRight,
   ArrowUpRight,
-  ArrowDownRight
+  ArrowDownRight,
+  Zap
 } from "lucide-react";
 import type { Project, ChargeHistory } from "@shared/schema";
 import ProjectModal from "@/components/modals/project-modal";
+import BudgetSnapshot from "@/components/budget-snapshot";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart as RechartsPieChart, Pie, Cell, Legend } from "recharts";
 
 interface DashboardMetrics {
@@ -35,6 +37,8 @@ interface DashboardMetrics {
 
 export default function Dashboard() {
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
+  const [snapshotProject, setSnapshotProject] = useState<Project | undefined>(undefined);
+  const [isSnapshotOpen, setIsSnapshotOpen] = useState(false);
 
   const { data: metrics, isLoading: metricsLoading } = useQuery<DashboardMetrics>({
     queryKey: ["/api/dashboard/metrics"],
@@ -344,9 +348,23 @@ export default function Dashboard() {
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
                         <h4 className="font-medium text-sm">{project.name}</h4>
-                        <Badge variant={isOverBudget ? "destructive" : usage > 80 ? "secondary" : "default"}>
-                          {isOverBudget ? "Over Budget" : usage > 80 ? "At Risk" : "On Track"}
-                        </Badge>
+                        <div className="flex items-center space-x-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setSnapshotProject(project);
+                              setIsSnapshotOpen(true);
+                            }}
+                            className="h-6 w-6 p-0 text-primary hover:text-primary"
+                            title="Quick Budget Snapshot"
+                          >
+                            <Zap className="h-3 w-3" />
+                          </Button>
+                          <Badge variant={isOverBudget ? "destructive" : usage > 80 ? "secondary" : "default"}>
+                            {isOverBudget ? "Over Budget" : usage > 80 ? "At Risk" : "On Track"}
+                          </Badge>
+                        </div>
                       </div>
                       <div className="space-y-1">
                         <div className="flex justify-between text-xs text-muted-foreground">
@@ -417,6 +435,18 @@ export default function Dashboard() {
         onClose={() => setIsProjectModalOpen(false)}
         project={undefined}
       />
+
+      {/* Budget Snapshot Modal */}
+      {snapshotProject && (
+        <BudgetSnapshot
+          project={snapshotProject}
+          isOpen={isSnapshotOpen}
+          onClose={() => {
+            setIsSnapshotOpen(false);
+            setSnapshotProject(undefined);
+          }}
+        />
+      )}
     </div>
   );
 }
