@@ -10,8 +10,56 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Download, Upload, FileText, AlertCircle, CheckCircle, Info } from "lucide-react";
+import { Download, Upload, FileText, AlertCircle, CheckCircle, Info, FileSpreadsheet } from "lucide-react";
 import type { Project } from "@shared/schema";
+
+// Excel parsing utility using browser-compatible approach
+const parseExcelToCSV = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const arrayBuffer = e.target?.result as ArrayBuffer;
+        
+        // Load XLSX library dynamically from CDN
+        if (!window.XLSX) {
+          const script = document.createElement('script');
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+          script.onload = () => {
+            parseWithXLSX(arrayBuffer, resolve, reject);
+          };
+          script.onerror = () => reject(new Error("Failed to load Excel parser"));
+          document.head.appendChild(script);
+        } else {
+          parseWithXLSX(arrayBuffer, resolve, reject);
+        }
+      } catch (error) {
+        reject(error);
+      }
+    };
+    reader.onerror = () => reject(new Error("Failed to read file"));
+    reader.readAsArrayBuffer(file);
+  });
+};
+
+const parseWithXLSX = (arrayBuffer: ArrayBuffer, resolve: (value: string) => void, reject: (reason: any) => void) => {
+  try {
+    const workbook = window.XLSX.read(arrayBuffer, { type: 'array' });
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+    const csvData = window.XLSX.utils.sheet_to_csv(sheet);
+    resolve(csvData);
+  } catch (error) {
+    reject(error);
+  }
+};
+
+// Extend Window interface for XLSX
+declare global {
+  interface Window {
+    XLSX: any;
+  }
+}
 
 export default function ImportExport() {
   const { toast } = useToast();
@@ -22,6 +70,8 @@ export default function ImportExport() {
   const [csvPreview, setCsvPreview] = useState<string>("");
   const [importResult, setImportResult] = useState<any>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [fileType, setFileType] = useState<string>("");
+  const [fileName, setFileName] = useState<string>("");
 
   const { data: projects } = useQuery<Project[]>({
     queryKey: ["/api/projects"],
@@ -53,17 +103,60 @@ export default function ImportExport() {
     },
   });
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const content = e.target?.result as string;
-      setCsvPreview(content);
-      setImportResult(null);
-    };
-    reader.readAsText(file);
+    setFileName(file.name);
+    setFileType(file.type);
+    setImportResult(null);
+    setIsProcessing(true);
+
+    try {
+      let csvContent = "";
+      
+      if (file.name.toLowerCase().endsWith('.csv')) {
+        // Handle CSV files
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          csvContent = e.target?.result as string;
+          setCsvPreview(csvContent);
+          setIsProcessing(false);
+        };
+        reader.readAsText(file);
+      } else if (file.name.toLowerCase().endsWith('.xlsx') || file.name.toLowerCase().endsWith('.xls')) {
+        // Handle Excel files
+        try {
+          csvContent = await parseExcelToCSV(file);
+          setCsvPreview(csvContent);
+          toast({
+            title: "Excel File Converted",
+            description: "Excel file successfully converted to CSV format",
+          });
+        } catch (error) {
+          toast({
+            title: "Excel Conversion Failed",
+            description: "Failed to convert Excel file. Please save as CSV and try again.",
+            variant: "destructive",
+          });
+        }
+        setIsProcessing(false);
+      } else {
+        toast({
+          title: "Unsupported File Type",
+          description: "Please upload a CSV or Excel (.xlsx, .xls) file",
+          variant: "destructive",
+        });
+        setIsProcessing(false);
+      }
+    } catch (error) {
+      toast({
+        title: "File Processing Error",
+        description: "Failed to process the uploaded file",
+        variant: "destructive",
+      });
+      setIsProcessing(false);
+    }
   };
 
   const handleImport = async () => {
@@ -144,7 +237,7 @@ export default function ImportExport() {
               disabled={isProcessing}
             >
               <Upload className="mr-2 h-4 w-4" />
-              Choose File
+              Choose CSV/Excel
             </Button>
             <Button onClick={() => handleExport()} disabled={isProcessing}>
               <Download className="mr-2 h-4 w-4" />
@@ -182,11 +275,11 @@ export default function ImportExport() {
               </div>
 
               <div>
-                <Label htmlFor="file-upload">CSV File</Label>
+                <Label htmlFor="file-upload">Upload File</Label>
                 <Input
                   ref={fileInputRef}
                   type="file"
-                  accept=".csv"
+                  accept=".csv,.xlsx,.xls"
                   onChange={handleFileUpload}
                   className="hidden"
                 />
@@ -196,9 +289,28 @@ export default function ImportExport() {
                   className="w-full mt-2"
                   disabled={isProcessing}
                 >
-                  <Upload className="mr-2 h-4 w-4" />
-                  {csvPreview ? "Change File" : "Choose CSV File"}
+                  {isProcessing ? (
+                    <>
+                      <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-b-transparent" />
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      {fileName ? <FileSpreadsheet className="mr-2 h-4 w-4" /> : <Upload className="mr-2 h-4 w-4" />}
+                      {fileName ? `Change File (${fileName})` : "Choose CSV or Excel File"}
+                    </>
+                  )}
                 </Button>
+                {fileName && !isProcessing && (
+                  <div className="mt-2 flex items-center text-sm text-neutral-50">
+                    <FileSpreadsheet className="mr-1 h-3 w-3" />
+                    {fileName} 
+                    {fileType.includes('excel') || fileName.toLowerCase().includes('.xlsx') ? 
+                      <Badge variant="secondary" className="ml-2">Excel</Badge> : 
+                      <Badge variant="outline" className="ml-2">CSV</Badge>
+                    }
+                  </div>
+                )}
               </div>
 
               {csvPreview && (
@@ -296,16 +408,38 @@ export default function ImportExport() {
           </Card>
         </div>
 
-        {/* CSV Format Guide */}
+        {/* File Format Guide */}
         <Card className="mt-6">
           <CardHeader>
             <CardTitle className="flex items-center">
               <Info className="mr-2 h-5 w-5 text-primary" />
-              CSV Format Guide
+              File Format Guide
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-2">
+                    <FileText className="h-5 w-5 text-primary" />
+                    <h4 className="font-medium">CSV Files (.csv)</h4>
+                  </div>
+                  <p className="text-sm text-neutral-50">
+                    Comma-separated values files that can be created in Excel, Google Sheets, or any text editor.
+                  </p>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-2">
+                    <FileSpreadsheet className="h-5 w-5 text-success" />
+                    <h4 className="font-medium">Excel Files (.xlsx, .xls)</h4>
+                  </div>
+                  <p className="text-sm text-neutral-50">
+                    Microsoft Excel spreadsheet files. The first sheet will be used for import.
+                  </p>
+                </div>
+              </div>
+              
               <div>
                 <h4 className="font-medium mb-2">Required Columns</h4>
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
@@ -316,7 +450,7 @@ export default function ImportExport() {
               </div>
               
               <div>
-                <h4 className="font-medium mb-2">Example CSV Format</h4>
+                <h4 className="font-medium mb-2">Example Format</h4>
                 <pre className="bg-neutral-10 p-3 rounded text-xs overflow-x-auto">
                   {csvExample}
                 </pre>
@@ -328,6 +462,19 @@ export default function ImportExport() {
                 <p>• <strong>Category:</strong> Expense categories like "Materials", "Travel", etc.</p>
                 <p>• <strong>Description:</strong> Brief description of the transaction</p>
                 <p>• <strong>Amount:</strong> Numerical value (e.g., 125.50)</p>
+              </div>
+              
+              <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg">
+                <div className="flex items-start space-x-2">
+                  <Info className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5" />
+                  <div className="text-sm">
+                    <p className="font-medium text-blue-900 dark:text-blue-100">Excel Import Notes</p>
+                    <p className="text-blue-700 dark:text-blue-200">
+                      Excel files are automatically converted to CSV format during import. 
+                      Only the first worksheet is processed. Make sure your data follows the same column structure.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </CardContent>
