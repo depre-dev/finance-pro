@@ -171,7 +171,7 @@ export default function Projects() {
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
             {filteredProjects.map((project) => (
               <Card key={project.id} className="hover:shadow-md transition-shadow">
                 <CardContent className="p-6">
@@ -198,11 +198,11 @@ export default function Projects() {
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     <div>
                       <p className="text-xs text-muted-foreground mb-1">Total Budget</p>
-                      <p className="font-semibold">{formatCurrency(project.totalBudget)}</p>
+                      <p className="font-semibold text-sm break-words">{formatCurrency(project.totalBudget)}</p>
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground mb-1">Actual Cost</p>
-                      <p className="font-semibold">{formatCurrency(project.actualCost || 0)}</p>
+                      <p className="font-semibold text-sm break-words">{formatCurrency(project.actualCost || 0)}</p>
                     </div>
                   </div>
                   
@@ -221,7 +221,7 @@ export default function Projects() {
                             ? 'bg-red-50 text-red-700 border border-red-200' 
                             : 'bg-green-50 text-green-700 border border-green-200'
                         }`}>
-                          <span className="font-medium">
+                          <span className="font-medium break-words">
                             {isOverBudget ? 'Over Budget: ' : 'Remaining: '}
                             {formatCurrency(Math.abs(remainingBudget))}
                           </span>
@@ -349,27 +349,27 @@ export default function Projects() {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                    <div className="text-center p-4 bg-blue-50 rounded-lg">
-                      <div className="text-2xl font-bold text-blue-600">
+                    <div className="text-center p-4 bg-blue-50 rounded-lg min-h-[100px] flex flex-col justify-center">
+                      <div className="text-lg font-bold text-blue-600 break-words">
                         {formatCurrency(viewingProject.totalBudget)}
                       </div>
-                      <div className="text-sm text-blue-600 font-medium">Total Budget</div>
+                      <div className="text-sm text-blue-600 font-medium mt-1">Total Budget</div>
                     </div>
-                    <div className="text-center p-4 bg-orange-50 rounded-lg">
-                      <div className="text-2xl font-bold text-orange-600">
+                    <div className="text-center p-4 bg-orange-50 rounded-lg min-h-[100px] flex flex-col justify-center">
+                      <div className="text-lg font-bold text-orange-600 break-words">
                         {formatCurrency(viewingProject.actualCost || "0")}
                       </div>
-                      <div className="text-sm text-orange-600 font-medium">Actual Cost</div>
+                      <div className="text-sm text-orange-600 font-medium mt-1">Actual Cost</div>
                     </div>
-                    <div className="text-center p-4 bg-green-50 rounded-lg">
-                      <div className={`text-2xl font-bold ${
+                    <div className="text-center p-4 bg-green-50 rounded-lg min-h-[100px] flex flex-col justify-center">
+                      <div className={`text-lg font-bold break-words ${
                         getRemainingBudget(viewingProject.totalBudget, viewingProject.actualCost || "0") < 0 
                           ? "text-red-600" 
                           : "text-green-600"
                       }`}>
                         {formatCurrency(Math.abs(getRemainingBudget(viewingProject.totalBudget, viewingProject.actualCost || "0")))}
                       </div>
-                      <div className={`text-sm font-medium ${
+                      <div className={`text-sm font-medium mt-1 ${
                         getRemainingBudget(viewingProject.totalBudget, viewingProject.actualCost || "0") < 0 
                           ? "text-red-600" 
                           : "text-green-600"
@@ -423,23 +423,23 @@ export default function Projects() {
                   ) : (
                     <div className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                        <div className="text-center p-3 bg-slate-50 rounded-lg">
+                        <div className="text-center p-3 bg-slate-50 rounded-lg min-h-[80px] flex flex-col justify-center">
                           <div className="text-lg font-bold text-slate-600">
                             {chargeHistory.length}
                           </div>
-                          <div className="text-sm text-slate-600">Total Charges</div>
+                          <div className="text-sm text-slate-600 mt-1">Total Charges</div>
                         </div>
-                        <div className="text-center p-3 bg-purple-50 rounded-lg">
-                          <div className="text-lg font-bold text-purple-600">
+                        <div className="text-center p-3 bg-purple-50 rounded-lg min-h-[80px] flex flex-col justify-center">
+                          <div className="text-lg font-bold text-purple-600 break-words">
                             {formatCurrency(getTotalChargesForProject(viewingProject.id))}
                           </div>
-                          <div className="text-sm text-purple-600">Total Amount</div>
+                          <div className="text-sm text-purple-600 mt-1">Total Amount</div>
                         </div>
-                        <div className="text-center p-3 bg-indigo-50 rounded-lg">
+                        <div className="text-center p-3 bg-indigo-50 rounded-lg min-h-[80px] flex flex-col justify-center">
                           <div className="text-lg font-bold text-indigo-600">
                             {format(new Date(chargeHistory[0]?.date), "MMM dd")}
                           </div>
-                          <div className="text-sm text-indigo-600">Latest Charge</div>
+                          <div className="text-sm text-indigo-600 mt-1">Latest Charge</div>
                         </div>
                       </div>
 
@@ -469,7 +469,7 @@ export default function Projects() {
                                     {charge.category || "General"}
                                   </Badge>
                                 </TableCell>
-                                <TableCell className="text-right font-mono">
+                                <TableCell className="text-right font-mono break-words">
                                   {formatCurrency(charge.amount)}
                                 </TableCell>
                               </TableRow>
