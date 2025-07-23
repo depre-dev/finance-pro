@@ -407,6 +407,114 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Uploaded data endpoints - store data without project assignment
+  app.post("/api/uploaded-data", async (req, res) => {
+    try {
+      const uploadedDataSchema = z.object({
+        fileName: z.string(),
+        originalData: z.array(z.any()),
+        columnMapping: z.any().optional(),
+        totalRows: z.number()
+      });
+
+      const validatedData = uploadedDataSchema.parse(req.body);
+      
+      const uploadedData = await storage.createUploadedData({
+        ...validatedData,
+        userId: req.user.id
+      });
+      
+      res.status(201).json(uploadedData);
+    } catch (error) {
+      console.error("Upload data error:", error);
+      res.status(400).json({ message: "Failed to store uploaded data" });
+    }
+  });
+
+  app.get("/api/uploaded-data", async (req, res) => {
+    try {
+      const uploads = await storage.getUploadedData(req.user.id);
+      res.json(uploads);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch uploaded data" });
+    }
+  });
+
+  app.get("/api/uploaded-data/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const upload = await storage.getUploadedDataById(id, req.user.id);
+      if (!upload) {
+        return res.status(404).json({ message: "Upload not found" });
+      }
+      res.json(upload);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch uploaded data" });
+    }
+  });
+
+  app.delete("/api/uploaded-data/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteUploadedData(id, req.user.id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Upload not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete uploaded data" });
+    }
+  });
+
+  // Convert uploaded data to financial records (when user chooses a project)
+  app.post("/api/uploaded-data/:id/convert", async (req, res) => {
+    try {
+      const uploadId = parseInt(req.params.id);
+      const { projectId } = req.body;
+      
+      if (!projectId) {
+        return res.status(400).json({ message: "Project ID is required" });
+      }
+
+      const upload = await storage.getUploadedDataById(uploadId, req.user.id);
+      if (!upload) {
+        return res.status(404).json({ message: "Upload not found" });
+      }
+
+      // Convert uploaded data to financial records
+      const data = upload.originalData as any[];
+      let imported = 0;
+      let errors = 0;
+
+      for (const row of data) {
+        try {
+          await storage.createFinancialRecord({
+            projectId: parseInt(projectId),
+            type: row.Type || 'expense',
+            category: row.Category || 'General',
+            description: row.Description || row.Name || 'Imported record',
+            amount: row.Amount || row.Effort || '0',
+            date: new Date(row.Date || row.CreatedAt || Date.now()),
+            userId: req.user.id,
+            originalData: row
+          });
+          imported++;
+        } catch (error) {
+          console.error("Import row error:", error);
+          errors++;
+        }
+      }
+
+      // Mark as processed and optionally delete
+      await storage.deleteUploadedData(uploadId, req.user.id);
+
+      res.json({ imported, errors });
+    } catch (error) {
+      console.error("Convert data error:", error);
+      res.status(500).json({ message: "Failed to convert uploaded data" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

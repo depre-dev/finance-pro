@@ -10,6 +10,7 @@ import BudgetPlanning from "@/pages/budget-planning";
 import FinancialRecords from "@/pages/financial-records";
 import Reports from "@/pages/reports";
 import ImportExport from "@/pages/import-export";
+import UploadedData from "@/pages/uploaded-data";
 import ChargeHistory from "@/pages/charge-history";
 import Sidebar from "@/components/layout/sidebar";
 
@@ -25,6 +26,7 @@ function Router() {
           <Route path="/financial-records" component={FinancialRecords} />
           <Route path="/reports" component={Reports} />
           <Route path="/import-export" component={ImportExport} />
+          <Route path="/uploaded-data" component={UploadedData} />
           <Route path="/charge-history" component={ChargeHistory} />
           <Route component={NotFound} />
         </Switch>

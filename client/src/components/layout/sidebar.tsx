@@ -8,6 +8,7 @@ import {
   Receipt, 
   TrendingUp, 
   CreditCard,
+  FileSpreadsheet,
   User 
 } from "lucide-react";
 
@@ -19,6 +20,7 @@ const navigation = [
   { name: "Charge History", href: "/charge-history", icon: CreditCard },
   { name: "Reports", href: "/reports", icon: TrendingUp },
   { name: "Import/Export", href: "/import-export", icon: Download },
+  { name: "Uploaded Data", href: "/uploaded-data", icon: FileSpreadsheet },
 ];
 
 export default function Sidebar() {

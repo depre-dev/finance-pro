@@ -64,6 +64,18 @@ export const chargeHistory = pgTable("charge_history", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// Table for storing uploaded data before project assignment
+export const uploadedData = pgTable("uploaded_data", {
+  id: serial("id").primaryKey(),
+  fileName: text("file_name").notNull(),
+  originalData: json("original_data").notNull(),
+  columnMapping: json("column_mapping"),
+  totalRows: integer("total_rows").notNull(),
+  uploadedAt: timestamp("uploaded_at").defaultNow().notNull(),
+  isProcessed: boolean("is_processed").default(false),
+  userId: integer("user_id").notNull(),
+});
+
 // Relations
 export const projectsRelations = relations(projects, ({ one, many }) => ({
   user: one(users, {
@@ -142,6 +154,11 @@ export const insertChargeHistorySchema = createInsertSchema(chargeHistory).omit(
   createdAt: true,
 });
 
+export const insertUploadedDataSchema = createInsertSchema(uploadedData).omit({
+  id: true,
+  uploadedAt: true,
+});
+
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -157,3 +174,6 @@ export type BudgetCategory = typeof budgetCategories.$inferSelect;
 
 export type InsertChargeHistory = z.infer<typeof insertChargeHistorySchema>;
 export type ChargeHistory = typeof chargeHistory.$inferSelect;
+
+export type InsertUploadedData = z.infer<typeof insertUploadedDataSchema>;
+export type UploadedData = typeof uploadedData.$inferSelect;

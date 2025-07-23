@@ -4,6 +4,7 @@ import {
   financialRecords, 
   budgetCategories,
   chargeHistory,
+  uploadedData,
   type User, 
   type InsertUser,
   type Project,
@@ -13,7 +14,9 @@ import {
   type BudgetCategory,
   type InsertBudgetCategory,
   type ChargeHistory,
-  type InsertChargeHistory
+  type InsertChargeHistory,
+  type UploadedData,
+  type InsertUploadedData
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, sql, sum } from "drizzle-orm";
@@ -63,6 +66,12 @@ export interface IStorage {
   
   // Excel project data
   getExcelProjectData(userId: number, projectName: string): Promise<any>;
+  
+  // Uploaded data methods
+  createUploadedData(data: InsertUploadedData): Promise<UploadedData>;
+  getUploadedData(userId: number): Promise<UploadedData[]>;
+  getUploadedDataById(id: number, userId: number): Promise<UploadedData | undefined>;
+  deleteUploadedData(id: number, userId: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -327,6 +336,37 @@ export class DatabaseStorage implements IStorage {
       .values(charge)
       .returning();
     return newCharge;
+  }
+
+  async createUploadedData(data: InsertUploadedData): Promise<UploadedData> {
+    const [newData] = await db
+      .insert(uploadedData)
+      .values(data)
+      .returning();
+    return newData;
+  }
+
+  async getUploadedData(userId: number): Promise<UploadedData[]> {
+    return await db
+      .select()
+      .from(uploadedData)
+      .where(eq(uploadedData.userId, userId))
+      .orderBy(desc(uploadedData.uploadedAt));
+  }
+
+  async getUploadedDataById(id: number, userId: number): Promise<UploadedData | undefined> {
+    const [data] = await db
+      .select()
+      .from(uploadedData)
+      .where(and(eq(uploadedData.id, id), eq(uploadedData.userId, userId)));
+    return data || undefined;
+  }
+
+  async deleteUploadedData(id: number, userId: number): Promise<boolean> {
+    const result = await db
+      .delete(uploadedData)
+      .where(and(eq(uploadedData.id, id), eq(uploadedData.userId, userId)));
+    return (result.rowCount ?? 0) > 0;
   }
 }
 

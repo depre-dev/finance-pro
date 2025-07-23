@@ -198,7 +198,7 @@ export default function ImportExport() {
       if (file.name.toLowerCase().endsWith('.csv')) {
         // Handle CSV files
         const reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = async (e) => {
           csvContent = e.target?.result as string;
           setCsvPreview(csvContent);
           
@@ -206,10 +206,18 @@ export default function ImportExport() {
           const columns = detectColumns(csvContent);
           setDetectedColumns(columns);
           
-          // Parse the data to show project options
+          // Parse the data and store it immediately
           const parsedData = parseCSVData(csvContent);
           setFileData(parsedData);
-          setShowProjectSelection(true);
+          
+          try {
+            // Store data in database immediately without project selection
+            await storeUploadedData(file.name, parsedData, columns);
+            setShowProjectSelection(true);
+          } catch (error) {
+            // Still show the data even if storage fails
+            setShowProjectSelection(true);
+          }
           
           setIsProcessing(false);
         };
@@ -224,15 +232,27 @@ export default function ImportExport() {
           const columns = detectColumns(csvContent);
           setDetectedColumns(columns);
           
-          // Parse the data to show project options
+          // Parse the data and store it immediately
           const parsedData = parseCSVData(csvContent);
           setFileData(parsedData);
-          setShowProjectSelection(true);
           
-          toast({
-            title: "Excel File Processed",
-            description: `Found ${columns.length} columns and ${parsedData.length} data rows. Choose a project to import to.`,
-          });
+          try {
+            // Store data in database immediately without project selection
+            await storeUploadedData(file.name, parsedData, columns);
+            setShowProjectSelection(true);
+            
+            toast({
+              title: "Excel File Processed",
+              description: `Found ${columns.length} columns and ${parsedData.length} data rows. Data is now stored and ready for project assignment.`,
+            });
+          } catch (error) {
+            // Still show the data even if storage fails
+            setShowProjectSelection(true);
+            toast({
+              title: "Excel File Processed",
+              description: `Found ${columns.length} columns and ${parsedData.length} data rows. Choose a project to import to.`,
+            });
+          }
         } catch (error) {
           toast({
             title: "Excel Conversion Failed",
@@ -256,6 +276,32 @@ export default function ImportExport() {
         variant: "destructive",
       });
       setIsProcessing(false);
+    }
+  };
+
+  // Function to store uploaded data in database
+  const storeUploadedData = async (fileName: string, data: any[], columns: string[]) => {
+    try {
+      const response = await apiRequest("POST", "/api/uploaded-data", {
+        fileName: fileName,
+        originalData: data,
+        columnMapping: { detected: columns },
+        totalRows: data.length
+      });
+      
+      toast({
+        title: "Data Stored",
+        description: `Successfully stored ${data.length} rows. Choose a project to import to.`,
+      });
+      
+      return response.json();
+    } catch (error) {
+      toast({
+        title: "Storage Failed", 
+        description: "Failed to store uploaded data",
+        variant: "destructive",
+      });
+      throw error;
     }
   };
 
@@ -547,7 +593,7 @@ export default function ImportExport() {
                     <div key={project.id} className="flex items-center justify-between p-2 border rounded">
                       <div>
                         <p className="font-medium">{project.name}</p>
-                        <p className="text-xs text-neutral-50">{project.client || "No client"}</p>
+                        <p className="text-xs text-neutral-50">{project.businessUnit || "No business unit"}</p>
                       </div>
                       <Button 
                         size="sm" 
