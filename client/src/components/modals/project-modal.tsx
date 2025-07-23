@@ -270,7 +270,7 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
                   
                   return (
                     <FormItem>
-                      <FormLabel>Actual Cost Spent</FormLabel>
+                      <FormLabel>Budget Spend</FormLabel>
                       <FormControl>
                         <div className="space-y-2">
                           <div className="relative">

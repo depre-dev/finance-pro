@@ -237,7 +237,7 @@ export default function Projects() {
                       <p className="font-semibold text-sm break-words">{formatCurrency(project.totalBudget)}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-muted-foreground mb-1">Actual Cost</p>
+                      <p className="text-xs text-muted-foreground mb-1">Budget Spend</p>
                       <p className="font-semibold text-sm break-words">{formatCurrency(project.actualCost || 0)}</p>
                     </div>
                   </div>
@@ -400,7 +400,7 @@ export default function Projects() {
                       <div className="text-lg font-bold text-orange-600 break-words">
                         {formatCurrency(viewingProject.actualCost || "0")}
                       </div>
-                      <div className="text-sm text-orange-600 font-medium mt-1">Actual Cost</div>
+                      <div className="text-sm text-orange-600 font-medium mt-1">Budget Spend</div>
                     </div>
                     <div className="text-center p-4 bg-green-50 rounded-lg min-h-[100px] flex flex-col justify-center">
                       <div className={`text-lg font-bold break-words ${
