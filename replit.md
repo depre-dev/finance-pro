@@ -8,6 +8,17 @@ FinancePro is a full-stack financial management application built with React, Ex
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes
+
+### January 23, 2025
+- **Complete Dashboard Redesign**: Rebuilt dashboard with improved layout, better alignment, and enhanced budget overview charts
+- **Enhanced Budget Visualizations**: Added comprehensive budget progress bars, pie charts for distribution, and project comparison bar charts
+- **Improved Metrics Display**: Added 4-card metric overview with total budget, spent amounts, and status indicators
+- **Project Status Overview**: Added detailed project status cards with individual progress tracking
+- **Recent Activity Feed**: Integrated charge history display showing latest transactions and expenses
+- **Comprehensive Charge History System**: Added complete charge tracking with database table, API endpoints, and UI components
+- **Detailed Project View**: Implemented expandable project details modal with full budget breakdown and charge history
+
 ## System Architecture
 
 ### Frontend Architecture
