@@ -104,6 +104,31 @@ const createInitialMapping = (columns: string[]): Record<string, string> => {
   return initialMapping;
 };
 
+// Function to parse CSV data into structured format
+const parseCSVData = (csvData: string): any[] => {
+  const lines = csvData.trim().split('\n');
+  if (lines.length <= 1) return [];
+  
+  const headers = lines[0].split(',').map(header => 
+    header.replace(/"/g, '').trim()
+  );
+  
+  const data = [];
+  for (let i = 1; i < Math.min(lines.length, 21); i++) { // Show first 20 rows
+    const row = lines[i].split(',').map(cell => 
+      cell.replace(/"/g, '').trim()
+    );
+    
+    const rowData: any = {};
+    headers.forEach((header, index) => {
+      rowData[header] = row[index] || '';
+    });
+    data.push(rowData);
+  }
+  
+  return data;
+};
+
 // Extend Window interface for XLSX
 declare global {
   interface Window {
@@ -123,6 +148,8 @@ export default function ImportExport() {
   const [fileType, setFileType] = useState<string>("");
   const [fileName, setFileName] = useState<string>("");
   const [detectedColumns, setDetectedColumns] = useState<string[]>([]);
+  const [fileData, setFileData] = useState<any[]>([]);
+  const [showProjectSelection, setShowProjectSelection] = useState(false);
   const [columnMapping, setColumnMapping] = useState<Record<string, string>>({});
   const [showColumnMapping, setShowColumnMapping] = useState(false);
 
@@ -175,10 +202,14 @@ export default function ImportExport() {
           csvContent = e.target?.result as string;
           setCsvPreview(csvContent);
           
-          // Detect columns from CSV
+          // Detect columns and parse data
           const columns = detectColumns(csvContent);
           setDetectedColumns(columns);
-          setShowColumnMapping(false); // Disable column mapping, use direct import
+          
+          // Parse the data to show project options
+          const parsedData = parseCSVData(csvContent);
+          setFileData(parsedData);
+          setShowProjectSelection(true);
           
           setIsProcessing(false);
         };
@@ -189,14 +220,18 @@ export default function ImportExport() {
           csvContent = await parseExcelToCSV(file);
           setCsvPreview(csvContent);
           
-          // Detect columns from the converted CSV
+          // Detect columns and parse data
           const columns = detectColumns(csvContent);
           setDetectedColumns(columns);
-          setShowColumnMapping(false); // Use direct import without column mapping
+          
+          // Parse the data to show project options
+          const parsedData = parseCSVData(csvContent);
+          setFileData(parsedData);
+          setShowProjectSelection(true);
           
           toast({
-            title: "Excel File Converted",
-            description: `Found ${columns.length} columns. Ready to import with your existing column structure.`,
+            title: "Excel File Processed",
+            description: `Found ${columns.length} columns and ${parsedData.length} data rows. Choose a project to import to.`,
           });
         } catch (error) {
           toast({
@@ -240,6 +275,16 @@ export default function ImportExport() {
         csvData: csvPreview,
         projectId: selectedProject
       });
+      
+      // Reset form after successful import
+      setCsvPreview("");
+      setFileData([]);
+      setShowProjectSelection(false);
+      setSelectedProject("");
+      setFileName("");
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     } finally {
       setIsProcessing(false);
     }
@@ -326,22 +371,6 @@ export default function ImportExport() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="project-select">Select Project *</Label>
-                <Select onValueChange={setSelectedProject} value={selectedProject}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Choose a project" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {projects?.map((project) => (
-                      <SelectItem key={project.id} value={project.id.toString()}>
-                        {project.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
                 <Label htmlFor="file-upload">Upload File</Label>
                 <Input
                   ref={fileInputRef}
@@ -380,29 +409,74 @@ export default function ImportExport() {
                 )}
               </div>
 
-              {csvPreview && (
-                <div>
-                  <Label>File Preview</Label>
-                  <Textarea
-                    value={csvPreview.slice(0, 500) + (csvPreview.length > 500 ? "..." : "")}
-                    readOnly
-                    rows={6}
-                    className="font-mono text-xs"
-                  />
+              {/* File Data Preview and Project Selection */}
+              {showProjectSelection && fileData.length > 0 && (
+                <div className="space-y-4 p-4 border rounded-lg bg-blue-50">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-medium">File Data Preview</h3>
+                    <Badge variant="secondary">{fileData.length} rows found</Badge>
+                  </div>
+                  
+                  {/* Preview Table */}
+                  <div className="overflow-x-auto max-h-60">
+                    <table className="w-full text-xs border-collapse">
+                      <thead>
+                        <tr className="bg-white">
+                          {detectedColumns.slice(0, 6).map((column, index) => (
+                            <th key={index} className="border p-2 text-left font-medium">{column}</th>
+                          ))}
+                          {detectedColumns.length > 6 && (
+                            <th className="border p-2 text-left font-medium">...</th>
+                          )}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {fileData.slice(0, 5).map((row, rowIndex) => (
+                          <tr key={rowIndex} className="hover:bg-white">
+                            {detectedColumns.slice(0, 6).map((column, colIndex) => (
+                              <td key={colIndex} className="border p-2 truncate max-w-32">
+                                {row[column] || '-'}
+                              </td>
+                            ))}
+                            {detectedColumns.length > 6 && (
+                              <td className="border p-2 text-center">...</td>
+                            )}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  
+                  {/* Project Selection */}
+                  <div>
+                    <Label htmlFor="project-select">Select Project to Import To</Label>
+                    <Select value={selectedProject} onValueChange={setSelectedProject}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Choose which project this data belongs to" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {projects?.map((project) => (
+                          <SelectItem key={project.id} value={project.id.toString()}>
+                            {project.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               )}
 
-              {/* Detected Columns Display */}
-              {detectedColumns.length > 0 && (
-                <div className="space-y-2 p-3 bg-green-50 dark:bg-green-950 rounded-lg border border-green-200 dark:border-green-800">
+              {/* Ready to Import Status */}
+              {selectedProject && csvPreview && (
+                <div className="space-y-2 p-3 bg-green-50 rounded-lg border border-green-200">
                   <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
-                    <h4 className="font-medium text-green-900 dark:text-green-100">Ready to Import</h4>
+                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <h4 className="font-medium text-green-900">Ready to Import</h4>
                   </div>
-                  <p className="text-sm text-green-700 dark:text-green-200">
-                    Your file structure will be preserved exactly as is. No column mapping required.
+                  <p className="text-sm text-green-700">
+                    File data will be imported to: <strong>{projects?.find(p => p.id.toString() === selectedProject)?.name}</strong>
                   </p>
-                  <div className="text-xs text-green-600 dark:text-green-300">
+                  <div className="text-xs text-green-600">
                     <p><strong>Detected columns:</strong> {detectedColumns.join(', ')}</p>
                   </div>
                 </div>
