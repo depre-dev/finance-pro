@@ -211,7 +211,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
               description: record[columnMapping.description] || record[columnMapping.title] || 'Imported item',
               amount: (parseFloat(record[columnMapping.amount] || '0') || 0).toString(),
               date: new Date(record[columnMapping.date] || Date.now()),
-              userId: req.user.id
+              userId: req.user.id,
+              originalData: record // Store all original Excel columns
             };
           } else {
             // Use any available data and create a flexible record
@@ -226,7 +227,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
               description: record[firstCol] || record[secondCol] || `Imported: ${Object.values(record).join(' - ')}`,
               amount: (parseFloat(Object.values(record).find((val: any) => !isNaN(parseFloat(val))) as string || '0') || 0).toString(),
               date: new Date(),
-              userId: req.user.id
+              userId: req.user.id,
+              originalData: record // Store all original Excel columns
             };
           }
 
