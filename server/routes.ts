@@ -105,6 +105,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Financial records endpoints
+  app.get("/api/financial-records", async (req, res) => {
+    try {
+      const records = await storage.getAllFinancialRecords(req.user.id);
+      res.json(records);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch financial records" });
+    }
+  });
   app.get("/api/projects/:projectId/financial-records", async (req, res) => {
     try {
       const projectId = parseInt(req.params.projectId);

@@ -29,6 +29,7 @@ export interface IStorage {
   deleteProject(id: number, userId: number): Promise<boolean>;
 
   // Financial record methods
+  getAllFinancialRecords(userId: number): Promise<FinancialRecord[]>;
   getFinancialRecords(projectId: number, userId: number): Promise<FinancialRecord[]>;
   getFinancialRecord(id: number, userId: number): Promise<FinancialRecord | undefined>;
   createFinancialRecord(record: InsertFinancialRecord): Promise<FinancialRecord>;
@@ -107,6 +108,14 @@ export class DatabaseStorage implements IStorage {
       .delete(projects)
       .where(and(eq(projects.id, id), eq(projects.userId, userId)));
     return (result.rowCount ?? 0) > 0;
+  }
+
+  async getAllFinancialRecords(userId: number): Promise<FinancialRecord[]> {
+    return await db
+      .select()
+      .from(financialRecords)
+      .where(eq(financialRecords.userId, userId))
+      .orderBy(desc(financialRecords.date));
   }
 
   async getFinancialRecords(projectId: number, userId: number): Promise<FinancialRecord[]> {
