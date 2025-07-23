@@ -277,6 +277,27 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getExcelProjectNames(userId: number): Promise<string[]> {
+    // First check uploaded data for project names
+    const uploadedRecords = await db
+      .select({ originalData: uploadedData.originalData })
+      .from(uploadedData)
+      .where(eq(uploadedData.userId, userId));
+
+    const projectNames = new Set<string>();
+    
+    // Extract project names from uploaded data
+    for (const upload of uploadedRecords) {
+      const dataArray = upload.originalData as any[];
+      if (Array.isArray(dataArray)) {
+        for (const data of dataArray) {
+          if (data && data.Name) {
+            projectNames.add(data.Name);
+          }
+        }
+      }
+    }
+
+    // Also check existing financial records for backward compatibility
     const records = await db
       .select({ originalData: financialRecords.originalData })
       .from(financialRecords)
@@ -287,8 +308,6 @@ export class DatabaseStorage implements IStorage {
         )
       );
 
-    const projectNames = new Set<string>();
-    
     for (const record of records) {
       const data = record.originalData as any;
       if (data && data.Name) {
@@ -300,6 +319,25 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getExcelProjectData(userId: number, projectName: string): Promise<any> {
+    // First check uploaded data
+    const uploadedRecords = await db
+      .select({ originalData: uploadedData.originalData })
+      .from(uploadedData)
+      .where(eq(uploadedData.userId, userId));
+
+    // Search through uploaded data first
+    for (const upload of uploadedRecords) {
+      const dataArray = upload.originalData as any[];
+      if (Array.isArray(dataArray)) {
+        for (const data of dataArray) {
+          if (data && data.Name === projectName) {
+            return data;
+          }
+        }
+      }
+    }
+
+    // Fallback to financial records for backward compatibility
     const records = await db
       .select({ originalData: financialRecords.originalData })
       .from(financialRecords)

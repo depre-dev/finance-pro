@@ -18,6 +18,9 @@ Preferred communication style: Simple, everyday language.
 - **Recent Activity Feed**: Integrated charge history display showing latest transactions and expenses
 - **Comprehensive Charge History System**: Added complete charge tracking with database table, API endpoints, and UI components
 - **Detailed Project View**: Implemented expandable project details modal with full budget breakdown and charge history
+- **Excel Upload Workflow Redesign**: Modified system to store Excel data first in uploadedData table, then allow project creation from stored data
+- **Project Creation from Uploaded Data**: Added blue banner in project modal showing available Excel project names for easy selection
+- **Updated Upload Process**: Users can now upload Excel files without selecting projects first - data is stored and projects created later
 
 ## System Architecture
 

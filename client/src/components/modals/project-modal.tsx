@@ -10,19 +10,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
   Form,
   FormControl,
   FormField,
@@ -31,18 +18,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Check, ChevronsUpDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { insertProjectSchema, type Project } from "@shared/schema";
 
 const formSchema = insertProjectSchema.extend({
   totalBudget: z.string().min(1, "Budget is required"),
-  startDate: z.string().optional(),
-  client: z.string().optional(),
-  description: z.string().optional(),
 }).omit({
   userId: true,
 });
@@ -59,7 +41,6 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [open, setOpen] = useState(false);
 
   // Fetch Excel project names
   const { data: excelProjectNames } = useQuery<string[]>({
@@ -197,6 +178,32 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
         
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            {/* Show available Excel data section for new projects */}
+            {!project && excelProjectNames && excelProjectNames.length > 0 && (
+              <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">
+                  Create Project from Uploaded Data
+                </h4>
+                <p className="text-sm text-blue-700 dark:text-blue-300 mb-3">
+                  Select a project from your uploaded Excel data to automatically fill project details:
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {excelProjectNames.map((projectName) => (
+                    <Button
+                      key={projectName}
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => populateFromExcel(projectName)}
+                      className="text-xs"
+                    >
+                      {projectName}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField
                 control={form.control}
@@ -205,79 +212,13 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
                   <FormItem>
                     <FormLabel>Project Name *</FormLabel>
                     <FormControl>
-                      <Popover open={open} onOpenChange={setOpen}>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            aria-expanded={open}
-                            className="w-full justify-between"
-                          >
-                            {field.value
-                              ? field.value
-                              : "Select or enter project name..."}
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-full p-0">
-                          <Command>
-                            <CommandInput 
-                              placeholder="Search or type new project name..." 
-                              onValueChange={(value) => {
-                                field.onChange(value);
-                              }}
-                            />
-                            <CommandList>
-                              <CommandEmpty>
-                                <div className="p-2">
-                                  <p className="text-sm text-muted-foreground mb-2">
-                                    No matching projects found.
-                                  </p>
-                                  <Button
-                                    type="button"
-                                    variant="outline"
-                                    size="sm"
-                                    className="w-full"
-                                    onClick={() => {
-                                      setOpen(false);
-                                    }}
-                                  >
-                                    Use current input
-                                  </Button>
-                                </div>
-                              </CommandEmpty>
-                              {excelProjectNames && excelProjectNames.length > 0 && (
-                                <CommandGroup heading="From Excel Data">
-                                  {excelProjectNames.map((projectName) => (
-                                    <CommandItem
-                                      key={projectName}
-                                      value={projectName}
-                                      onSelect={(currentValue) => {
-                                        field.onChange(currentValue);
-                                        populateFromExcel(currentValue);
-                                        setOpen(false);
-                                      }}
-                                    >
-                                      <Check
-                                        className={`mr-2 h-4 w-4 ${
-                                          field.value === projectName ? "opacity-100" : "opacity-0"
-                                        }`}
-                                      />
-                                      {projectName}
-                                    </CommandItem>
-                                  ))}
-                                </CommandGroup>
-                              )}
-                            </CommandList>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
+                      <Input {...field} placeholder="Enter project name" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="projectId"
@@ -285,14 +226,14 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
                   <FormItem>
                     <FormLabel>Project ID</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter project ID" {...field} value={field.value || ""} />
+                      <Input {...field} placeholder="e.g., 34321" value={field.value || ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField
                 control={form.control}
@@ -373,37 +314,7 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
                   <FormItem>
                     <FormLabel>Business Unit</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter business unit" {...field} value={field.value || ""} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="projectId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Project ID</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter project ID" {...field} value={field.value || ""} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormField
-                control={form.control}
-                name="wbs"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>WBS</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter WBS code" {...field} value={field.value || ""} />
+                      <Input {...field} placeholder="e.g., Consumer" value={field.value || ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -412,12 +323,12 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
 
               <FormField
                 control={form.control}
-                name="targetRelease"
+                name="wbs"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Target Release</FormLabel>
+                    <FormLabel>WBS</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter target release" {...field} value={field.value || ""} />
+                      <Input {...field} placeholder="e.g., A-008443-008152-102" value={field.value || ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -433,7 +344,7 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
                   <FormItem>
                     <FormLabel>Total PDs</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter total PDs" {...field} value={field.value || ""} />
+                      <Input {...field} placeholder="e.g., 25" value={field.value || ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -447,23 +358,62 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
                   <FormItem>
                     <FormLabel>Total External PDs</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter total external PDs" {...field} value={field.value || ""} />
+                      <Input {...field} placeholder="e.g., 19" value={field.value || ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-            
-            <div className="flex justify-end space-x-4 pt-4">
-              <Button type="button" variant="outline" onClick={handleClose}>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="targetRelease"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Target Release</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="e.g., 25.3" value={field.value || ""} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <FormControl>
+                      <select {...field} className="w-full border border-gray-300 rounded-md px-3 py-2">
+                        <option value="active">Active</option>
+                        <option value="completed">Completed</option>
+                        <option value="on-hold">On Hold</option>
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="flex justify-end space-x-2 pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleClose}
+                disabled={isSubmitting}
+              >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting 
-                  ? (project ? "Updating..." : "Creating...") 
-                  : (project ? "Update Project" : "Create Project")
-                }
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Saving..." : (project ? "Update Project" : "Create Project")}
               </Button>
             </div>
           </form>
