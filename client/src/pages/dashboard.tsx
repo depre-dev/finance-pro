@@ -320,6 +320,8 @@ export default function Dashboard() {
                       const spent = Number(project.actualCost || 0);
                       const remaining = budget - spent;
                       const statusInfo = getProjectStatus(project);
+                      
+                      console.log(`Dashboard Project ${project.name}: Budget=${budget}, Spent=${spent}, Remaining=${remaining}`);
 
                       return (
                         <tr key={project.id} className="hover:bg-neutral-10">

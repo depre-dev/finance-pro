@@ -165,6 +165,8 @@ export default function Projects() {
                       const remainingBudget = totalBudget - actualCost;
                       const isOverBudget = remainingBudget < 0;
                       
+                      console.log(`Project ${project.name}: Budget=${totalBudget}, Actual=${actualCost}, Remaining=${remainingBudget}`);
+                      
                       return (
                         <div className={`text-sm px-3 py-2 rounded ${
                           isOverBudget 
