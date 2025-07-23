@@ -120,15 +120,15 @@ export default function Dashboard() {
       </div>
 
       {/* Main Metrics */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 auto-rows-fr">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Active Projects</CardTitle>
             <FolderOpen className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics?.activeProjects || 0}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-xl font-bold">{metrics?.activeProjects || 0}</div>
+            <p className="text-xs text-muted-foreground mt-1">
               Currently managed
             </p>
           </CardContent>
@@ -140,8 +140,8 @@ export default function Dashboard() {
             <Wallet className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(totalBudget)}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-xl font-bold break-words">{formatCurrency(totalBudget)}</div>
+            <p className="text-xs text-muted-foreground mt-1">
               Allocated across all projects
             </p>
           </CardContent>
@@ -153,8 +153,8 @@ export default function Dashboard() {
             <CreditCard className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(totalSpent)}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-xl font-bold break-words">{formatCurrency(totalSpent)}</div>
+            <p className="text-xs text-muted-foreground mt-1">
               {budgetUsagePercentage.toFixed(1)}% of total budget
             </p>
           </CardContent>
@@ -170,10 +170,10 @@ export default function Dashboard() {
             )}
           </CardHeader>
           <CardContent>
-            <div className={`text-2xl font-bold ${remainingBudget < 0 ? 'text-red-600' : 'text-green-600'}`}>
+            <div className={`text-xl font-bold break-words ${remainingBudget < 0 ? 'text-red-600' : 'text-green-600'}`}>
               {formatCurrency(Math.abs(remainingBudget))}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground mt-1">
               {remainingBudget < 0 ? 'Over budget' : 'Remaining'}
             </p>
           </CardContent>
@@ -193,18 +193,18 @@ export default function Dashboard() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
+            <div className="flex items-start justify-between gap-4">
+              <div className="space-y-1 flex-1">
                 <p className="text-sm font-medium">Budget Utilization</p>
-                <p className="text-2xl font-bold">
+                <p className="text-xl font-bold break-words">
                   {budgetUsagePercentage.toFixed(1)}%
                 </p>
               </div>
-              <div className="text-right space-y-1">
-                <p className="text-sm text-muted-foreground">
+              <div className="text-right space-y-1 flex-1">
+                <p className="text-sm text-muted-foreground break-words">
                   {formatCurrency(totalSpent)} of {formatCurrency(totalBudget)}
                 </p>
-                <p className={`text-sm font-medium ${remainingBudget < 0 ? 'text-red-600' : 'text-green-600'}`}>
+                <p className={`text-sm font-medium break-words ${remainingBudget < 0 ? 'text-red-600' : 'text-green-600'}`}>
                   {remainingBudget < 0 ? 'Over by ' : 'Remaining: '} 
                   {formatCurrency(Math.abs(remainingBudget))}
                 </p>
@@ -310,7 +310,7 @@ export default function Dashboard() {
                     ></div>
                     <span className="text-sm font-medium">{item.name}</span>
                   </div>
-                  <p className="text-lg font-bold">{formatCurrency(item.value)}</p>
+                  <p className="text-lg font-bold break-words">{formatCurrency(item.value)}</p>
                 </div>
               ))}
             </div>
