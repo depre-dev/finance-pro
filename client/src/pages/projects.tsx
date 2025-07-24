@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -38,6 +39,7 @@ export default function Projects() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
+  const [targetReleaseFilter, setTargetReleaseFilter] = useState("");
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | undefined>(undefined);
   const [viewingProject, setViewingProject] = useState<Project | undefined>(undefined);
@@ -57,10 +59,20 @@ export default function Projects() {
     enabled: !!viewingProject?.id,
   });
 
-  const filteredProjects = projects?.filter(project =>
-    project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    project.businessUnit?.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || [];
+  // Get unique target releases for filter dropdown
+  const uniqueTargetReleases = Array.from(new Set(
+    projects?.map(p => p.targetRelease).filter(Boolean) || []
+  )).sort();
+
+  const filteredProjects = projects?.filter(project => {
+    const matchesSearch = project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      project.businessUnit?.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesTargetRelease = !targetReleaseFilter || 
+      project.targetRelease === targetReleaseFilter;
+    
+    return matchesSearch && matchesTargetRelease;
+  }) || [];
 
   const formatCurrency = (amount: string | number) => {
     return new Intl.NumberFormat('de-CH', {
@@ -160,6 +172,19 @@ export default function Projects() {
               />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             </div>
+            <Select value={targetReleaseFilter} onValueChange={setTargetReleaseFilter}>
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Filter by Target Release" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">All Releases</SelectItem>
+                {uniqueTargetReleases.map(release => (
+                  <SelectItem key={release} value={release}>
+                    {release}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Button onClick={() => {
               setEditingProject(undefined);
               setIsProjectModalOpen(true);
