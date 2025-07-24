@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
@@ -39,6 +40,7 @@ export default function Dashboard() {
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
   const [snapshotProject, setSnapshotProject] = useState<Project | undefined>(undefined);
   const [isSnapshotOpen, setIsSnapshotOpen] = useState(false);
+  const [targetReleaseFilter, setTargetReleaseFilter] = useState("all");
 
   const { data: metrics, isLoading: metricsLoading } = useQuery<DashboardMetrics>({
     queryKey: ["/api/dashboard/metrics"],
@@ -59,19 +61,31 @@ export default function Dashboard() {
     }).format(Number(amount));
   };
 
-  // Calculate enhanced metrics
-  const totalSpent = projects?.reduce((sum, project) => sum + parseFloat(project.actualCost || "0"), 0) || 0;
-  const totalBudget = projects?.reduce((sum, project) => sum + parseFloat(project.totalBudget || "0"), 0) || 0;
+  // Get unique target releases for filter dropdown
+  const uniqueTargetReleases = Array.from(new Set(
+    projects?.map(p => p.targetRelease).filter(Boolean) || []
+  )).sort();
+
+  // Filter projects by target release
+  const filteredProjects = projects?.filter(project => {
+    return targetReleaseFilter === "all" || project.targetRelease === targetReleaseFilter;
+  }) || [];
+
+  // Calculate enhanced metrics from filtered projects
+  const totalSpent = filteredProjects.reduce((sum, project) => sum + parseFloat(project.actualCost || "0"), 0) || 0;
+  const totalBudget = filteredProjects.reduce((sum, project) => sum + parseFloat(project.totalBudget || "0"), 0) || 0;
   const remainingBudget = totalBudget - totalSpent;
   const budgetUsagePercentage = totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
 
-  // Prepare chart data
-  const projectChartData = projects?.map(project => ({
+  // Prepare chart data from filtered projects
+  const projectChartData = filteredProjects.map(project => ({
     name: project.name.length > 20 ? project.name.substring(0, 20) + "..." : project.name,
     budget: parseFloat(project.totalBudget || "0"),
     spent: parseFloat(project.actualCost || "0"),
     remaining: parseFloat(project.totalBudget || "0") - parseFloat(project.actualCost || "0"),
   })) || [];
+
+  const recentProjects = filteredProjects.slice(0, 5) || [];
 
   const budgetStatusData = [
     { name: "Spend", value: totalSpent, color: "#f59e0b" },
@@ -110,17 +124,36 @@ export default function Dashboard() {
   return (
     <div className="flex-1 overflow-y-auto space-y-6 p-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
           <p className="text-muted-foreground">
             Financial overview and project management
           </p>
         </div>
-        <Button onClick={() => setIsProjectModalOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          New Project
-        </Button>
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          <Select value={targetReleaseFilter} onValueChange={setTargetReleaseFilter}>
+            <SelectTrigger className="w-full sm:w-[200px]">
+              <SelectValue placeholder="Filter by Target Release" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Releases</SelectItem>
+              {uniqueTargetReleases.map(release => (
+                <SelectItem key={release} value={release}>
+                  {release}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button onClick={() => setIsSnapshotOpen(true)} variant="outline" className="w-full sm:w-auto">
+            <Zap className="mr-2 h-4 w-4" />
+            Quick Budget Snapshot
+          </Button>
+          <Button onClick={() => setIsProjectModalOpen(true)} className="w-full sm:w-auto">
+            <Plus className="mr-2 h-4 w-4" />
+            New Project
+          </Button>
+        </div>
       </div>
 
       {/* Main Metrics */}
@@ -131,7 +164,7 @@ export default function Dashboard() {
             <FolderOpen className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-xl font-bold">{metrics?.activeProjects || 0}</div>
+            <div className="text-xl font-bold">{filteredProjects.length}</div>
             <p className="text-xs text-muted-foreground mt-1">
               Currently managed
             </p>
