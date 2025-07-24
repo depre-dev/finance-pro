@@ -89,13 +89,13 @@ export default function QuickChargeModal({ isOpen, onClose, project }: QuickChar
 
   const commonExpenses = [
     { label: "Training Session", amount: "800", category: "Training and onboarding" },
-    { label: "Development Tools", amount: "500", category: "Development" },
+    { label: "Development Work", amount: "500", category: "Development" },
     { label: "QA Testing", amount: "1200", category: "Quality Assurance" },
-    { label: "Test Automation Setup", amount: "2000", category: "Test automation" },
+    { label: "Test Automation", amount: "2000", category: "Test automation" },
     { label: "Performance Testing", amount: "1500", category: "Performance and load testing" },
-    { label: "Security Audit", amount: "3000", category: "Security testing" },
-    { label: "Penetration Test", amount: "2500", category: "Penetration testing" },
-    { label: "Infrastructure Setup", amount: "1800", category: "Infrastructure" },
+    { label: "Security Testing", amount: "3000", category: "Security testing" },
+    { label: "Penetration Testing", amount: "2500", category: "Penetration testing" },
+    { label: "Infrastructure", amount: "1800", category: "Infrastructure" },
   ];
 
   return (
