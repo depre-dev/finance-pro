@@ -48,6 +48,7 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRelease, setSelectedRelease] = useState("");
+  const [activeTab, setActiveTab] = useState(project ? "manual" : "excel");
 
   // Fetch Excel project names and existing projects
   const { data: excelProjectNames } = useQuery<string[]>({
@@ -134,10 +135,11 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
           form.setValue("actualCost", project?.actualCost || "0");
           
           // Switch to manual tab after populating
-          setTimeout(() => {
-            const manualTab = document.querySelector('[value="manual"]') as HTMLElement;
-            if (manualTab) manualTab.click();
-          }, 100);
+          setActiveTab("manual");
+          toast({
+            title: "Project Data Loaded",
+            description: "Project details have been populated from Excel data. Review and save below.",
+          });
         }
       }
     } catch (error) {
@@ -161,7 +163,7 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
     },
   });
 
-  // Update form values when project prop changes
+  // Update form values and tab when project prop changes
   useEffect(() => {
     if (project) {
       form.reset({
@@ -176,6 +178,7 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
         actualCost: project.actualCost || "0",
         status: project.status || "active",
       });
+      setActiveTab("manual");
     } else {
       form.reset({
         name: "",
@@ -189,6 +192,7 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
         actualCost: "0",
         status: "active",
       });
+      setActiveTab("excel");
     }
   }, [project, form]);
 
@@ -236,6 +240,9 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
 
   const handleClose = () => {
     form.reset();
+    setActiveTab(project ? "manual" : "excel");
+    setSearchTerm("");
+    setSelectedRelease("");
     onClose();
   };
 
@@ -246,7 +253,7 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
           <DialogTitle>{project ? "Edit Project" : "Create New Project"}</DialogTitle>
         </DialogHeader>
 
-        <Tabs defaultValue={project ? "manual" : "excel"} className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="excel" className="flex items-center">
               <FileText className="mr-2 h-4 w-4" />
@@ -317,7 +324,7 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
                       {filteredExcelProjects.length} projects
                     </h3>
                     <div className="grid gap-3">
-                      {filteredExcelProjects.map((project, index) => (
+                      {filteredExcelProjects.map((project: any, index: number) => (
                         <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer" 
                               onClick={() => populateFromExcel(project.projectName)}>
                           <CardContent className="p-4">
@@ -343,10 +350,10 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
                   // Show projects grouped by release
                   Object.entries(projectsByRelease)
                     .filter(([release, projects]) => 
-                      projects.some(p => filteredExcelProjects.includes(p))
+                      (projects as any[]).some((p: any) => filteredExcelProjects.includes(p))
                     )
                     .map(([release, projects]) => {
-                      const releaseFilteredProjects = projects.filter(p => filteredExcelProjects.includes(p));
+                      const releaseFilteredProjects = (projects as any[]).filter((p: any) => filteredExcelProjects.includes(p));
                       return (
                         <div key={release}>
                           <h3 className="font-semibold text-lg mb-3 flex items-center">
@@ -354,7 +361,7 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
                             {releaseFilteredProjects.length} projects
                           </h3>
                           <div className="grid gap-3">
-                            {releaseFilteredProjects.map((project, index) => (
+                            {releaseFilteredProjects.map((project: any, index: number) => (
                               <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer" 
                                     onClick={() => populateFromExcel(project.projectName)}>
                                 <CardContent className="p-4">
