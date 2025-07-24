@@ -32,6 +32,7 @@ import {
 import type { Project, ChargeHistory } from "@shared/schema";
 import ProjectModal from "@/components/modals/project-modal-new";
 import BudgetSnapshot from "@/components/budget-snapshot";
+import QuickChargeModal from "@/components/quick-charge-modal";
 import CollaborativeNotes from "@/components/collaborative-notes";
 import { format } from "date-fns";
 
@@ -48,6 +49,8 @@ export default function Projects() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [snapshotProject, setSnapshotProject] = useState<Project | undefined>(undefined);
   const [isSnapshotOpen, setIsSnapshotOpen] = useState(false);
+  const [isQuickChargeOpen, setIsQuickChargeOpen] = useState(false);
+  const [chargeProject, setChargeProject] = useState<Project | undefined>(undefined);
 
   const { data: projects, isLoading } = useQuery<Project[]>({
     queryKey: ["/api/projects"],
@@ -303,46 +306,67 @@ export default function Projects() {
                     })()}
                   </div>
                   
-                  <div className="flex items-center justify-between pt-4 border-t border-neutral-20">
-                    <div className="flex items-center space-x-2">
+                  {/* Quick Actions */}
+                  <div className="space-y-3 pt-4 border-t border-neutral-20">
+                    <div className="grid grid-cols-2 gap-2">
                       <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={() => handleBudgetSnapshot(project)}
-                        className="text-primary hover:text-primary"
-                        title="Quick Budget Snapshot"
-                      >
-                        <Zap className="h-4 w-4" />
-                      </Button>
-                      <Button 
-                        variant="ghost" 
+                        variant="outline" 
                         size="sm"
                         onClick={() => {
-                          setEditingProject(project);
-                          setIsProjectModalOpen(true);
+                          setChargeProject(project);
+                          setIsQuickChargeOpen(true);
                         }}
+                        className="text-green-600 border-green-200 hover:bg-green-50"
                       >
-                        <Edit className="h-4 w-4" />
+                        <DollarSign className="h-4 w-4 mr-1" />
+                        Add Expense
                       </Button>
                       <Button 
-                        variant="ghost" 
+                        variant="outline" 
                         size="sm"
-                        onClick={() => handleViewProject(project)}
+                        onClick={() => handleBudgetSnapshot(project)}
+                        className="text-primary border-blue-200 hover:bg-blue-50"
                       >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="text-destructive hover:text-destructive"
-                        onClick={() => handleDeleteProject(project)}
-                      >
-                        <Trash2 className="h-4 w-4" />
+                        <Zap className="h-4 w-4 mr-1" />
+                        Budget View
                       </Button>
                     </div>
-                    <p className="text-xs text-neutral-50">
-                      Updated {new Date(project.updatedAt).toLocaleDateString()}
-                    </p>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-1">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => {
+                            setEditingProject(project);
+                            setIsProjectModalOpen(true);
+                          }}
+                          title="Edit Project"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => handleViewProject(project)}
+                          title="View Details"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="text-destructive hover:text-destructive"
+                          onClick={() => handleDeleteProject(project)}
+                          title="Delete Project"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      <p className="text-xs text-neutral-50">
+                        Updated {new Date(project.updatedAt).toLocaleDateString()}
+                      </p>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -677,6 +701,18 @@ export default function Projects() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Quick Charge Modal */}
+      {chargeProject && (
+        <QuickChargeModal
+          project={chargeProject}
+          isOpen={isQuickChargeOpen}
+          onClose={() => {
+            setIsQuickChargeOpen(false);
+            setChargeProject(undefined);
+          }}
+        />
+      )}
     </>
   );
 }
