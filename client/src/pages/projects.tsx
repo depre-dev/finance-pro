@@ -30,7 +30,7 @@ import {
   MessageSquare
 } from "lucide-react";
 import type { Project, ChargeHistory } from "@shared/schema";
-import ProjectModal from "@/components/modals/project-modal";
+import ProjectModal from "@/components/modals/project-modal-new";
 import BudgetSnapshot from "@/components/budget-snapshot";
 import CollaborativeNotes from "@/components/collaborative-notes";
 import { format } from "date-fns";

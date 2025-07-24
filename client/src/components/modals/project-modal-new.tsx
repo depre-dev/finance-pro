@@ -132,6 +132,12 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
           form.setValue("totalExternalPds", excelData["Total External PDs"] || "");
           form.setValue("targetRelease", excelData["Target Release"] || "");
           form.setValue("actualCost", project?.actualCost || "0");
+          
+          // Switch to manual tab after populating
+          setTimeout(() => {
+            const manualTab = document.querySelector('[value="manual"]') as HTMLElement;
+            if (manualTab) manualTab.click();
+          }, 100);
         }
       }
     } catch (error) {
@@ -199,14 +205,10 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
       return response.json();
     },
     onSuccess: async () => {
-      console.log("Project mutation success - invalidating caches");
-      // Force refetch of projects and dashboard data
       await queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       await queryClient.invalidateQueries({ queryKey: ["/api/dashboard/metrics"] });
-      // Also refetch to ensure fresh data
       await queryClient.refetchQueries({ queryKey: ["/api/projects"] });
       await queryClient.refetchQueries({ queryKey: ["/api/dashboard/metrics"] });
-      console.log("Cache invalidation and refetch complete");
       toast({
         title: "Success",
         description: project ? "Project updated successfully" : "Project created successfully",
@@ -317,14 +319,7 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
                     <div className="grid gap-3">
                       {filteredExcelProjects.map((project, index) => (
                         <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer" 
-                              onClick={() => {
-                                populateFromExcel(project.projectName);
-                                // Switch to manual tab after populating
-                                setTimeout(() => {
-                                  const manualTab = document.querySelector('[value="manual"]') as HTMLElement;
-                                  if (manualTab) manualTab.click();
-                                }, 100);
-                              }}>
+                              onClick={() => populateFromExcel(project.projectName)}>
                           <CardContent className="p-4">
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
@@ -361,14 +356,7 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
                           <div className="grid gap-3">
                             {releaseFilteredProjects.map((project, index) => (
                               <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer" 
-                                    onClick={() => {
-                                      populateFromExcel(project.projectName);
-                                      // Switch to manual tab after populating
-                                      setTimeout(() => {
-                                        const manualTab = document.querySelector('[value="manual"]') as HTMLElement;
-                                        if (manualTab) manualTab.click();
-                                      }, 100);
-                                    }}>
+                                    onClick={() => populateFromExcel(project.projectName)}>
                                 <CardContent className="p-4">
                                   <div className="flex items-start justify-between">
                                     <div className="flex-1">
@@ -510,122 +498,122 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
                     }}
                   />
                 </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormField
-                control={form.control}
-                name="businessUnit"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Business Unit</FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder="e.g., Consumer" value={field.value || ""} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="businessUnit"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Business Unit</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="e.g., Consumer" value={field.value || ""} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-              <FormField
-                control={form.control}
-                name="wbs"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>WBS</FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder="e.g., A-008443-008152-102" value={field.value || ""} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                  <FormField
+                    control={form.control}
+                    name="wbs"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>WBS</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="e.g., A-008443-008152-102" value={field.value || ""} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormField
-                control={form.control}
-                name="totalPds"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Total PDs</FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder="e.g., 25" value={field.value || ""} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="totalPds"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Total PDs</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="e.g., 10" value={field.value || ""} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-              <FormField
-                control={form.control}
-                name="totalExternalPds"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Total External PDs</FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder="e.g., 19" value={field.value || ""} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                  <FormField
+                    control={form.control}
+                    name="totalExternalPds"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Total External PDs</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="e.g., 5" value={field.value || ""} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormField
-                control={form.control}
-                name="targetRelease"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Target Release</FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder="e.g., 25.3" value={field.value || ""} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="targetRelease"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Target Release</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="e.g., 25.3" value={field.value || ""} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Status</FormLabel>
-                    <FormControl>
-                      <select {...field} className="w-full border border-gray-300 rounded-md px-3 py-2">
-                        <option value="active">Active</option>
-                        <option value="completed">Completed</option>
-                        <option value="on-hold">On Hold</option>
-                      </select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                  <FormField
+                    control={form.control}
+                    name="status"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Status</FormLabel>
+                        <FormControl>
+                          <select {...field} className="w-full border border-gray-300 rounded-md px-3 py-2">
+                            <option value="active">Active</option>
+                            <option value="completed">Completed</option>
+                            <option value="on-hold">On Hold</option>
+                          </select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
-            <div className="flex justify-end space-x-2 pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleClose}
-                disabled={isSubmitting}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? "Saving..." : (project ? "Update Project" : "Create Project")}
-                </Button>
-              </div>
-            </form>
-          </Form>
-        </TabsContent>
-      </Tabs>
-    </DialogContent>
-  </Dialog>
+                <div className="flex justify-end space-x-2 pt-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleClose}
+                    disabled={isSubmitting}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? "Saving..." : (project ? "Update Project" : "Create Project")}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </TabsContent>
+        </Tabs>
+      </DialogContent>
+    </Dialog>
   );
 }

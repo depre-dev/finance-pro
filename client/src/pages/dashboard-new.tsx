@@ -25,7 +25,7 @@ import {
   Zap
 } from "lucide-react";
 import type { Project, ChargeHistory } from "@shared/schema";
-import ProjectModal from "@/components/modals/project-modal";
+import ProjectModal from "@/components/modals/project-modal-new";
 import BudgetSnapshot from "@/components/budget-snapshot";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart as RechartsPieChart, Pie, Cell, Legend } from "recharts";
 
