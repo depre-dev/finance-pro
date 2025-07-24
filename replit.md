@@ -17,6 +17,8 @@ Preferred communication style: Simple, everyday language.
 - **Excel Template Integration**: Implemented proper .xlsx file generation with correct column structure and formatting
 - **PSP Element Integration**: Connected WBS data from Excel imports to proper PSP element assignment in re-booking exports
 - **Financial Re-posting Workflow**: Added complete workflow for Capex re-postings with vendor, responsible person, and voucher description fields
+- **Simplified Charge Addition System**: Completely re-imagined expense workflow with streamlined QuickChargeModal featuring budget impact preview, preset common expenses, and direct project card integration
+- **Custom Expense Categories**: Updated expense categories to specific business requirements: Training and onboarding, Development, Quality Assurance, Test automation, Performance and load testing, Security testing, Penetration testing, Infrastructure
 
 ### January 23, 2025
 - **Complete Dashboard Redesign**: Rebuilt dashboard with improved layout, better alignment, and enhanced budget overview charts

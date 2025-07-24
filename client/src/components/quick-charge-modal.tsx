@@ -17,7 +17,7 @@ import type { Project } from "@shared/schema";
 const quickChargeSchema = z.object({
   amount: z.string().min(1, "Amount is required"),
   description: z.string().min(1, "Description is required"),
-  category: z.string().optional().default("General"),
+  category: z.string().optional().default("Training and onboarding"),
 });
 
 type QuickChargeData = z.infer<typeof quickChargeSchema>;
@@ -37,7 +37,7 @@ export default function QuickChargeModal({ isOpen, onClose, project }: QuickChar
     defaultValues: {
       amount: "",
       description: "",
-      category: "General",
+      category: "Training and onboarding",
     },
   });
 
@@ -88,10 +88,10 @@ export default function QuickChargeModal({ isOpen, onClose, project }: QuickChar
   };
 
   const commonExpenses = [
-    { label: "Software License", amount: "500", category: "Software" },
-    { label: "Hardware Purchase", amount: "1000", category: "Hardware" },
-    { label: "Consulting", amount: "2000", category: "Consulting" },
-    { label: "Training", amount: "800", category: "Training" },
+    { label: "Training Session", amount: "800", category: "Training and onboarding" },
+    { label: "Development Tools", amount: "500", category: "Development" },
+    { label: "QA Testing", amount: "1200", category: "Quality Assurance" },
+    { label: "Test Automation Setup", amount: "2000", category: "Test automation" },
   ];
 
   return (
@@ -178,18 +178,19 @@ export default function QuickChargeModal({ isOpen, onClose, project }: QuickChar
               </div>
               <div className="space-y-2">
                 <Label htmlFor="category">Category</Label>
-                <Select onValueChange={(value) => form.setValue("category", value)} defaultValue="General">
+                <Select onValueChange={(value) => form.setValue("category", value)} defaultValue="Training and onboarding">
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="General">General</SelectItem>
-                    <SelectItem value="Software">Software</SelectItem>
-                    <SelectItem value="Hardware">Hardware</SelectItem>
-                    <SelectItem value="Consulting">Consulting</SelectItem>
-                    <SelectItem value="Training">Training</SelectItem>
-                    <SelectItem value="Travel">Travel</SelectItem>
-                    <SelectItem value="Equipment">Equipment</SelectItem>
+                    <SelectItem value="Training and onboarding">Training and onboarding</SelectItem>
+                    <SelectItem value="Development">Development</SelectItem>
+                    <SelectItem value="Quality Assurance">Quality Assurance</SelectItem>
+                    <SelectItem value="Test automation">Test automation</SelectItem>
+                    <SelectItem value="Performance and load testing">Performance and load testing</SelectItem>
+                    <SelectItem value="Security testing">Security testing</SelectItem>
+                    <SelectItem value="Penetration testing">Penetration testing</SelectItem>
+                    <SelectItem value="Infrastructure">Infrastructure</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
