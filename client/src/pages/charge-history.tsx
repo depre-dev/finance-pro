@@ -154,13 +154,14 @@ export default function ChargeHistoryPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Charge History</h1>
-          <p className="text-muted-foreground">Track all expenses and costs across your projects</p>
-        </div>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+    <div className="h-full flex flex-col overflow-hidden">
+      <div className="flex-shrink-0 pb-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Charge History</h1>
+            <p className="text-muted-foreground">Track all expenses and costs across your projects</p>
+          </div>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
@@ -277,9 +278,12 @@ export default function ChargeHistoryPage() {
             </Form>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
-      {/* Summary Cards */}
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto space-y-6">
+        {/* Summary Cards */}
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -455,6 +459,7 @@ export default function ChargeHistoryPage() {
           )}
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }
