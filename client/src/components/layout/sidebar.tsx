@@ -9,7 +9,8 @@ import {
   TrendingUp, 
   CreditCard,
   FileSpreadsheet,
-  User 
+  User,
+  Calendar 
 } from "lucide-react";
 
 const navigation = [
@@ -18,6 +19,7 @@ const navigation = [
   { name: "Budget Planning", href: "/budget-planning", icon: Calculator },
   { name: "Financial Records", href: "/financial-records", icon: Receipt },
   { name: "Charge History", href: "/charge-history", icon: CreditCard },
+  { name: "CATS Booking", href: "/cats-booking", icon: Calendar },
   { name: "Reports", href: "/reports", icon: TrendingUp },
   { name: "Import/Export", href: "/import-export", icon: Download },
   { name: "Uploaded Data", href: "/uploaded-data", icon: FileSpreadsheet },

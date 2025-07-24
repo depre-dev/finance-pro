@@ -12,6 +12,7 @@ import Reports from "@/pages/reports";
 import ImportExport from "@/pages/import-export";
 import UploadedData from "@/pages/uploaded-data";
 import ChargeHistory from "@/pages/charge-history";
+import CATSBooking from "@/pages/cats-booking";
 import Sidebar from "@/components/layout/sidebar";
 
 function Router() {
@@ -28,6 +29,7 @@ function Router() {
           <Route path="/import-export" component={ImportExport} />
           <Route path="/uploaded-data" component={UploadedData} />
           <Route path="/charge-history" component={ChargeHistory} />
+          <Route path="/cats-booking" component={CATSBooking} />
           <Route component={NotFound} />
         </Switch>
       </main>
