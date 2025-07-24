@@ -538,29 +538,64 @@ export default function Projects() {
                               <TableHead>Description</TableHead>
                               <TableHead>Category</TableHead>
                               <TableHead className="text-right">Amount</TableHead>
+                              <TableHead className="text-right">Running Total</TableHead>
+                              <TableHead className="text-right">Budget Impact</TableHead>
                             </TableRow>
                           </TableHeader>
                           <TableBody>
-                            {chargeHistory.map((charge) => (
-                              <TableRow key={charge.id}>
-                                <TableCell>
-                                  {format(new Date(charge.date), "MMM dd, yyyy")}
-                                </TableCell>
-                                <TableCell className="max-w-xs">
-                                  <div className="truncate" title={charge.description}>
-                                    {charge.description}
-                                  </div>
-                                </TableCell>
-                                <TableCell>
-                                  <Badge variant="outline">
-                                    {charge.category || "General"}
-                                  </Badge>
-                                </TableCell>
-                                <TableCell className="text-right font-mono break-words">
-                                  {formatCurrency(charge.amount)}
-                                </TableCell>
-                              </TableRow>
-                            ))}
+                            {(() => {
+                              let runningTotal = 0;
+                              const totalBudget = parseFloat(viewingProject.totalBudget || "0");
+                              
+                              return chargeHistory
+                                .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                                .map((charge, index) => {
+                                  runningTotal += parseFloat(charge.amount || "0");
+                                  const remainingBudget = totalBudget - runningTotal;
+                                  const usagePercent = totalBudget > 0 ? (runningTotal / totalBudget) * 100 : 0;
+                                  
+                                  return (
+                                    <TableRow key={charge.id}>
+                                      <TableCell>
+                                        {format(new Date(charge.date), "MMM dd, yyyy")}
+                                      </TableCell>
+                                      <TableCell className="max-w-xs">
+                                        <div className="truncate" title={charge.description}>
+                                          {charge.description}
+                                        </div>
+                                      </TableCell>
+                                      <TableCell>
+                                        <Badge variant="outline">
+                                          {charge.category || "General"}
+                                        </Badge>
+                                      </TableCell>
+                                      <TableCell className="text-right font-mono break-words">
+                                        {formatCurrency(charge.amount)}
+                                      </TableCell>
+                                      <TableCell className="text-right font-mono">
+                                        <div className="flex flex-col">
+                                          <span className="text-blue-600 font-semibold">
+                                            {formatCurrency(runningTotal)}
+                                          </span>
+                                          <span className="text-xs text-gray-500">
+                                            {usagePercent.toFixed(1)}% used
+                                          </span>
+                                        </div>
+                                      </TableCell>
+                                      <TableCell className="text-right font-mono">
+                                        <div className={`flex flex-col ${remainingBudget < 0 ? 'text-red-600' : 'text-green-600'}`}>
+                                          <span className="font-semibold">
+                                            {remainingBudget < 0 ? '-' : ''}{formatCurrency(Math.abs(remainingBudget))}
+                                          </span>
+                                          <span className="text-xs">
+                                            {remainingBudget < 0 ? 'Over budget' : 'Remaining'}
+                                          </span>
+                                        </div>
+                                      </TableCell>
+                                    </TableRow>
+                                  );
+                                });
+                            })()}
                           </TableBody>
                         </Table>
                       </div>

@@ -92,6 +92,59 @@ export default function ChargeHistoryPage() {
     return project?.name || `Project ${projectId}`;
   };
 
+  // Get project by ID
+  const getProject = (projectId: number) => {
+    return projects.find(p => p.id === projectId);
+  };
+
+  // Calculate running budget totals for each charge
+  const getRunningTotals = () => {
+    let runningTotals: { [key: number]: number } = {};
+    
+    // Sort charges by date
+    const sortedCharges = [...filteredCharges].sort((a, b) => 
+      new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+    
+    sortedCharges.forEach(charge => {
+      if (!runningTotals[charge.projectId]) {
+        runningTotals[charge.projectId] = 0;
+      }
+      runningTotals[charge.projectId] += parseFloat(charge.amount || "0");
+    });
+    
+    return runningTotals;
+  };
+
+  // Calculate cumulative spending for display
+  const calculateCumulativeSpending = (charges: typeof filteredCharges) => {
+    const sortedCharges = [...charges].sort((a, b) => 
+      new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+    
+    let cumulativeByProject: { [key: number]: number } = {};
+    
+    return sortedCharges.map(charge => {
+      if (!cumulativeByProject[charge.projectId]) {
+        cumulativeByProject[charge.projectId] = 0;
+      }
+      cumulativeByProject[charge.projectId] += parseFloat(charge.amount || "0");
+      
+      const project = getProject(charge.projectId);
+      const totalBudget = parseFloat(project?.totalBudget || "0");
+      const remainingBudget = totalBudget - cumulativeByProject[charge.projectId];
+      
+      return {
+        ...charge,
+        cumulativeSpending: cumulativeByProject[charge.projectId],
+        remainingBudget,
+        budgetUsagePercent: totalBudget > 0 ? (cumulativeByProject[charge.projectId] / totalBudget) * 100 : 0
+      };
+    });
+  };
+
+  const chargesWithBudgetInfo = calculateCumulativeSpending(filteredCharges);
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -335,10 +388,13 @@ export default function ChargeHistoryPage() {
                     <TableHead>Description</TableHead>
                     <TableHead>Category</TableHead>
                     <TableHead className="text-right">Amount</TableHead>
+                    <TableHead className="text-right">Cumulative</TableHead>
+                    <TableHead className="text-right">Budget Remaining</TableHead>
+                    <TableHead className="text-center">Usage %</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredCharges.map((charge) => (
+                  {chargesWithBudgetInfo.map((charge) => (
                     <TableRow key={charge.id}>
                       <TableCell>
                         {format(new Date(charge.date), "MMM dd, yyyy")}
@@ -354,6 +410,42 @@ export default function ChargeHistoryPage() {
                       </TableCell>
                       <TableCell className="text-right font-mono">
                         CHF {parseFloat(charge.amount || "0").toLocaleString()}
+                      </TableCell>
+                      <TableCell className="text-right font-mono">
+                        <div className="flex flex-col">
+                          <span className="text-blue-600 font-semibold">
+                            CHF {charge.cumulativeSpending.toLocaleString()}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right font-mono">
+                        <div className={`flex flex-col ${charge.remainingBudget < 0 ? 'text-red-600' : 'text-green-600'}`}>
+                          <span className="font-semibold">
+                            CHF {Math.abs(charge.remainingBudget).toLocaleString()}
+                          </span>
+                          <span className="text-xs">
+                            {charge.remainingBudget < 0 ? 'Over Budget' : 'Remaining'}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <div className="flex flex-col items-center">
+                          <span className={`text-sm font-medium ${
+                            charge.budgetUsagePercent > 100 ? 'text-red-600' : 
+                            charge.budgetUsagePercent > 90 ? 'text-amber-600' : 'text-green-600'
+                          }`}>
+                            {charge.budgetUsagePercent.toFixed(1)}%
+                          </span>
+                          <div className="w-16 h-1 bg-gray-200 rounded-full mt-1">
+                            <div 
+                              className={`h-1 rounded-full ${
+                                charge.budgetUsagePercent > 100 ? 'bg-red-500' : 
+                                charge.budgetUsagePercent > 90 ? 'bg-amber-500' : 'bg-green-500'
+                              }`}
+                              style={{ width: `${Math.min(charge.budgetUsagePercent, 100)}%` }}
+                            />
+                          </div>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
