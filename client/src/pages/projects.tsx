@@ -69,6 +69,7 @@ export default function Projects() {
       project.businessUnit?.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesTargetRelease = !targetReleaseFilter || 
+      targetReleaseFilter === "all" || 
       project.targetRelease === targetReleaseFilter;
     
     return matchesSearch && matchesTargetRelease;
@@ -177,7 +178,7 @@ export default function Projects() {
                 <SelectValue placeholder="Filter by Target Release" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Releases</SelectItem>
+                <SelectItem value="all">All Releases</SelectItem>
                 {uniqueTargetReleases.map(release => (
                   <SelectItem key={release} value={release}>
                     {release}
