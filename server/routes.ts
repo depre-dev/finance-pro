@@ -315,6 +315,76 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Re-booking export endpoint
+  app.post("/api/export/rebooking", async (req, res) => {
+    try {
+      const { projectIds, responsiblePerson, vendor = "Infosys", description } = req.body;
+      const selectedProjects = projectIds ? projectIds : [];
+      
+      // Get projects with their charge history
+      const projects = await storage.getProjects(req.user.id);
+      const filteredProjects = selectedProjects.length > 0 
+        ? projects.filter(p => selectedProjects.includes(p.id))
+        : projects;
+
+      const rebookingData = [];
+      
+      // Header row
+      rebookingData.push({
+        currency: "Currency",
+        vendor: "Vendor", 
+        responsiblePerson: "Responsible person",
+        monthQuarter: "Month/Quarter",
+        voucherDescription: "Voucher Description (please include PO - VENDOR NAME - AREA - MONTH.YEAR)",
+        amount: "Amount",
+        pspElement: "PSP Element project split",
+        glAccount: "GL account code**"
+      });
+
+      // Generate data rows for each project
+      for (const project of filteredProjects) {
+        const chargeHistory = await storage.getChargeHistory(project.id, req.user.id);
+        const totalAmount = chargeHistory.reduce((sum, charge) => sum + parseFloat(charge.amount), 0);
+        
+        if (totalAmount > 0) {
+          // Get WBS from project name (try to find matching Excel data)
+          let pspElement = "";
+          try {
+            // Try to get WBS from Excel data
+            const response = await fetch(`http://localhost:${process.env.PORT || 5000}/api/excel-project-data/${encodeURIComponent(project.name)}`);
+            if (response.ok) {
+              const excelData = await response.json();
+              pspElement = excelData.WBS || "";
+            }
+          } catch (error) {
+            // Fallback: generate PSP element from project info
+            pspElement = `A-${String(project.id).padStart(6, '0')}-${String(project.totalBudget).slice(0, 6)}-102`;
+          }
+
+          const currentDate = new Date();
+          const monthYear = `${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getFullYear()).slice(-2)}`;
+          const voucherDesc = description || `UB:${project.name.slice(0, 20).replace(/[^a-zA-Z0-9\s]/g, '')}_${vendor}_${monthYear}`;
+
+          rebookingData.push({
+            currency: "CHF",
+            vendor: vendor,
+            responsiblePerson: responsiblePerson || "Financial Analyst",
+            monthQuarter: Math.floor((Date.now() - new Date('1900-01-01').getTime()) / (1000 * 60 * 60 * 24)) + 2, // Excel date serial
+            voucherDescription: voucherDesc,
+            amount: Math.round(totalAmount * 100) / 100, // Round to 2 decimal places
+            pspElement: pspElement,
+            glAccount: 4416501 // Default GL account for Capex
+          });
+        }
+      }
+
+      res.json(rebookingData);
+    } catch (error) {
+      console.error("Error generating re-booking export:", error);
+      res.status(500).json({ message: "Failed to generate re-booking export" });
+    }
+  });
+
   // Budget categories endpoints
   app.get("/api/budget-categories", async (req, res) => {
     try {

@@ -13,9 +13,11 @@ import {
   Code,
   Building2,
   ExternalLink,
-  Download
+  Download,
+  FileSpreadsheet
 } from "lucide-react";
 import type { Project } from "@shared/schema";
+import RebookingExportModal from "@/components/modals/rebooking-export-modal";
 
 interface ExcelProjectData {
   "Target Release Group"?: string;
@@ -32,6 +34,7 @@ export default function CATSBooking() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRelease, setSelectedRelease] = useState<string>("all");
   const [selectedBusinessUnit, setSelectedBusinessUnit] = useState<string>("all");
+  const [rebookingModalOpen, setRebookingModalOpen] = useState(false);
 
   // Fetch all projects to get the Excel project names
   const { data: projects = [] } = useQuery<Project[]>({
@@ -147,10 +150,16 @@ export default function CATSBooking() {
             Search and filter WBS codes across all project releases
           </p>
         </div>
-        <Button onClick={handleExport} variant="outline" disabled={filteredData.length === 0}>
-          <Download className="mr-2 h-4 w-4" />
-          Export Results
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={handleExport} variant="outline" disabled={filteredData.length === 0}>
+            <Download className="mr-2 h-4 w-4" />
+            Export Results
+          </Button>
+          <Button onClick={() => setRebookingModalOpen(true)} disabled={projects.length === 0}>
+            <FileSpreadsheet className="mr-2 h-4 w-4" />
+            Re-booking Export
+          </Button>
+        </div>
       </div>
 
       {/* Summary Stats */}
@@ -346,6 +355,12 @@ export default function CATSBooking() {
           )}
         </CardContent>
       </Card>
+
+      {/* Re-booking Export Modal */}
+      <RebookingExportModal
+        open={rebookingModalOpen}
+        onOpenChange={setRebookingModalOpen}
+      />
     </div>
   );
 }
