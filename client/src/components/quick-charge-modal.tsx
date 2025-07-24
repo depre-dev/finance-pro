@@ -92,6 +92,10 @@ export default function QuickChargeModal({ isOpen, onClose, project }: QuickChar
     { label: "Development Tools", amount: "500", category: "Development" },
     { label: "QA Testing", amount: "1200", category: "Quality Assurance" },
     { label: "Test Automation Setup", amount: "2000", category: "Test automation" },
+    { label: "Performance Testing", amount: "1500", category: "Performance and load testing" },
+    { label: "Security Audit", amount: "3000", category: "Security testing" },
+    { label: "Penetration Test", amount: "2500", category: "Penetration testing" },
+    { label: "Infrastructure Setup", amount: "1800", category: "Infrastructure" },
   ];
 
   return (
@@ -138,7 +142,7 @@ export default function QuickChargeModal({ isOpen, onClose, project }: QuickChar
           {/* Quick Preset Buttons */}
           <div>
             <Label className="text-sm font-medium mb-2 block">Quick Add Common Expenses</Label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
               {commonExpenses.map((expense) => (
                 <Button
                   key={expense.label}
