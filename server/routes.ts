@@ -399,7 +399,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/charge-history", async (req, res) => {
     try {
       const userId = 1; // Mock user ID
-      const chargeData = { ...req.body, userId };
+      const chargeData = { 
+        ...req.body, 
+        userId,
+        date: req.body.date ? new Date(req.body.date) : new Date()
+      };
       const newCharge = await storage.createChargeHistory(chargeData);
       res.status(201).json(newCharge);
     } catch (error) {
