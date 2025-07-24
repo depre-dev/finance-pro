@@ -139,13 +139,25 @@ export default function Dashboard() {
             <SelectContent>
               <SelectItem value="all">All Releases</SelectItem>
               {uniqueTargetReleases.map(release => (
-                <SelectItem key={release} value={release}>
-                  {release}
+                <SelectItem key={release} value={release || ""}>
+                  {release || "No Release"}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
-          <Button onClick={() => setIsSnapshotOpen(true)} variant="outline" className="w-full sm:w-auto">
+          <Button 
+            onClick={() => {
+              // Use the first available project for the general snapshot
+              const firstProject = filteredProjects[0];
+              if (firstProject) {
+                setSnapshotProject(firstProject);
+                setIsSnapshotOpen(true);
+              }
+            }} 
+            variant="outline" 
+            className="w-full sm:w-auto"
+            disabled={filteredProjects.length === 0}
+          >
             <Zap className="mr-2 h-4 w-4" />
             Quick Budget Snapshot
           </Button>
