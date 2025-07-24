@@ -316,6 +316,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Budget categories endpoints
+  app.get("/api/budget-categories", async (req, res) => {
+    try {
+      const categories = await storage.getAllBudgetCategories(req.user.id);
+      res.json(categories);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch budget categories" });
+    }
+  });
+
   app.get("/api/projects/:projectId/budget-categories", async (req, res) => {
     try {
       const projectId = parseInt(req.params.projectId);

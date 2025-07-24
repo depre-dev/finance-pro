@@ -46,6 +46,7 @@ export interface IStorage {
   deleteFinancialRecord(id: number, userId: number): Promise<boolean>;
 
   // Budget category methods
+  getAllBudgetCategories(userId: number): Promise<BudgetCategory[]>;
   getBudgetCategories(projectId: number, userId: number): Promise<BudgetCategory[]>;
   createBudgetCategory(category: InsertBudgetCategory): Promise<BudgetCategory>;
   updateBudgetCategory(id: number, userId: number, category: Partial<InsertBudgetCategory>): Promise<BudgetCategory | undefined>;
@@ -188,6 +189,14 @@ export class DatabaseStorage implements IStorage {
       .delete(financialRecords)
       .where(and(eq(financialRecords.id, id), eq(financialRecords.userId, userId)));
     return (result.rowCount ?? 0) > 0;
+  }
+
+  async getAllBudgetCategories(userId: number): Promise<BudgetCategory[]> {
+    return await db
+      .select()
+      .from(budgetCategories)
+      .where(eq(budgetCategories.userId, userId))
+      .orderBy(budgetCategories.name);
   }
 
   async getBudgetCategories(projectId: number, userId: number): Promise<BudgetCategory[]> {
