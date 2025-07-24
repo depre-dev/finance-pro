@@ -8,6 +8,7 @@ import {
   insertProjectNoteSchema
 } from "@shared/schema";
 import { z } from "zod";
+import * as XLSX from "xlsx";
 
 // Extend Express Request type to include user
 declare global {
@@ -318,7 +319,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Re-booking export endpoint
   app.post("/api/export/rebooking", async (req, res) => {
     try {
-      const XLSX = require('xlsx');
       const { projectIds, responsiblePerson, vendor = "Infosys", description } = req.body;
       const selectedProjects = projectIds ? projectIds : [];
       
