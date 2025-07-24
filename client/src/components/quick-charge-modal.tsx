@@ -141,7 +141,7 @@ export default function QuickChargeModal({ isOpen, onClose, project }: QuickChar
 
           {/* Quick Preset Buttons */}
           <div>
-            <Label className="text-sm font-medium mb-2 block">Quick Add Common Expenses</Label>
+            <Label className="text-sm font-medium mb-2 block">Quick Add Common Expenses ({commonExpenses.length} categories)</Label>
             <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
               {commonExpenses.map((expense) => (
                 <Button
