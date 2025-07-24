@@ -318,6 +318,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Re-booking export endpoint
   app.post("/api/export/rebooking", async (req, res) => {
     try {
+      const XLSX = require('xlsx');
       const { projectIds, responsiblePerson, vendor = "Infosys", description } = req.body;
       const selectedProjects = projectIds ? projectIds : [];
       
@@ -329,17 +330,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const rebookingData = [];
       
-      // Header row
-      rebookingData.push({
-        currency: "Currency",
-        vendor: "Vendor", 
-        responsiblePerson: "Responsible person",
-        monthQuarter: "Month/Quarter",
-        voucherDescription: "Voucher Description (please include PO - VENDOR NAME - AREA - MONTH.YEAR)",
-        amount: "Amount",
-        pspElement: "PSP Element project split",
-        glAccount: "GL account code**"
-      });
+      // Header row - exactly matching the template structure
+      rebookingData.push([
+        "", "", "Capex Repostings Infosys", "", "", "", "", "", "", ""
+      ]);
+      rebookingData.push([
+        "", "", "Currency", "Vendor", "Responsible person", "Month/Quarter", "Voucher Description (please include PO - VENDOR NAME - AREA - MONTH.YEAR)", "Amount", "PSP Element project split", "GL account code**"
+      ]);
 
       // Generate data rows for each project
       for (const project of filteredProjects) {
@@ -347,38 +344,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const totalAmount = chargeHistory.reduce((sum, charge) => sum + parseFloat(charge.amount), 0);
         
         if (totalAmount > 0) {
-          // Get WBS from project name (try to find matching Excel data)
-          let pspElement = "";
-          try {
-            // Try to get WBS from Excel data
-            const response = await fetch(`http://localhost:${process.env.PORT || 5000}/api/excel-project-data/${encodeURIComponent(project.name)}`);
-            if (response.ok) {
-              const excelData = await response.json();
-              pspElement = excelData.WBS || "";
+          // Get WBS from project data
+          let pspElement = project.wbs || "";
+          if (!pspElement) {
+            try {
+              // Try to get WBS from Excel data
+              const response = await fetch(`http://localhost:${process.env.PORT || 5000}/api/excel-project-data/${encodeURIComponent(project.name)}`);
+              if (response.ok) {
+                const excelData = await response.json();
+                pspElement = excelData.WBS || "";
+              }
+            } catch (error) {
+              // Fallback: generate PSP element from project info
+              pspElement = `A-${String(project.id).padStart(6, '0')}-${String(project.totalBudget).slice(0, 6)}-102`;
             }
-          } catch (error) {
-            // Fallback: generate PSP element from project info
-            pspElement = `A-${String(project.id).padStart(6, '0')}-${String(project.totalBudget).slice(0, 6)}-102`;
           }
 
           const currentDate = new Date();
-          const monthYear = `${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getFullYear()).slice(-2)}`;
-          const voucherDesc = description || `UB:${project.name.slice(0, 20).replace(/[^a-zA-Z0-9\s]/g, '')}_${vendor}_${monthYear}`;
+          const monthYear = `${String(currentDate.getMonth() + 1).padStart(2, '0')}.${String(currentDate.getFullYear()).slice(-2)}`;
+          const voucherDesc = description || `UB:${project.projectId || project.id}_${vendor}_${project.name.slice(0, 15).replace(/[^a-zA-Z0-9\s]/g, '')}_${monthYear}`;
 
-          rebookingData.push({
-            currency: "CHF",
-            vendor: vendor,
-            responsiblePerson: responsiblePerson || "Financial Analyst",
-            monthQuarter: Math.floor((Date.now() - new Date('1900-01-01').getTime()) / (1000 * 60 * 60 * 24)) + 2, // Excel date serial
-            voucherDescription: voucherDesc,
-            amount: Math.round(totalAmount * 100) / 100, // Round to 2 decimal places
-            pspElement: pspElement,
-            glAccount: 4416501 // Default GL account for Capex
-          });
+          // Excel date serial calculation (days since 1900-01-01)
+          const excelDate = Math.floor((Date.now() - new Date('1900-01-01').getTime()) / (1000 * 60 * 60 * 24)) + 2;
+          const roundedAmount = Math.round(totalAmount * 100) / 100;
+          
+          // Row with PSP element and amount
+          rebookingData.push([
+            "", "", "CHF", vendor, responsiblePerson || "Pascal Kuriger",
+            excelDate, voucherDesc, roundedAmount, pspElement, 4416501
+          ]);
         }
       }
 
-      res.json(rebookingData);
+      // Create workbook and worksheet
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.aoa_to_sheet(rebookingData);
+      
+      // Set column widths to match template
+      ws['!cols'] = [
+        { wch: 3 },   // A
+        { wch: 3 },   // B
+        { wch: 10 },  // C - Currency
+        { wch: 12 },  // D - Vendor
+        { wch: 18 },  // E - Responsible person
+        { wch: 15 },  // F - Month/Quarter
+        { wch: 50 },  // G - Voucher Description
+        { wch: 12 },  // H - Amount
+        { wch: 25 },  // I - PSP Element
+        { wch: 15 }   // J - GL account
+      ];
+
+      // Add worksheet to workbook
+      XLSX.utils.book_append_sheet(wb, ws, 'Reposting 2025');
+
+      // Generate Excel buffer
+      const excelBuffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+
+      // Set response headers for Excel download
+      const currentDate = new Date();
+      const dateStr = `${currentDate.getFullYear()}_${String(currentDate.getMonth() + 1).padStart(2, '0')}_${String(currentDate.getDate()).padStart(2, '0')}`;
+      const filename = `Infosys_${vendor}_Waterfall_Reposting_${dateStr}.xlsx`;
+
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+      res.setHeader('Content-Length', excelBuffer.length);
+      
+      res.send(excelBuffer);
     } catch (error) {
       console.error("Error generating re-booking export:", error);
       res.status(500).json({ message: "Failed to generate re-booking export" });

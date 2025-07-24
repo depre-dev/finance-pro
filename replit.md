@@ -10,9 +10,18 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### January 24, 2025
+- **CATS Booking View**: Built comprehensive WBS search and filtering system across all project releases and business units
+- **Re-booking Export System**: Created Excel export functionality matching exact Infosys template format for financial re-posting
+- **Project Selection Modal**: Added advanced project selection interface with budget summaries and export configuration
+- **Excel Template Integration**: Implemented proper .xlsx file generation with correct column structure and formatting
+- **PSP Element Integration**: Connected WBS data from Excel imports to proper PSP element assignment in re-booking exports
+- **Financial Re-posting Workflow**: Added complete workflow for Capex re-postings with vendor, responsible person, and voucher description fields
+
 ### January 23, 2025
 - **Complete Dashboard Redesign**: Rebuilt dashboard with improved layout, better alignment, and enhanced budget overview charts
 - **Enhanced Budget Visualizations**: Added comprehensive budget progress bars, pie charts for distribution, and project comparison bar charts
+- **Budget Planning Feature**: Built comprehensive budget category management with variance analysis and visual charts
 - **Improved Metrics Display**: Added 4-card metric overview with total budget, spent amounts, and status indicators
 - **Project Status Overview**: Added detailed project status cards with individual progress tracking
 - **Recent Activity Feed**: Integrated charge history display showing latest transactions and expenses

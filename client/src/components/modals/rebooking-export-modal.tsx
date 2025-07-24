@@ -110,46 +110,43 @@ export default function RebookingExportModal({
         body: JSON.stringify(requestBody),
       });
 
-      const rebookingData: RebookingData[] = await response.json();
+      if (!response.ok) {
+        throw new Error('Export failed');
+      }
 
-      // Convert to Excel format and download
-      const csvHeaders = ['Currency', 'Vendor', 'Responsible person', 'Month/Quarter', 'Voucher Description', 'Amount', 'PSP Element project split', 'GL account code'];
-      const csvRows = [csvHeaders.join(',')];
+      // Get the Excel file as a blob
+      const blob = await response.blob();
       
-      rebookingData.forEach(row => {
-        const csvRow = [
-          `"${row.currency}"`,
-          `"${row.vendor}"`,
-          `"${row.responsiblePerson}"`, 
-          row.monthQuarter,
-          `"${row.voucherDescription}"`,
-          row.amount,
-          `"${row.pspElement}"`,
-          row.glAccount
-        ];
-        csvRows.push(csvRow.join(','));
-      });
-
-      const csvContent = csvRows.join('\n');
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      // Create download link
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
       
-      const currentDate = new Date();
-      const dateStr = currentDate.toISOString().split('T')[0].replace(/-/g, '_');
-      link.download = `Infosys_Reposting_${dateStr}.csv`;
+      // Extract filename from response headers or use default
+      const contentDisposition = response.headers.get('Content-Disposition');
+      let filename = 'Infosys_Reposting_Export.xlsx';
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+        if (filenameMatch) {
+          filename = filenameMatch[1];
+        }
+      }
+      
+      link.download = filename;
       link.click();
+      
+      // Clean up the blob URL
+      URL.revokeObjectURL(link.href);
 
       toast({
-        title: "Export successful",
-        description: `Re-booking data exported for ${selectedProjectIds.length} projects.`,
+        title: "Excel Export Successful",
+        description: `Re-booking Excel file generated for ${selectedProjectIds.length} projects matching Infosys template format.`,
       });
 
       onOpenChange(false);
     } catch (error) {
       toast({
-        title: "Export failed",
-        description: "There was an error generating the re-booking export.",
+        title: "Excel Export Failed",
+        description: "There was an error generating the re-booking Excel file. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -247,11 +244,11 @@ export default function RebookingExportModal({
                   className="w-full"
                 >
                   {isExporting ? (
-                    "Generating..."
+                    "Generating Excel..."
                   ) : (
                     <>
-                      <Download className="mr-2 h-4 w-4" />
-                      Export to Excel
+                      <FileSpreadsheet className="mr-2 h-4 w-4" />
+                      Export Excel (.xlsx)
                     </>
                   )}
                 </Button>
