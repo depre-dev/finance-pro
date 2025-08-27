@@ -62,12 +62,73 @@ The system supports 8 specific business expense categories:
 - Penetration testing
 - Infrastructure
 
+## 💻 System Requirements
+
+### Hardware Requirements
+
+#### Minimum Requirements
+- **CPU**: 2-core processor (Intel i3 equivalent or AMD Ryzen 3)
+- **RAM**: 4 GB system memory
+- **Storage**: 2 GB available disk space
+- **Network**: Broadband internet connection (for database connectivity)
+
+#### Recommended Requirements
+- **CPU**: 4-core processor (Intel i5 equivalent or AMD Ryzen 5) or higher
+- **RAM**: 8 GB system memory or higher
+- **Storage**: 5 GB available disk space (SSD preferred for better performance)
+- **Network**: High-speed broadband internet connection
+
+#### Production Server Requirements
+- **CPU**: 8-core processor or higher
+- **RAM**: 16 GB system memory minimum (32 GB recommended for high traffic)
+- **Storage**: 50 GB available disk space (SSD required)
+- **Network**: Dedicated server connection with redundancy
+- **Database**: Separate PostgreSQL server with 8 GB RAM minimum
+
+### Software Requirements
+
+#### Development Environment
+- **Operating System**: 
+  - Windows 10/11 (64-bit)
+  - macOS 10.15 (Catalina) or later
+  - Linux (Ubuntu 18.04 LTS or equivalent)
+- **Node.js**: Version 18.0.0 or higher (LTS recommended)
+- **npm**: Version 8.0.0 or higher (included with Node.js)
+- **PostgreSQL**: Version 12.0 or higher
+- **Git**: Version 2.20 or higher
+
+#### Browser Compatibility
+- **Chrome**: Version 90 or higher (recommended)
+- **Firefox**: Version 88 or higher
+- **Safari**: Version 14 or higher
+- **Edge**: Version 90 or higher
+
+#### Production Environment
+- **Operating System**: Linux (Ubuntu 20.04 LTS or CentOS 8 recommended)
+- **Node.js**: Version 18.0.0 or higher (LTS)
+- **PostgreSQL**: Version 14.0 or higher
+- **Process Manager**: PM2 or similar for production deployment
+- **Reverse Proxy**: Nginx or Apache for production serving
+- **SSL Certificate**: Required for HTTPS in production
+
+### Browser Support Matrix
+
+| Browser | Minimum Version | Recommended |
+|---------|----------------|-------------|
+| Chrome | 90 | Latest |
+| Firefox | 88 | Latest |
+| Safari | 14 | Latest |
+| Edge | 90 | Latest |
+| Mobile Safari | 14 | Latest |
+| Chrome Mobile | 90 | Latest |
+
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v18 or higher)
-- PostgreSQL database
+- Node.js (v18 or higher) - see System Requirements above
+- PostgreSQL database (v12 or higher)
 - npm or yarn package manager
+- Ensure your system meets the minimum hardware requirements
 
 ### Installation
 
@@ -186,18 +247,56 @@ npm start
 
 The application uses PostgreSQL with the following main tables:
 
-- **projects** - Core project information with budgets
-- **chargeHistory** - Detailed expense tracking
-- **users** - User management (placeholder for authentication)
-- **uploadedData** - Stores Excel import data
-- **budgetCategories** - Budget planning categories
+- **users** - User authentication with encrypted passwords, roles, and profile information
+- **sessions** - Secure session management with expiration tracking and user relationships
+- **projects** - Core project information with budgets, timelines, and user ownership
+- **financialRecords** - Income and expense tracking linked to projects and users
+- **budgetCategories** - Budget planning and actual vs planned tracking with user context
+- **chargeHistory** - Complete audit trail of all financial transactions and modifications
+- **uploadedData** - Stores Excel import data for project creation workflows
+
+### Database Performance Requirements
+- **Connection Limit**: Minimum 20 concurrent connections for development, 100+ for production
+- **Storage**: 1 GB minimum for development, scale based on data volume in production
+- **Backup**: Daily automated backups recommended for production environments
 
 ## 🔐 Security & Environment
 
-- Database credentials stored in environment variables
-- Session-based authentication ready for implementation
-- Input validation using Zod schemas
-- SQL injection protection through Drizzle ORM
+### Security Features
+- **Authentication**: Session-based authentication with bcrypt password hashing
+- **Session Management**: Secure localStorage-based sessions for cross-origin compatibility
+- **Database Security**: Connection strings with proper authentication
+- **Input Validation**: Zod schemas for type-safe data validation
+- **SQL Injection Protection**: Drizzle ORM with parameterized queries
+- **CORS Support**: Properly configured for cross-origin requests
+
+### Environment Variables
+```bash
+# Required
+DATABASE_URL=postgresql://username:password@host:port/database
+NODE_ENV=development|production
+
+# Optional
+PORT=5000
+SESSION_SECRET=your-session-secret
+```
+
+### Performance Considerations
+- **Database Indexing**: Proper indexes on frequently queried columns
+- **Connection Pooling**: PostgreSQL connection limits based on traffic
+- **Caching**: Redis recommended for session storage in high-traffic environments
+- **CDN**: Content Delivery Network for static assets in production
+- **Monitoring**: Application performance monitoring (APM) tools recommended
+
+### Production Deployment Checklist
+- [ ] HTTPS enabled with valid SSL certificate
+- [ ] Environment variables properly configured
+- [ ] Database connection pooling configured
+- [ ] Process manager (PM2) configured
+- [ ] Reverse proxy (Nginx) configured
+- [ ] CORS properly configured for production domains
+- [ ] Database backups automated
+- [ ] Monitoring and logging in place
 
 ## 🤝 Contributing
 
