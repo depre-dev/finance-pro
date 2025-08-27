@@ -155,15 +155,10 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
                      req.headers.authorization?.replace('Bearer ', '') ||
                      req.headers['x-session-id'] as string;
 
-    console.log('Auth middleware - Path:', req.path, 'SessionId present:', !!sessionId);
-    console.log('Auth middleware - Headers:', {
-      cookie: req.headers.cookie,
-      authorization: req.headers.authorization,
-      'x-session-id': req.headers['x-session-id']
-    });
+    // Debug logging can be removed in production
+    // console.log('Auth middleware - Path:', req.path, 'SessionId present:', !!sessionId);
 
     if (!sessionId) {
-      console.log('Auth middleware - No session ID found');
       res.status(401).json({ message: 'Authentication required' });
       return;
     }
@@ -171,14 +166,11 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     // Validate session
     const user = await AuthService.validateSession(sessionId);
     if (!user) {
-      console.log('Auth middleware - Invalid session:', sessionId);
       // Clear invalid cookie
       res.clearCookie('sessionId');
       res.status(401).json({ message: 'Invalid or expired session' });
       return;
     }
-
-    console.log('Auth middleware - Valid user found:', user.username);
     // Add user to request
     req.user = user;
     req.sessionId = sessionId;

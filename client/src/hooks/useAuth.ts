@@ -13,9 +13,7 @@ export function useAuth() {
   const { data: response, isLoading, error } = useQuery<AuthResponse>({
     queryKey: ['/api/auth/me'],
     queryFn: async () => {
-      console.log('Checking authentication status...');
       const sessionId = localStorage.getItem('sessionId');
-      console.log('Session ID from localStorage:', sessionId ? 'present' : 'missing');
       
       const res = await fetch('/api/auth/me', {
         credentials: 'include',
@@ -24,21 +22,16 @@ export function useAuth() {
         },
       });
       
-      console.log('Auth response status:', res.status);
-      
       if (res.status === 401) {
-        console.log('Not authenticated, clearing localStorage');
         localStorage.removeItem('sessionId');
         return null;
       }
       
       if (!res.ok) {
-        console.log('Auth request failed:', res.statusText);
         throw new Error('Failed to fetch user');
       }
       
       const data = await res.json();
-      console.log('User authenticated:', data.user?.username);
       return data;
     },
     retry: false,
@@ -52,7 +45,7 @@ export function useAuth() {
   // Login mutation
   const loginMutation = useMutation({
     mutationFn: async (data: LoginRequest): Promise<AuthResponse> => {
-      console.log('Attempting login...');
+      // console.log('Attempting login...');
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -62,23 +55,20 @@ export function useAuth() {
 
       if (!response.ok) {
         const error = await response.json().catch(() => ({ message: 'Login failed' }));
-        console.log('Login failed:', error);
+        // console.log('Login failed:', error);
         throw new Error(error.message || 'Login failed');
       }
 
       const result = await response.json();
-      console.log('Login successful:', result.user?.username);
-      
       // Store session ID in localStorage for manual session management
       if (result.sessionId) {
         localStorage.setItem('sessionId', result.sessionId);
-        console.log('Session ID stored in localStorage');
       }
       
       return result;
     },
     onSuccess: (data) => {
-      console.log('Setting auth data in cache');
+      // console.log('Setting auth data in cache');
       queryClient.setQueryData(['/api/auth/me'], data);
       // Force refresh of auth query after successful login
       queryClient.invalidateQueries({ queryKey: ['/api/auth/me'] });
