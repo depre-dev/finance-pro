@@ -183,7 +183,7 @@ export default function Projects() {
               <SelectContent>
                 <SelectItem value="all">All Releases</SelectItem>
                 {uniqueTargetReleases.map(release => (
-                  <SelectItem key={release} value={release}>
+                  <SelectItem key={release} value={release || ''}>
                     {release}
                   </SelectItem>
                 ))}
