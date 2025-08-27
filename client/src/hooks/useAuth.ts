@@ -13,19 +13,26 @@ export function useAuth() {
   const { data: response, isLoading, error } = useQuery<AuthResponse>({
     queryKey: ['/api/auth/me'],
     queryFn: async () => {
+      console.log('Checking authentication status...');
       const res = await fetch('/api/auth/me', {
         credentials: 'include',
       });
       
+      console.log('Auth response status:', res.status);
+      
       if (res.status === 401) {
+        console.log('Not authenticated, returning null');
         return null;
       }
       
       if (!res.ok) {
+        console.log('Auth request failed:', res.statusText);
         throw new Error('Failed to fetch user');
       }
       
-      return res.json();
+      const data = await res.json();
+      console.log('User authenticated:', data.user?.username);
+      return data;
     },
     retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
