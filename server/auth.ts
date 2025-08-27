@@ -150,12 +150,17 @@ export class AuthService {
 // Authentication middleware
 export const authenticate = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    // Get session ID from cookie or Authorization header
+    // Get session ID from cookie, Authorization header, or x-session-id header
     const sessionId = req.cookies?.sessionId || 
-                     req.headers.authorization?.replace('Bearer ', '');
+                     req.headers.authorization?.replace('Bearer ', '') ||
+                     req.headers['x-session-id'] as string;
 
     console.log('Auth middleware - Path:', req.path, 'SessionId present:', !!sessionId);
-    console.log('Auth middleware - Cookies:', req.cookies);
+    console.log('Auth middleware - Headers:', {
+      cookie: req.headers.cookie,
+      authorization: req.headers.authorization,
+      'x-session-id': req.headers['x-session-id']
+    });
 
     if (!sessionId) {
       console.log('Auth middleware - No session ID found');

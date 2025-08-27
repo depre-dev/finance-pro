@@ -1,0 +1,1351 @@
+[Debug] [vite] connecting... (eruda.js, line 2)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Debug] [vite] connected. (eruda.js, line 2)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	postLocation (workspace_iframe.html:118)
+	onIframeLoad (workspace_iframe.html:132)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	postLocation (workspace_iframe.html:118)
+	onIframeLoad (workspace_iframe.html:132)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	postLocation (workspace_iframe.html:118)
+	onIframeLoad (workspace_iframe.html:132)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	postLocation (workspace_iframe.html:118)
+	onIframeLoad (workspace_iframe.html:132)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:98)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:98)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:98)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:98)
+[Log] Checking authentication status... (eruda.js, line 2)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Failed to load resource: the server responded with a status of 401 (Unauthorized) (me, line 0)
+[Log] Auth response status: – 401 (eruda.js, line 2)
+[Log] Not authenticated, returning null (eruda.js, line 2)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation', 'allow-presentation', 'allow-orientation-lock' are invalid sandbox flags.
+	_ (framework-9095b9499b939500.js:1:44639)
+	(anonymous function) (framework-9095b9499b939500.js:1:143771)
+	uD (framework-9095b9499b939500.js:1:147434)
+	uI (framework-9095b9499b939500.js:1:140384)
+	uM (framework-9095b9499b939500.js:1:140194)
+	uS (framework-9095b9499b939500.js:1:135267)
+	C (framework-9095b9499b939500.js:1:206175)
+	z (framework-9095b9499b939500.js:1:206705)
+[Error] The source list for Content Security Policy directive 'default-src' contains an invalid source: ''unsafe-dynamic''. It will be ignored.
+[Error] The Content Security Policy directive 'default-src' contains 'report-uri' as a source expression. Did you mean 'default-src ...; report-uri...' (note the semicolon)?
+[Error] The source list for Content Security Policy directive 'default-src' contains a source with an invalid path: '/api/4509669501698048/security/?sentry_key=7eb3d90eb4660416caf507087367e67e'. The query component, including the '?', will be ignored.
+[Error] Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation', 'allow-presentation', 'allow-orientation-lock' are invalid sandbox flags. (workspace_iframe.html, line 32)
+[Debug] [vite] connecting... (eruda.js, line 2)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Debug] [vite] connected. (eruda.js, line 2)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Log] Checking authentication status... (eruda.js, line 2)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	postLocation (workspace_iframe.html:118)
+	onIframeLoad (workspace_iframe.html:132)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	postLocation (workspace_iframe.html:118)
+	onIframeLoad (workspace_iframe.html:132)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	postLocation (workspace_iframe.html:118)
+	onIframeLoad (workspace_iframe.html:132)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	postLocation (workspace_iframe.html:118)
+	onIframeLoad (workspace_iframe.html:132)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:98)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:98)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:98)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:98)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Failed to load resource: the server responded with a status of 401 (Unauthorized) (me, line 0)
+[Log] Auth response status: – 401 (eruda.js, line 2)
+[Log] Not authenticated, returning null (eruda.js, line 2)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	postLocation (workspace_iframe.html:118)
+	dispatchEvent
+	(anonymous function) (injected.js:291)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	postLocation (workspace_iframe.html:118)
+	dispatchEvent
+	(anonymous function) (injected.js:291)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	postLocation (workspace_iframe.html:118)
+	dispatchEvent
+	(anonymous function) (injected.js:291)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	postLocation (workspace_iframe.html:118)
+	dispatchEvent
+	(anonymous function) (injected.js:291)
+[Error] WebSocket connection to 'wss://eval.kirk.platform.replit.com/wsv2/v2.public.Q2dZSW52Uzd4UVlTQmdpOWtMekZCaUlFYTJseWF6QUFPczRCQ2lReFpqazBNV1U0T0MwMFpqQTRMVFEzTVRndE9UVXpOUzAxTmpZMk9HSTFOakZsWlRZU0EyNXBlQm9XY21Wd2JHbDBMWEpsY0d3dFptbHNaWE10YTJseWF5SVJSbWx1WVc1amFXRnNSbTl5ZEhKbGMzTXFDSEJyZFhKcFoyVnlRazRLRjNKbGNHeHBkQzF5WlhCc0xXSnNiMk5yY3kxcmFYSnJFaFZ5WlhCc2FYUXRjbVZ3YkMxdFpYUmhMV3RwY21zYUhISmxjR3hwZEMxdFlYSm5ZWEpwYm1VdFlteHZZMnR6TFd0cGNtdEtCd2lCNU5BVkVBRlFBRm9QYVc1MFpXNTBYM0JsY25OdmJtRnNlQUJTSXdnQkVJQ0FnSUFnR1FBQUFBQUFBQkJBSVFBQUFBQUFBQkJBS0lDQWdJRElBVEFDWUFCcUR3aUI1TkFWRWdod2EzVnlhV2RsY29JQkFpb0FtZ0VLQ2dnd0xqQXVNVFkzTTZBQkFRPT1ZAPmaV_jsSdn3E8WLSj9BVJs1UShNPDW4FdEjIuaVMsp7yw7UjdT2rMzOtSnpeDJAtImnNJ3TlJJrmmaL_AkL.Q2dad2NtOWtPak1pQ25KbGNHeHBkQzVqYjIwPQ' failed: The network connection was lost.
+[Error] WebSocket connection to 'wss://eval.kirk.platform.replit.com/wsv2/v2.public.Q2dZSW52Uzd4UVlTQmdpOWtMekZCaUlFYTJseWF6QUFPczRCQ2lReFpqazBNV1U0T0MwMFpqQTRMVFEzTVRndE9UVXpOUzAxTmpZMk9HSTFOakZsWlRZU0EyNXBlQm9XY21Wd2JHbDBMWEpsY0d3dFptbHNaWE10YTJseWF5SVJSbWx1WVc1amFXRnNSbTl5ZEhKbGMzTXFDSEJyZFhKcFoyVnlRazRLRjNKbGNHeHBkQzF5WlhCc0xXSnNiMk5yY3kxcmFYSnJFaFZ5WlhCc2FYUXRjbVZ3YkMxdFpYUmhMV3RwY21zYUhISmxjR3hwZEMxdFlYSm5ZWEpwYm1VdFlteHZZMnR6TFd0cGNtdEtCd2lCNU5BVkVBRlFBRm9QYVc1MFpXNTBYM0JsY25OdmJtRnNlQUJTSXdnQkVJQ0FnSUFnR1FBQUFBQUFBQkJBSVFBQUFBQUFBQkJBS0lDQWdJRElBVEFDWUFOcUR3aUI1TkFWRWdod2EzVnlhV2RsY29JQkFpb0FtZ0VLQ2dnd0xqQXVNVFkzTTZBQkFRPT1ZiNoYlkEZUsi1dvi3glUcKeX9Y5d_VQtU_BAkk_OU2DO8--1lNrvTGGwsgWXvs4z4gK5j9qvoFAY2PfjNf9cM.Q2dad2NtOWtPak1pQ25KbGNHeHBkQzVqYjIwPQ' failed: The network connection was lost.
+[Error] WebSocket connection to 'wss://production-chort.replit.com/api/river' failed: The network connection was lost.
+[Error] WebSocket connection to 'wss://replit.com/graphql_subscriptions' failed: The network connection was lost.
+[Error] WebSocket connection to 'wss://production-ai-chat.replit.com/river?auth_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQ1MzYzNzEzLCJ1c2VyVGltZUNyZWF0ZWQiOiIyMDI1LTA3LTIyVDEwOjAzOjIzLjE2N1oiLCJyZXBsSWQiOiIxZjk0MWU4OC00ZjA4LTQ3MTgtOTUzNS01NjY2OGI1NjFlZTYiLCJtZW1iZXJzaGlwIjoiY29yZSIsImlzc3VlciI6Imh0dHBzOi8vcmVwbGl0LXdlYi1wcm9kLnAucmVwbGl0LmNvbSIsInJvbGVzIjpbImludGVudF9wZXJzb25hbCJdLCJjYW5Xcml0ZSI6dHJ1ZSwiaGFzUmVwbGl0QWlQcm8iOnRydWUsImZsYWdnaW5nQ29udGV4dCI6IntcImtleVwiOlwidXNlcjo0NTM2MzcxM1wiLFwia2luZFwiOlwib3duZXJcIixcInJvbGVzXCI6W1wiaW50ZW50X3BlcnNvbmFsXCJdLFwiaXNfdGVhbVwiOmZhbHNlLFwibWVtYmVyc2hpcFwiOlwiY29yZVwifSIsImlhdCI6MTc1NjI5Nzc3MywiZXhwIjoxNzU2MzAxMzczfQ.eQWa1VpQKlo7kSD_OV9CjIbCvfirVixbCSgRj1KyOxd9taLHiyGNlGXKJG6toyIaHZjQsyPZXIZyVxVGfI9SqEmdFOHAyXchyBsFoOSos1yRd5Bb7AmX5NWxkbQC_HYYWjcIQA42d9wh3V9Va-uSRE5VSCfmSieUMDMjDrgAxEiDH8yTf9v86FaIaskac8dSlDPng3Y-nkk9MzRIv_W68iOjN9W8CkfsT3r7eRBPpXwTPzVZHfLffogaGurad2viR17bqkk6kWpCJgbUD_4gIjh9oQ4ctb0fj66KsqrC4yNaLEBjifyYqNHmC6okz5Nq3Qf9C4QNCkGNfkN7fvQwqw' failed: The network connection was lost.
+[Error] WebSocket connection to 'wss://eval.kirk.platform.replit.com/wsv2/v2.public.Q2dZSW52Uzd4UVlTQmdpOWtMekZCaUlFYTJseWF6QUFPczRCQ2lReFpqazBNV1U0T0MwMFpqQTRMVFEzTVRndE9UVXpOUzAxTmpZMk9HSTFOakZsWlRZU0EyNXBlQm9XY21Wd2JHbDBMWEpsY0d3dFptbHNaWE10YTJseWF5SVJSbWx1WVc1amFXRnNSbTl5ZEhKbGMzTXFDSEJyZFhKcFoyVnlRazRLRjNKbGNHeHBkQzF5WlhCc0xXSnNiMk5yY3kxcmFYSnJFaFZ5WlhCc2FYUXRjbVZ3YkMxdFpYUmhMV3RwY21zYUhISmxjR3hwZEMxdFlYSm5ZWEpwYm1VdFlteHZZMnR6TFd0cGNtdEtCd2lCNU5BVkVBRlFBRm9QYVc1MFpXNTBYM0JsY25OdmJtRnNlQUJTSXdnQkVJQ0FnSUFnR1FBQUFBQUFBQkJBSVFBQUFBQUFBQkJBS0lDQWdJRElBVEFDWUFCcUR3aUI1TkFWRWdod2EzVnlhV2RsY29JQkFpb0FtZ0VLQ2dnd0xqQXVNVFkzTTZBQkFRPT1ZAPmaV_jsSdn3E8WLSj9BVJs1UShNPDW4FdEjIuaVMsp7yw7UjdT2rMzOtSnpeDJAtImnNJ3TlJJrmmaL_AkL.Q2dad2NtOWtPak1pQ25KbGNHeHBkQzVqYjIwPQ' failed: The Internet connection appears to be offline.
+[Error] Failed to load resource: The Internet connection appears to be offline. (logs, line 0)
+[Error] Failed to load resource: The Internet connection appears to be offline. (logs, line 0)
+[Error] Failed to load resource: The Internet connection appears to be offline. (get_connection_metadata, line 0)
+[Error] WebSocket connection to 'wss://production-chort.replit.com/api/river' failed: The Internet connection appears to be offline.
+[Error] Failed to load resource: The Internet connection appears to be offline. (b, line 0)
+[Error] Unhandled Promise Rejection: FetchError: Error fetching https://r.stripe.com/b: Load failed
+[Error] Failed to load resource: The Internet connection appears to be offline. (logs, line 0)
+[Error] Failed to load resource: The Internet connection appears to be offline. (logs, line 0)
+[Error] Failed to load resource: The Internet connection appears to be offline. (62b35a865152ab14c5942820, line 0)
+[Error] Failed to load resource: The Internet connection appears to be offline. (62b35a865152ab14c5942820, line 0)
+[Error] WebSocket connection to 'wss://production-ai-chat.replit.com/river?auth_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQ1MzYzNzEzLCJ1c2VyVGltZUNyZWF0ZWQiOiIyMDI1LTA3LTIyVDEwOjAzOjIzLjE2N1oiLCJyZXBsSWQiOiIxZjk0MWU4OC00ZjA4LTQ3MTgtOTUzNS01NjY2OGI1NjFlZTYiLCJtZW1iZXJzaGlwIjoiY29yZSIsImlzc3VlciI6Imh0dHBzOi8vcmVwbGl0LXdlYi1wcm9kLnAucmVwbGl0LmNvbSIsInJvbGVzIjpbImludGVudF9wZXJzb25hbCJdLCJjYW5Xcml0ZSI6dHJ1ZSwiaGFzUmVwbGl0QWlQcm8iOnRydWUsImZsYWdnaW5nQ29udGV4dCI6IntcImtleVwiOlwidXNlcjo0NTM2MzcxM1wiLFwia2luZFwiOlwib3duZXJcIixcInJvbGVzXCI6W1wiaW50ZW50X3BlcnNvbmFsXCJdLFwiaXNfdGVhbVwiOmZhbHNlLFwibWVtYmVyc2hpcFwiOlwiY29yZVwifSIsImlhdCI6MTc1NjI5Nzc3MywiZXhwIjoxNzU2MzAxMzczfQ.eQWa1VpQKlo7kSD_OV9CjIbCvfirVixbCSgRj1KyOxd9taLHiyGNlGXKJG6toyIaHZjQsyPZXIZyVxVGfI9SqEmdFOHAyXchyBsFoOSos1yRd5Bb7AmX5NWxkbQC_HYYWjcIQA42d9wh3V9Va-uSRE5VSCfmSieUMDMjDrgAxEiDH8yTf9v86FaIaskac8dSlDPng3Y-nkk9MzRIv_W68iOjN9W8CkfsT3r7eRBPpXwTPzVZHfLffogaGurad2viR17bqkk6kWpCJgbUD_4gIjh9oQ4ctb0fj66KsqrC4yNaLEBjifyYqNHmC6okz5Nq3Qf9C4QNCkGNfkN7fvQwqw' failed: The Internet connection appears to be offline.
+[Error] Failed to load resource: The Internet connection appears to be offline. (get_connection_metadata, line 0)
+[Error] Failed to load resource: The Internet connection appears to be offline. (logs, line 0)
+[Error] Failed to load resource: The Internet connection appears to be offline. (logs, line 0)
+[Error] WebSocket connection to 'wss://production-chort.replit.com/api/river' failed: The Internet connection appears to be offline.
+[Error] WebSocket connection to 'wss://production-ai-chat.replit.com/river?auth_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQ1MzYzNzEzLCJ1c2VyVGltZUNyZWF0ZWQiOiIyMDI1LTA3LTIyVDEwOjAzOjIzLjE2N1oiLCJyZXBsSWQiOiIxZjk0MWU4OC00ZjA4LTQ3MTgtOTUzNS01NjY2OGI1NjFlZTYiLCJtZW1iZXJzaGlwIjoiY29yZSIsImlzc3VlciI6Imh0dHBzOi8vcmVwbGl0LXdlYi1wcm9kLnAucmVwbGl0LmNvbSIsInJvbGVzIjpbImludGVudF9wZXJzb25hbCJdLCJjYW5Xcml0ZSI6dHJ1ZSwiaGFzUmVwbGl0QWlQcm8iOnRydWUsImZsYWdnaW5nQ29udGV4dCI6IntcImtleVwiOlwidXNlcjo0NTM2MzcxM1wiLFwia2luZFwiOlwib3duZXJcIixcInJvbGVzXCI6W1wiaW50ZW50X3BlcnNvbmFsXCJdLFwiaXNfdGVhbVwiOmZhbHNlLFwibWVtYmVyc2hpcFwiOlwiY29yZVwifSIsImlhdCI6MTc1NjI5Nzc3MywiZXhwIjoxNzU2MzAxMzczfQ.eQWa1VpQKlo7kSD_OV9CjIbCvfirVixbCSgRj1KyOxd9taLHiyGNlGXKJG6toyIaHZjQsyPZXIZyVxVGfI9SqEmdFOHAyXchyBsFoOSos1yRd5Bb7AmX5NWxkbQC_HYYWjcIQA42d9wh3V9Va-uSRE5VSCfmSieUMDMjDrgAxEiDH8yTf9v86FaIaskac8dSlDPng3Y-nkk9MzRIv_W68iOjN9W8CkfsT3r7eRBPpXwTPzVZHfLffogaGurad2viR17bqkk6kWpCJgbUD_4gIjh9oQ4ctb0fj66KsqrC4yNaLEBjifyYqNHmC6okz5Nq3Qf9C4QNCkGNfkN7fvQwqw' failed: The Internet connection appears to be offline.
+[Error] Failed to load resource: The Internet connection appears to be offline. (logs, line 0)
+[Error] Failed to load resource: The Internet connection appears to be offline. (get_connection_metadata, line 0)
+[Error] Failed to load resource: The Internet connection appears to be offline. (logs, line 0)
+[Error] WebSocket connection to 'wss://replit.com/graphql_subscriptions' failed: The Internet connection appears to be offline.
+[Error] Failed to load resource: The Internet connection appears to be offline. (get_connection_metadata, line 0)
+[Error] WebSocket connection to 'wss://production-chort.replit.com/api/river' failed: The Internet connection appears to be offline.
+[Error] Failed to load resource: The Internet connection appears to be offline. (logs, line 0)
+[Error] Failed to load resource: The Internet connection appears to be offline. (logs, line 0)
+[Error] Failed to load resource: The Internet connection appears to be offline. (62b35a865152ab14c5942820, line 0)
+[Error] Failed to load resource: The Internet connection appears to be offline. (62b35a865152ab14c5942820, line 0)
+[Error] WebSocket connection to 'wss://production-ai-chat.replit.com/river?auth_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQ1MzYzNzEzLCJ1c2VyVGltZUNyZWF0ZWQiOiIyMDI1LTA3LTIyVDEwOjAzOjIzLjE2N1oiLCJyZXBsSWQiOiIxZjk0MWU4OC00ZjA4LTQ3MTgtOTUzNS01NjY2OGI1NjFlZTYiLCJtZW1iZXJzaGlwIjoiY29yZSIsImlzc3VlciI6Imh0dHBzOi8vcmVwbGl0LXdlYi1wcm9kLnAucmVwbGl0LmNvbSIsInJvbGVzIjpbImludGVudF9wZXJzb25hbCJdLCJjYW5Xcml0ZSI6dHJ1ZSwiaGFzUmVwbGl0QWlQcm8iOnRydWUsImZsYWdnaW5nQ29udGV4dCI6IntcImtleVwiOlwidXNlcjo0NTM2MzcxM1wiLFwia2luZFwiOlwib3duZXJcIixcInJvbGVzXCI6W1wiaW50ZW50X3BlcnNvbmFsXCJdLFwiaXNfdGVhbVwiOmZhbHNlLFwibWVtYmVyc2hpcFwiOlwiY29yZVwifSIsImlhdCI6MTc1NjI5Nzc3MywiZXhwIjoxNzU2MzAxMzczfQ.eQWa1VpQKlo7kSD_OV9CjIbCvfirVixbCSgRj1KyOxd9taLHiyGNlGXKJG6toyIaHZjQsyPZXIZyVxVGfI9SqEmdFOHAyXchyBsFoOSos1yRd5Bb7AmX5NWxkbQC_HYYWjcIQA42d9wh3V9Va-uSRE5VSCfmSieUMDMjDrgAxEiDH8yTf9v86FaIaskac8dSlDPng3Y-nkk9MzRIv_W68iOjN9W8CkfsT3r7eRBPpXwTPzVZHfLffogaGurad2viR17bqkk6kWpCJgbUD_4gIjh9oQ4ctb0fj66KsqrC4yNaLEBjifyYqNHmC6okz5Nq3Qf9C4QNCkGNfkN7fvQwqw' failed: The Internet connection appears to be offline.
+[Error] Failed to load resource: The Internet connection appears to be offline. (get_connection_metadata, line 0)
+[Error] WebSocket connection to 'wss://replit.com/graphql_subscriptions' failed: The Internet connection appears to be offline.
+[Error] Failed to load resource: The Internet connection appears to be offline. (logs, line 0)
+[Error] Failed to load resource: The Internet connection appears to be offline. (logs, line 0)
+[Error] Failed to load resource: The Internet connection appears to be offline. (62b35a865152ab14c5942820, line 0)
+[Error] Failed to load resource: The Internet connection appears to be offline. (62b35a865152ab14c5942820, line 0)
+[Error] Reached maximum amount of queued data of 64Kb for keepalive requests
+	(anonymous function) (_app-e61c7b16defb6651.js:40:1847)
+	(anonymous function) (_app-e61c7b16defb6651.js:38:21587)
+	add (_app-e61c7b16defb6651.js:38:20944)
+	i (_app-e61c7b16defb6651.js:38:21581)
+	_sendEnvelope (_app-e61c7b16defb6651.js:38:231)
+	sendEvent (_app-e61c7b16defb6651.js:36:6562)
+	(anonymous function) (_app-e61c7b16defb6651.js:37:3074)
+	(anonymous function) (_app-e61c7b16defb6651.js:1:1132)
+	(anonymous function) (_app-e61c7b16defb6651.js:1:1874)
+	forEach
+	(anonymous function) (_app-e61c7b16defb6651.js:1:1832)
+	(anonymous function) (_app-e61c7b16defb6651.js:1:1231)
+	s (_app-e61c7b16defb6651.js:1:1006)
+	then (_app-e61c7b16defb6651.js:1:1083)
+	_processEvent (_app-e61c7b16defb6651.js:37:2755)
+	_captureEvent (_app-e61c7b16defb6651.js:37:1634)
+	(anonymous function) (_app-e61c7b16defb6651.js:1:1132)
+	(anonymous function) (_app-e61c7b16defb6651.js:1:1874)
+	forEach
+	(anonymous function) (_app-e61c7b16defb6651.js:1:1832)
+	(anonymous function) (_app-e61c7b16defb6651.js:1:1231)
+	s (_app-e61c7b16defb6651.js:1:1006)
+	then (_app-e61c7b16defb6651.js:1:1083)
+	captureException (_app-e61c7b16defb6651.js:36:3667)
+	captureException (_app-e61c7b16defb6651.js:1:38080)
+	captureException (_app-e61c7b16defb6651.js:6:1705)
+	(anonymous function) (8179-b2df2cc2b326fe23.js:1:143874)
+	withScope (_app-e61c7b16defb6651.js:6:1191)
+	c (8179-b2df2cc2b326fe23.js:1:143816)
+	onRetriesExceeded (8179-b2df2cc2b326fe23.js:1:239129)
+	onRetriesExceeded (8179-b2df2cc2b326fe23.js:1:240941)
+	(anonymous function) (8179-b2df2cc2b326fe23.js:1:154337)
+	dispatchEvent (363-510a7de0e68ee274.js:1:134784)
+	protocolError (363-510a7de0e68ee274.js:1:150171)
+	connect (363-510a7de0e68ee274.js:1:157922)
+	tryReconnecting (363-510a7de0e68ee274.js:1:154322)
+	onHandshakeResponse (363-510a7de0e68ee274.js:1:156115)
+	onHandshake (363-510a7de0e68ee274.js:1:155082)
+	(anonymous function) (363-510a7de0e68ee274.js:1:7467)
+	onData (363-510a7de0e68ee274.js:1:160196)
+	(anonymous function) (363-510a7de0e68ee274.js:1:161262)
+[Error] Fetch API cannot load https://o1151714.ingest.sentry.io/api/6318792/envelope/?sentry_key=8aa91189a4274b5a8c9b7b01d46ea360&sentry_version=7&sentry_client=sentry.javascript.browser%2F7.112.0 due to access control checks.
+	(anonymous function) (_app-e61c7b16defb6651.js:40:1847)
+	(anonymous function) (_app-e61c7b16defb6651.js:38:21587)
+	add (_app-e61c7b16defb6651.js:38:20944)
+	i (_app-e61c7b16defb6651.js:38:21581)
+	_sendEnvelope (_app-e61c7b16defb6651.js:38:231)
+	sendEvent (_app-e61c7b16defb6651.js:36:6562)
+	(anonymous function) (_app-e61c7b16defb6651.js:37:3074)
+	(anonymous function) (_app-e61c7b16defb6651.js:1:1132)
+	(anonymous function) (_app-e61c7b16defb6651.js:1:1874)
+	forEach
+	(anonymous function) (_app-e61c7b16defb6651.js:1:1832)
+	(anonymous function) (_app-e61c7b16defb6651.js:1:1231)
+	s (_app-e61c7b16defb6651.js:1:1006)
+	then (_app-e61c7b16defb6651.js:1:1083)
+	_processEvent (_app-e61c7b16defb6651.js:37:2755)
+	_captureEvent (_app-e61c7b16defb6651.js:37:1634)
+	(anonymous function) (_app-e61c7b16defb6651.js:1:1132)
+	(anonymous function) (_app-e61c7b16defb6651.js:1:1874)
+	forEach
+	(anonymous function) (_app-e61c7b16defb6651.js:1:1832)
+	(anonymous function) (_app-e61c7b16defb6651.js:1:1231)
+	s (_app-e61c7b16defb6651.js:1:1006)
+	then (_app-e61c7b16defb6651.js:1:1083)
+	captureException (_app-e61c7b16defb6651.js:36:3667)
+	captureException (_app-e61c7b16defb6651.js:1:38080)
+	captureException (_app-e61c7b16defb6651.js:6:1705)
+	(anonymous function) (8179-b2df2cc2b326fe23.js:1:143874)
+	withScope (_app-e61c7b16defb6651.js:6:1191)
+	c (8179-b2df2cc2b326fe23.js:1:143816)
+	onRetriesExceeded (8179-b2df2cc2b326fe23.js:1:239129)
+	onRetriesExceeded (8179-b2df2cc2b326fe23.js:1:240941)
+	(anonymous function) (8179-b2df2cc2b326fe23.js:1:154337)
+	dispatchEvent (363-510a7de0e68ee274.js:1:134784)
+	protocolError (363-510a7de0e68ee274.js:1:150171)
+	connect (363-510a7de0e68ee274.js:1:157922)
+	tryReconnecting (363-510a7de0e68ee274.js:1:154322)
+	onHandshakeResponse (363-510a7de0e68ee274.js:1:156115)
+	onHandshake (363-510a7de0e68ee274.js:1:155082)
+	(anonymous function) (363-510a7de0e68ee274.js:1:7467)
+	onData (363-510a7de0e68ee274.js:1:160196)
+	(anonymous function) (363-510a7de0e68ee274.js:1:161262)
+[Info] Successfully preconnected to https://replit.com/
+[Error] Source Map loading errors (x4)
+[Error] Failed to load resource: the server responded with a status of 404 () (abe12dc207fb31c0.css.map, line 0)
+[Error] Failed to load resource: the server responded with a status of 404 () (d3fb1d87995f35f7.css.map, line 0)
+[Error] Failed to load resource: the server responded with a status of 404 () (d6dc23b7db169dcb.css.map, line 0)
+[Error] Failed to load resource: the server responded with a status of 404 () (abe12dc207fb31c0.css.map, line 0)
+[Log]  (_app-e61c7b16defb6651.js, line 38)
+      /////////////////////
+   ///////////////////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////        Curious and driven?
+  ///////////////@@@@@@@///////        Work with us!
+  ///////////////@@@@@@@///////
+  ///////////////@@@@@@@///////        https://join.replit.com/hack.with.us
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@#//////////////
+   ///////////////////////////
+      /////////////////////
+      
+[Info] [LaunchDarkly] LaunchDarkly client initialized (_app-e61c7b16defb6651.js, line 38)
+[Error] The source list for Content Security Policy directive 'default-src' contains an invalid source: ''unsafe-dynamic''. It will be ignored.
+[Error] The Content Security Policy directive 'default-src' contains 'report-uri' as a source expression. Did you mean 'default-src ...; report-uri...' (note the semicolon)?
+[Error] The source list for Content Security Policy directive 'default-src' contains a source with an invalid path: '/api/4509669501698048/security/?sentry_key=7eb3d90eb4660416caf507087367e67e'. The query component, including the '?', will be ignored.
+[Error] The source list for Content Security Policy directive 'default-src' contains an invalid source: ''unsafe-dynamic''. It will be ignored.
+[Error] The Content Security Policy directive 'default-src' contains 'report-uri' as a source expression. Did you mean 'default-src ...; report-uri...' (note the semicolon)?
+[Error] The source list for Content Security Policy directive 'default-src' contains a source with an invalid path: '/api/4509669501698048/security/?sentry_key=7eb3d90eb4660416caf507087367e67e'. The query component, including the '?', will be ignored.
+[Info] Successfully preconnected to https://api.stripe.com/
+[Error] The source list for Content Security Policy directive 'default-src' contains an invalid source: ''unsafe-dynamic''. It will be ignored.
+[Error] The Content Security Policy directive 'default-src' contains 'report-uri' as a source expression. Did you mean 'default-src ...; report-uri...' (note the semicolon)?
+[Error] The source list for Content Security Policy directive 'default-src' contains a source with an invalid path: '/api/4509669501698048/security/?sentry_key=7eb3d90eb4660416caf507087367e67e'. The query component, including the '?', will be ignored.
+[Error] Cancelled load to https://www.gstatic.com/recaptcha/releases/_mscDd1KHr60EWWbt2I_ULP0/styles__ltr.css because it violates the resource's Cross-Origin-Resource-Policy response header.
+[Error] Failed to load resource: Cancelled load to https://www.gstatic.com/recaptcha/releases/_mscDd1KHr60EWWbt2I_ULP0/styles__ltr.css because it violates the resource's Cross-Origin-Resource-Policy response header. (styles__ltr.css, line 0)
+[Error] The source list for Content Security Policy directive 'default-src' contains an invalid source: ''unsafe-dynamic''. It will be ignored.
+[Error] The Content Security Policy directive 'default-src' contains 'report-uri' as a source expression. Did you mean 'default-src ...; report-uri...' (note the semicolon)?
+[Error] The source list for Content Security Policy directive 'default-src' contains a source with an invalid path: '/api/4509669501698048/security/?sentry_key=7eb3d90eb4660416caf507087367e67e'. The query component, including the '?', will be ignored.
+[Error] The source list for Content Security Policy directive 'default-src' contains an invalid source: ''unsafe-dynamic''. It will be ignored.
+[Error] The Content Security Policy directive 'default-src' contains 'report-uri' as a source expression. Did you mean 'default-src ...; report-uri...' (note the semicolon)?
+[Error] The source list for Content Security Policy directive 'default-src' contains a source with an invalid path: '/api/4509669501698048/security/?sentry_key=7eb3d90eb4660416caf507087367e67e'. The query component, including the '?', will be ignored.
+[Error] The source list for Content Security Policy directive 'default-src' contains an invalid source: ''unsafe-dynamic''. It will be ignored.
+[Error] The Content Security Policy directive 'default-src' contains 'report-uri' as a source expression. Did you mean 'default-src ...; report-uri...' (note the semicolon)?
+[Error] The source list for Content Security Policy directive 'default-src' contains a source with an invalid path: '/api/4509669501698048/security/?sentry_key=7eb3d90eb4660416caf507087367e67e'. The query component, including the '?', will be ignored.
+[Error] The source list for Content Security Policy directive 'default-src' contains an invalid source: ''unsafe-dynamic''. It will be ignored.
+[Error] The Content Security Policy directive 'default-src' contains 'report-uri' as a source expression. Did you mean 'default-src ...; report-uri...' (note the semicolon)?
+[Error] The source list for Content Security Policy directive 'default-src' contains a source with an invalid path: '/api/4509669501698048/security/?sentry_key=7eb3d90eb4660416caf507087367e67e'. The query component, including the '?', will be ignored.
+[Error] The source list for Content Security Policy directive 'default-src' contains an invalid source: ''unsafe-dynamic''. It will be ignored.
+[Error] The Content Security Policy directive 'default-src' contains 'report-uri' as a source expression. Did you mean 'default-src ...; report-uri...' (note the semicolon)?
+[Error] The source list for Content Security Policy directive 'default-src' contains a source with an invalid path: '/api/4509669501698048/security/?sentry_key=7eb3d90eb4660416caf507087367e67e'. The query component, including the '?', will be ignored.
+[Error] The source list for Content Security Policy directive 'default-src' contains an invalid source: ''unsafe-dynamic''. It will be ignored.
+[Error] The Content Security Policy directive 'default-src' contains 'report-uri' as a source expression. Did you mean 'default-src ...; report-uri...' (note the semicolon)?
+[Error] The source list for Content Security Policy directive 'default-src' contains a source with an invalid path: '/api/4509669501698048/security/?sentry_key=7eb3d90eb4660416caf507087367e67e'. The query component, including the '?', will be ignored.
+[Error] The source list for Content Security Policy directive 'default-src' contains an invalid source: ''unsafe-dynamic''. It will be ignored.
+[Error] The Content Security Policy directive 'default-src' contains 'report-uri' as a source expression. Did you mean 'default-src ...; report-uri...' (note the semicolon)?
+[Error] The source list for Content Security Policy directive 'default-src' contains a source with an invalid path: '/api/4509669501698048/security/?sentry_key=7eb3d90eb4660416caf507087367e67e'. The query component, including the '?', will be ignored.
+[Error] The source list for Content Security Policy directive 'default-src' contains an invalid source: ''unsafe-dynamic''. It will be ignored.
+[Error] The Content Security Policy directive 'default-src' contains 'report-uri' as a source expression. Did you mean 'default-src ...; report-uri...' (note the semicolon)?
+[Error] The source list for Content Security Policy directive 'default-src' contains a source with an invalid path: '/api/4509669501698048/security/?sentry_key=7eb3d90eb4660416caf507087367e67e'. The query component, including the '?', will be ignored.
+[Error] Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation', 'allow-presentation', 'allow-orientation-lock' are invalid sandbox flags.
+	_ (framework-9095b9499b939500.js:1:44639)
+	(anonymous function) (framework-9095b9499b939500.js:1:143771)
+	uD (framework-9095b9499b939500.js:1:147434)
+	uI (framework-9095b9499b939500.js:1:140384)
+	uM (framework-9095b9499b939500.js:1:140194)
+	uS (framework-9095b9499b939500.js:1:135267)
+	C (framework-9095b9499b939500.js:1:206175)
+	z (framework-9095b9499b939500.js:1:206705)
+[Error] The source list for Content Security Policy directive 'default-src' contains an invalid source: ''unsafe-dynamic''. It will be ignored.
+[Error] The Content Security Policy directive 'default-src' contains 'report-uri' as a source expression. Did you mean 'default-src ...; report-uri...' (note the semicolon)?
+[Error] The source list for Content Security Policy directive 'default-src' contains a source with an invalid path: '/api/4509669501698048/security/?sentry_key=7eb3d90eb4660416caf507087367e67e'. The query component, including the '?', will be ignored.
+[Error] Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation', 'allow-presentation', 'allow-orientation-lock' are invalid sandbox flags. (workspace_iframe.html, line 32)
+[Debug] [vite] connecting... (eruda.js, line 2)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Debug] [vite] connected. (eruda.js, line 2)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	postLocation (workspace_iframe.html:118)
+	onIframeLoad (workspace_iframe.html:132)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	postLocation (workspace_iframe.html:118)
+	onIframeLoad (workspace_iframe.html:132)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	postLocation (workspace_iframe.html:118)
+	onIframeLoad (workspace_iframe.html:132)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	postLocation (workspace_iframe.html:118)
+	onIframeLoad (workspace_iframe.html:132)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:98)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:98)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:98)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:98)
+[Log] Checking authentication status... (eruda.js, line 2)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Failed to load resource: the server responded with a status of 401 (Unauthorized) (me, line 0)
+[Log] Auth response status: – 401 (eruda.js, line 2)
+[Log] Not authenticated, returning null (eruda.js, line 2)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	postLocation (workspace_iframe.html:118)
+	dispatchEvent
+	(anonymous function) (injected.js:291)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	postLocation (workspace_iframe.html:118)
+	dispatchEvent
+	(anonymous function) (injected.js:291)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	postLocation (workspace_iframe.html:118)
+	dispatchEvent
+	(anonymous function) (injected.js:291)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	postLocation (workspace_iframe.html:118)
+	dispatchEvent
+	(anonymous function) (injected.js:291)
+[Log] Attempting login... (eruda.js, line 2)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Log] Login successful: – "testuser" (eruda.js, line 2)
+[Log] Setting auth data in cache (eruda.js, line 2)
+[Log] Checking authentication status... (eruda.js, line 2)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	postLocation (workspace_iframe.html:118)
+	dispatchEvent
+	(anonymous function) (injected.js:291)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	postLocation (workspace_iframe.html:118)
+	dispatchEvent
+	(anonymous function) (injected.js:291)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	postLocation (workspace_iframe.html:118)
+	dispatchEvent
+	(anonymous function) (injected.js:291)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	postLocation (workspace_iframe.html:118)
+	dispatchEvent
+	(anonymous function) (injected.js:291)
+[Error] Failed to load resource: the server responded with a status of 401 (Unauthorized) (me, line 0)
+[Log] Auth response status: – 401 (eruda.js, line 2)
+[Log] Not authenticated, returning null (eruda.js, line 2)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	postLocation (workspace_iframe.html:118)
+	dispatchEvent
+	(anonymous function) (injected.js:291)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	postLocation (workspace_iframe.html:118)
+	dispatchEvent
+	(anonymous function) (injected.js:291)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	postLocation (workspace_iframe.html:118)
+	dispatchEvent
+	(anonymous function) (injected.js:291)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	postLocation (workspace_iframe.html:118)
+	dispatchEvent
+	(anonymous function) (injected.js:291)
+[Error] Failed to load resource: the server responded with a status of 401 (Unauthorized) (metrics, line 0)
+[Error] Failed to load resource: the server responded with a status of 401 (Unauthorized) (projects, line 0)
+[Error] Failed to load resource: the server responded with a status of 401 (Unauthorized) (charge-history, line 0)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] WebSocket connection to 'wss://1f941e88-4f08-4718-9535-56668b561ee6-00-oo5gpthatyrv.kirk.replit.dev/?token=CmcXxDVmloDj' failed: The network connection was lost.
+[Log] [vite] server connection lost. Polling for restart... (eruda.js, line 2)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Debug] [vite] connecting... (eruda.js, line 2)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Debug] [vite] connected. (eruda.js, line 2)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Log] Checking authentication status... (eruda.js, line 2)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	postLocation (workspace_iframe.html:118)
+	onIframeLoad (workspace_iframe.html:132)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	postLocation (workspace_iframe.html:118)
+	onIframeLoad (workspace_iframe.html:132)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	postLocation (workspace_iframe.html:118)
+	onIframeLoad (workspace_iframe.html:132)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	postLocation (workspace_iframe.html:118)
+	onIframeLoad (workspace_iframe.html:132)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:98)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:98)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:98)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:98)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Failed to load resource: the server responded with a status of 401 (Unauthorized) (me, line 0)
+[Log] Auth response status: – 401 (eruda.js, line 2)
+[Log] Not authenticated, returning null (eruda.js, line 2)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.replit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:43)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:44)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to https://staging.firewalledreplit.com. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:45)
+	(anonymous function) (workspace_iframe.html:62)
+[Error] Unable to post message to http://localhost:3000. Recipient has origin https://replit.com.
+
+	postMessage
+	postMessageToWorkspace (workspace_iframe.html:46)
+	(anonymous function) (workspace_iframe.html:62)

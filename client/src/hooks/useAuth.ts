@@ -14,14 +14,21 @@ export function useAuth() {
     queryKey: ['/api/auth/me'],
     queryFn: async () => {
       console.log('Checking authentication status...');
+      const sessionId = localStorage.getItem('sessionId');
+      console.log('Session ID from localStorage:', sessionId ? 'present' : 'missing');
+      
       const res = await fetch('/api/auth/me', {
         credentials: 'include',
+        headers: {
+          ...(sessionId ? { 'x-session-id': sessionId } : {}),
+        },
       });
       
       console.log('Auth response status:', res.status);
       
       if (res.status === 401) {
-        console.log('Not authenticated, returning null');
+        console.log('Not authenticated, clearing localStorage');
+        localStorage.removeItem('sessionId');
         return null;
       }
       
@@ -61,6 +68,13 @@ export function useAuth() {
 
       const result = await response.json();
       console.log('Login successful:', result.user?.username);
+      
+      // Store session ID in localStorage for manual session management
+      if (result.sessionId) {
+        localStorage.setItem('sessionId', result.sessionId);
+        console.log('Session ID stored in localStorage');
+      }
+      
       return result;
     },
     onSuccess: (data) => {

@@ -56,9 +56,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         path: '/',
       });
 
-      // Return user without password
+      // Return user without password and include session ID
       const { password, ...userWithoutPassword } = user;
-      res.json({ user: userWithoutPassword });
+      res.json({ 
+        user: userWithoutPassword,
+        sessionId: sessionId // Send session ID to client for manual storage
+      });
     } catch (error) {
       console.error('Login error:', error);
       res.status(401).json({ message: error instanceof Error ? error.message : 'Login failed' });
