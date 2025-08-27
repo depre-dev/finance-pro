@@ -1,5 +1,9 @@
 import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
+import { useAuth } from "@/hooks/useAuth";
 import { 
   BarChart3, 
   Calculator, 
@@ -10,7 +14,8 @@ import {
   CreditCard,
   FileSpreadsheet,
   User,
-  Calendar 
+  Calendar,
+  LogOut
 } from "lucide-react";
 
 const navigation = [
@@ -24,6 +29,58 @@ const navigation = [
   { name: "Import/Export", href: "/import-export", icon: Download },
   { name: "Uploaded Data", href: "/uploaded-data", icon: FileSpreadsheet },
 ];
+
+function UserInfo() {
+  const { user, logout, isLoggingOut } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
+  if (!user) {
+    return null;
+  }
+
+  // Get user initials for avatar
+  const initials = user.name
+    .split(' ')
+    .map(n => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center">
+        <Avatar className="h-8 w-8">
+          <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+            {initials}
+          </AvatarFallback>
+        </Avatar>
+        <div className="ml-3 flex-1">
+          <p className="text-sm font-medium text-foreground">{user.name}</p>
+          <p className="text-xs text-neutral-50">{user.role}</p>
+        </div>
+      </div>
+      <Separator />
+      <Button
+        variant="ghost"
+        size="sm"
+        className="w-full justify-start text-neutral-50 hover:text-foreground hover:bg-neutral-10"
+        onClick={handleLogout}
+        disabled={isLoggingOut}
+        data-testid="button-logout"
+      >
+        <LogOut className="mr-2 h-4 w-4" />
+        {isLoggingOut ? 'Logging out...' : 'Logout'}
+      </Button>
+    </div>
+  );
+}
 
 export default function Sidebar() {
   const [location] = useLocation();
@@ -61,15 +118,7 @@ export default function Sidebar() {
       </nav>
       
       <div className="p-4 border-t border-neutral-20">
-        <div className="flex items-center">
-          <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-            <User className="text-primary-foreground h-4 w-4" />
-          </div>
-          <div className="ml-3">
-            <p className="text-sm font-medium text-foreground">John Smith</p>
-            <p className="text-xs text-neutral-50">Financial Analyst</p>
-          </div>
-        </div>
+        <UserInfo />
       </div>
     </aside>
   );

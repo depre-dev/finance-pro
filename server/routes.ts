@@ -1,36 +1,99 @@
 import type { Express, Request } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { AuthService, authenticate, optionalAuth } from "./auth";
 import { 
   insertProjectSchema,
   insertFinancialRecordSchema,
   insertBudgetCategorySchema,
-  insertProjectNoteSchema
+  insertProjectNoteSchema,
+  loginSchema,
+  registerSchema
 } from "@shared/schema";
 import { z } from "zod";
 import * as XLSX from "xlsx";
-
-// Extend Express Request type to include user
-declare global {
-  namespace Express {
-    interface Request {
-      user: { id: number };
-    }
-  }
-}
+import cookieParser from 'cookie-parser';
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Middleware to simulate user authentication (replace with real auth in production)
-  app.use('/api', (req, res, next) => {
-    // For demo purposes, simulate user ID 1
-    req.user = { id: 1 };
-    next();
+  // Add cookie parser middleware
+  app.use(cookieParser());
+
+  // Authentication routes (public)
+  app.post('/api/auth/register', async (req, res) => {
+    try {
+      const data = registerSchema.parse(req.body);
+      const { user, sessionId } = await AuthService.register(data);
+      
+      // Set session cookie
+      res.cookie('sessionId', sessionId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      });
+
+      // Return user without password
+      const { password, ...userWithoutPassword } = user;
+      res.status(201).json({ user: userWithoutPassword });
+    } catch (error) {
+      console.error('Registration error:', error);
+      res.status(400).json({ message: error instanceof Error ? error.message : 'Registration failed' });
+    }
   });
+
+  app.post('/api/auth/login', async (req, res) => {
+    try {
+      const data = loginSchema.parse(req.body);
+      const { user, sessionId } = await AuthService.login(data);
+      
+      // Set session cookie
+      res.cookie('sessionId', sessionId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      });
+
+      // Return user without password
+      const { password, ...userWithoutPassword } = user;
+      res.json({ user: userWithoutPassword });
+    } catch (error) {
+      console.error('Login error:', error);
+      res.status(401).json({ message: error instanceof Error ? error.message : 'Login failed' });
+    }
+  });
+
+  app.post('/api/auth/logout', authenticate, async (req, res) => {
+    try {
+      if (req.sessionId) {
+        await AuthService.logout(req.sessionId);
+      }
+      res.clearCookie('sessionId');
+      res.json({ message: 'Logged out successfully' });
+    } catch (error) {
+      console.error('Logout error:', error);
+      res.status(500).json({ message: 'Logout failed' });
+    }
+  });
+
+  app.get('/api/auth/me', authenticate, async (req, res) => {
+    try {
+      // Return current user without password
+      const { password, ...userWithoutPassword } = req.user!;
+      res.json({ user: userWithoutPassword });
+    } catch (error) {
+      console.error('Get user error:', error);
+      res.status(500).json({ message: 'Failed to get user information' });
+    }
+  });
+
+  // Protected routes - require authentication
+  app.use('/api', authenticate);
 
   // Dashboard metrics
   app.get("/api/dashboard/metrics", async (req, res) => {
     try {
-      const metrics = await storage.getDashboardMetrics(req.user.id);
+      const metrics = await storage.getDashboardMetrics(req.user!.id);
       res.json(metrics);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch dashboard metrics" });
@@ -40,7 +103,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get unique project names from Excel data
   app.get("/api/excel-project-names", async (req, res) => {
     try {
-      const projectNames = await storage.getExcelProjectNames(req.user.id);
+      const projectNames = await storage.getExcelProjectNames(req.user!.id);
       res.json(projectNames);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch project names from Excel data" });
@@ -50,7 +113,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get full project data from Excel by name
   app.get("/api/excel-project-data/:name", async (req, res) => {
     try {
-      const projectData = await storage.getExcelProjectData(req.user.id, req.params.name);
+      const projectData = await storage.getExcelProjectData(req.user!.id, req.params.name);
       res.json(projectData);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch project data from Excel" });
@@ -60,7 +123,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Projects endpoints
   app.get("/api/projects", async (req, res) => {
     try {
-      const projects = await storage.getProjects(req.user.id);
+      const projects = await storage.getProjects(req.user!.id);
       res.json(projects);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch projects" });
@@ -70,7 +133,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/projects/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      const project = await storage.getProject(id, req.user.id);
+      const project = await storage.getProject(id, req.user!.id);
       if (!project) {
         return res.status(404).json({ message: "Project not found" });
       }
@@ -84,7 +147,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = insertProjectSchema.parse({
         ...req.body,
-        userId: req.user.id
+        userId: req.user!.id
       });
       const project = await storage.createProject(validatedData);
       res.status(201).json(project);
@@ -100,7 +163,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const validatedData = insertProjectSchema.partial().parse(req.body);
-      const project = await storage.updateProject(id, req.user.id, validatedData);
+      const project = await storage.updateProject(id, req.user!.id, validatedData);
       if (!project) {
         return res.status(404).json({ message: "Project not found" });
       }
@@ -116,7 +179,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/projects/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      const deleted = await storage.deleteProject(id, req.user.id);
+      const deleted = await storage.deleteProject(id, req.user!.id);
       if (!deleted) {
         return res.status(404).json({ message: "Project not found" });
       }
@@ -129,7 +192,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Financial records endpoints
   app.get("/api/financial-records", async (req, res) => {
     try {
-      const records = await storage.getAllFinancialRecords(req.user.id);
+      const records = await storage.getAllFinancialRecords(req.user!.id);
       res.json(records);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch financial records" });
@@ -138,7 +201,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/projects/:projectId/financial-records", async (req, res) => {
     try {
       const projectId = parseInt(req.params.projectId);
-      const records = await storage.getFinancialRecords(projectId, req.user.id);
+      const records = await storage.getFinancialRecords(projectId, req.user!.id);
       res.json(records);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch financial records" });
@@ -149,7 +212,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = insertFinancialRecordSchema.parse({
         ...req.body,
-        userId: req.user.id
+        userId: req.user!.id
       });
       const record = await storage.createFinancialRecord(validatedData);
       res.status(201).json(record);
@@ -165,7 +228,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const validatedData = insertFinancialRecordSchema.partial().parse(req.body);
-      const record = await storage.updateFinancialRecord(id, req.user.id, validatedData);
+      const record = await storage.updateFinancialRecord(id, req.user!.id, validatedData);
       if (!record) {
         return res.status(404).json({ message: "Financial record not found" });
       }
@@ -181,7 +244,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/financial-records/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      const deleted = await storage.deleteFinancialRecord(id, req.user.id);
+      const deleted = await storage.deleteFinancialRecord(id, req.user!.id);
       if (!deleted) {
         return res.status(404).json({ message: "Financial record not found" });
       }
@@ -233,7 +296,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               description: record[columnMapping.description] || record[columnMapping.title] || 'Imported item',
               amount: (parseFloat(record[columnMapping.amount] || '0') || 0).toString(),
               date: new Date(record[columnMapping.date] || Date.now()),
-              userId: req.user.id,
+              userId: req.user!.id,
               originalData: record // Store all original Excel columns
             };
           } else {
@@ -249,7 +312,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               description: record[firstCol] || record[secondCol] || `Imported: ${Object.values(record).join(' - ')}`,
               amount: (parseFloat(Object.values(record).find((val: any) => !isNaN(parseFloat(val))) as string || '0') || 0).toString(),
               date: new Date(),
-              userId: req.user.id,
+              userId: req.user!.id,
               originalData: record // Store all original Excel columns
             };
           }
@@ -279,13 +342,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let records;
 
       if (projectId) {
-        records = await storage.getFinancialRecords(parseInt(projectId as string), req.user.id);
+        records = await storage.getFinancialRecords(parseInt(projectId as string), req.user!.id);
       } else {
         // Get all records for user across all projects
-        const projects = await storage.getProjects(req.user.id);
+        const projects = await storage.getProjects(req.user!.id);
         records = [];
         for (const project of projects) {
-          const projectRecords = await storage.getFinancialRecords(project.id, req.user.id);
+          const projectRecords = await storage.getFinancialRecords(project.id, req.user!.id);
           records.push(...projectRecords);
         }
       }
@@ -323,7 +386,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const selectedProjects = projectIds ? projectIds : [];
       
       // Get projects with their charge history
-      const projects = await storage.getProjects(req.user.id);
+      const projects = await storage.getProjects(req.user!.id);
       const filteredProjects = selectedProjects.length > 0 
         ? projects.filter(p => selectedProjects.includes(p.id))
         : projects;
@@ -340,7 +403,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Generate data rows for each project
       for (const project of filteredProjects) {
-        const chargeHistory = await storage.getChargeHistory(project.id, req.user.id);
+        const chargeHistory = await storage.getChargeHistory(project.id, req.user!.id);
         const totalAmount = chargeHistory.reduce((sum, charge) => sum + parseFloat(charge.amount), 0);
         
         if (totalAmount > 0) {
@@ -419,7 +482,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Budget categories endpoints
   app.get("/api/budget-categories", async (req, res) => {
     try {
-      const categories = await storage.getAllBudgetCategories(req.user.id);
+      const categories = await storage.getAllBudgetCategories(req.user!.id);
       res.json(categories);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch budget categories" });
@@ -429,7 +492,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/projects/:projectId/budget-categories", async (req, res) => {
     try {
       const projectId = parseInt(req.params.projectId);
-      const categories = await storage.getBudgetCategories(projectId, req.user.id);
+      const categories = await storage.getBudgetCategories(projectId, req.user!.id);
       res.json(categories);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch budget categories" });
@@ -440,7 +503,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = insertBudgetCategorySchema.parse({
         ...req.body,
-        userId: req.user.id
+        userId: req.user!.id
       });
       const category = await storage.createBudgetCategory(validatedData);
       res.status(201).json(category);
@@ -456,7 +519,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const validatedData = insertBudgetCategorySchema.partial().parse(req.body);
-      const category = await storage.updateBudgetCategory(id, req.user.id, validatedData);
+      const category = await storage.updateBudgetCategory(id, req.user!.id, validatedData);
       if (!category) {
         return res.status(404).json({ message: "Budget category not found" });
       }
@@ -472,7 +535,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/budget-categories/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      const deleted = await storage.deleteBudgetCategory(id, req.user.id);
+      const deleted = await storage.deleteBudgetCategory(id, req.user!.id);
       if (!deleted) {
         return res.status(404).json({ message: "Budget category not found" });
       }
@@ -536,7 +599,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const uploadedData = await storage.createUploadedData({
         ...validatedData,
-        userId: req.user.id
+        userId: req.user!.id
       });
       
       res.status(201).json(uploadedData);
@@ -548,7 +611,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/uploaded-data", async (req, res) => {
     try {
-      const uploads = await storage.getUploadedData(req.user.id);
+      const uploads = await storage.getUploadedData(req.user!.id);
       res.json(uploads);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch uploaded data" });
@@ -558,7 +621,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/uploaded-data/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      const upload = await storage.getUploadedDataById(id, req.user.id);
+      const upload = await storage.getUploadedDataById(id, req.user!.id);
       if (!upload) {
         return res.status(404).json({ message: "Upload not found" });
       }
@@ -571,7 +634,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/uploaded-data/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      const deleted = await storage.deleteUploadedData(id, req.user.id);
+      const deleted = await storage.deleteUploadedData(id, req.user!.id);
       if (!deleted) {
         return res.status(404).json({ message: "Upload not found" });
       }
@@ -591,7 +654,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Project ID is required" });
       }
 
-      const upload = await storage.getUploadedDataById(uploadId, req.user.id);
+      const upload = await storage.getUploadedDataById(uploadId, req.user!.id);
       if (!upload) {
         return res.status(404).json({ message: "Upload not found" });
       }
@@ -610,7 +673,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             description: row.Description || row.Name || 'Imported record',
             amount: row.Amount || row.Effort || '0',
             date: new Date(row.Date || row.CreatedAt || Date.now()),
-            userId: req.user.id,
+            userId: req.user!.id,
             originalData: row
           });
           imported++;
@@ -621,7 +684,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Mark as processed and optionally delete
-      await storage.deleteUploadedData(uploadId, req.user.id);
+      await storage.deleteUploadedData(uploadId, req.user!.id);
 
       res.json({ imported, errors });
     } catch (error) {

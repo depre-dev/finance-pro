@@ -6,6 +6,7 @@ import {
   chargeHistory,
   uploadedData,
   projectNotes,
+  sessions,
   type User, 
   type InsertUser,
   type Project,
@@ -19,7 +20,11 @@ import {
   type UploadedData,
   type InsertUploadedData,
   type ProjectNote,
-  type InsertProjectNote
+  type InsertProjectNote,
+  type Session,
+  type InsertSession,
+  type LoginRequest,
+  type RegisterRequest
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, sql, sum } from "drizzle-orm";
@@ -28,7 +33,16 @@ export interface IStorage {
   // User methods
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  updateUser(id: number, user: Partial<InsertUser>): Promise<User | undefined>;
+  updateUserLastLogin(id: number): Promise<void>;
+
+  // Authentication methods
+  createSession(session: InsertSession): Promise<Session>;
+  getSession(sessionId: string): Promise<Session | undefined>;
+  deleteSession(sessionId: string): Promise<boolean>;
+  deleteUserSessions(userId: number): Promise<boolean>;
 
   // Project methods
   getProjects(userId: number): Promise<Project[]>;
@@ -95,12 +109,64 @@ export class DatabaseStorage implements IStorage {
     return user || undefined;
   }
 
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || undefined;
+  }
+
   async createUser(insertUser: InsertUser): Promise<User> {
     const [user] = await db
       .insert(users)
       .values(insertUser)
       .returning();
     return user;
+  }
+
+  async updateUser(id: number, user: Partial<InsertUser>): Promise<User | undefined> {
+    const [updatedUser] = await db
+      .update(users)
+      .set({ ...user, updatedAt: new Date() })
+      .where(eq(users.id, id))
+      .returning();
+    return updatedUser || undefined;
+  }
+
+  async updateUserLastLogin(id: number): Promise<void> {
+    await db
+      .update(users)
+      .set({ lastLogin: new Date() })
+      .where(eq(users.id, id));
+  }
+
+  // Authentication methods
+  async createSession(session: InsertSession): Promise<Session> {
+    const [newSession] = await db
+      .insert(sessions)
+      .values(session)
+      .returning();
+    return newSession;
+  }
+
+  async getSession(sessionId: string): Promise<Session | undefined> {
+    const [session] = await db
+      .select()
+      .from(sessions)
+      .where(eq(sessions.id, sessionId));
+    return session || undefined;
+  }
+
+  async deleteSession(sessionId: string): Promise<boolean> {
+    const result = await db
+      .delete(sessions)
+      .where(eq(sessions.id, sessionId));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async deleteUserSessions(userId: number): Promise<boolean> {
+    const result = await db
+      .delete(sessions)
+      .where(eq(sessions.userId, userId));
+    return (result.rowCount ?? 0) > 0;
   }
 
   async getProjects(userId: number): Promise<Project[]> {

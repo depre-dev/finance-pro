@@ -1,8 +1,9 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { useAuth } from "@/hooks/useAuth";
 import NotFound from "@/pages/not-found";
 import Dashboard from "@/pages/dashboard-new";
 import Projects from "@/pages/projects";
@@ -13,9 +14,12 @@ import ImportExport from "@/pages/import-export";
 import UploadedData from "@/pages/uploaded-data";
 import ChargeHistory from "@/pages/charge-history";
 import CATSBooking from "@/pages/cats-booking";
+import LoginPage from "@/pages/login";
+import RegisterPage from "@/pages/register";
 import Sidebar from "@/components/layout/sidebar";
+import { Loader2 } from "lucide-react";
 
-function Router() {
+function AuthenticatedApp() {
   return (
     <div className="flex h-screen">
       <Sidebar />
@@ -35,6 +39,50 @@ function Router() {
       </main>
     </div>
   );
+}
+
+function UnauthenticatedApp() {
+  const [, setLocation] = useLocation();
+
+  return (
+    <Switch>
+      <Route path="/login" component={LoginPage} />
+      <Route path="/register" component={RegisterPage} />
+      <Route path="/">
+        {() => {
+          setLocation("/login");
+          return null;
+        }}
+      </Route>
+      <Route>
+        {() => {
+          setLocation("/login");
+          return null;
+        }}
+      </Route>
+    </Switch>
+  );
+}
+
+function LoadingScreen() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+      <div className="text-center">
+        <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
+        <p className="text-gray-600 dark:text-gray-400">Loading FinancePro...</p>
+      </div>
+    </div>
+  );
+}
+
+function Router() {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
+  return isAuthenticated ? <AuthenticatedApp /> : <UnauthenticatedApp />;
 }
 
 function App() {
