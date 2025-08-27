@@ -94,7 +94,7 @@ export default function Dashboard() {
   ].filter(item => item.value > 0);
 
   // Recent charges for activity feed
-  const recentCharges = chargeHistory
+  const recentCharges = (chargeHistory || [])
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 5);
 
