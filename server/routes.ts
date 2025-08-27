@@ -24,13 +24,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const data = registerSchema.parse(req.body);
       const { user, sessionId } = await AuthService.register(data);
       
-      // Set session cookie with development-friendly settings
+      // Set session cookie with Replit-friendly settings
       res.cookie('sessionId', sessionId, {
-        httpOnly: true,
-        secure: false, // Set to false for development
-        sameSite: 'lax',
+        httpOnly: false, // Allow JS access for debugging
+        secure: false, // HTTP for development
+        sameSite: 'none', // Cross-origin support
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        path: '/', // Explicit path
+        path: '/',
       });
 
       // Return user without password
@@ -47,13 +47,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const data = loginSchema.parse(req.body);
       const { user, sessionId } = await AuthService.login(data);
       
-      // Set session cookie with development-friendly settings
+      // Set session cookie with Replit-friendly settings
       res.cookie('sessionId', sessionId, {
-        httpOnly: true,
-        secure: false, // Set to false for development
-        sameSite: 'lax',
+        httpOnly: false, // Allow JS access for debugging
+        secure: false, // HTTP for development
+        sameSite: 'none', // Cross-origin support
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        path: '/', // Explicit path
+        path: '/',
       });
 
       // Return user without password
