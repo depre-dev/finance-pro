@@ -29,6 +29,7 @@ export function useAuth() {
     },
     retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes cache
   });
 
   const user = response?.user;
@@ -53,7 +54,10 @@ export function useAuth() {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(['/api/auth/me'], data);
-      queryClient.invalidateQueries({ queryKey: ['/api'] });
+      // Only invalidate non-auth queries to prevent infinite loop
+      queryClient.invalidateQueries({ 
+        predicate: (query) => query.queryKey[0] === '/api' && query.queryKey[1] !== 'auth'
+      });
     },
   });
 
@@ -76,7 +80,10 @@ export function useAuth() {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(['/api/auth/me'], data);
-      queryClient.invalidateQueries({ queryKey: ['/api'] });
+      // Only invalidate non-auth queries to prevent infinite loop
+      queryClient.invalidateQueries({ 
+        predicate: (query) => query.queryKey[0] === '/api' && query.queryKey[1] !== 'auth'
+      });
     },
   });
 
