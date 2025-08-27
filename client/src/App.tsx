@@ -1,3 +1,4 @@
+import React from "react";
 import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -41,25 +42,23 @@ function AuthenticatedApp() {
   );
 }
 
-function UnauthenticatedApp() {
+function RedirectToLogin() {
   const [, setLocation] = useLocation();
 
+  React.useEffect(() => {
+    setLocation("/login");
+  }, [setLocation]);
+
+  return null;
+}
+
+function UnauthenticatedApp() {
   return (
     <Switch>
       <Route path="/login" component={LoginPage} />
       <Route path="/register" component={RegisterPage} />
-      <Route path="/">
-        {() => {
-          setLocation("/login");
-          return null;
-        }}
-      </Route>
-      <Route>
-        {() => {
-          setLocation("/login");
-          return null;
-        }}
-      </Route>
+      <Route path="/" component={RedirectToLogin} />
+      <Route component={RedirectToLogin} />
     </Switch>
   );
 }
