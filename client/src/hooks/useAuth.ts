@@ -45,6 +45,7 @@ export function useAuth() {
   // Login mutation
   const loginMutation = useMutation({
     mutationFn: async (data: LoginRequest): Promise<AuthResponse> => {
+      console.log('Attempting login...');
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -54,17 +55,19 @@ export function useAuth() {
 
       if (!response.ok) {
         const error = await response.json().catch(() => ({ message: 'Login failed' }));
+        console.log('Login failed:', error);
         throw new Error(error.message || 'Login failed');
       }
 
-      return response.json();
+      const result = await response.json();
+      console.log('Login successful:', result.user?.username);
+      return result;
     },
     onSuccess: (data) => {
+      console.log('Setting auth data in cache');
       queryClient.setQueryData(['/api/auth/me'], data);
-      // Only invalidate non-auth queries to prevent infinite loop
-      queryClient.invalidateQueries({ 
-        predicate: (query) => query.queryKey[0] === '/api' && query.queryKey[1] !== 'auth'
-      });
+      // Force refresh of auth query after successful login
+      queryClient.invalidateQueries({ queryKey: ['/api/auth/me'] });
     },
   });
 
@@ -87,10 +90,8 @@ export function useAuth() {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(['/api/auth/me'], data);
-      // Only invalidate non-auth queries to prevent infinite loop
-      queryClient.invalidateQueries({ 
-        predicate: (query) => query.queryKey[0] === '/api' && query.queryKey[1] !== 'auth'
-      });
+      // Force refresh of auth query after successful registration
+      queryClient.invalidateQueries({ queryKey: ['/api/auth/me'] });
     },
   });
 
