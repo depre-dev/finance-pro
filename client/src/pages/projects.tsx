@@ -1,6 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import AnimatedCard from "@/components/ui/animated-card";
+import AnimatedButton from "@/components/ui/animated-button";
+import AnimatedProgress from "@/components/ui/animated-progress";
+import AnimatedNumber from "@/components/ui/animated-number";
+import FloatingActionButton from "@/components/ui/floating-action-button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -218,13 +223,13 @@ export default function Projects() {
                 ))}
               </SelectContent>
             </Select>
-            <Button onClick={() => {
+            <AnimatedButton onClick={() => {
               setEditingProject(undefined);
               setIsProjectModalOpen(true);
             }}>
               <Plus className="mr-2 h-4 w-4" />
               New Project
-            </Button>
+            </AnimatedButton>
           </div>
         </div>
       </header>
@@ -267,18 +272,23 @@ export default function Projects() {
             <p className="text-neutral-50 mb-6">
               {searchTerm ? "No projects match your search criteria." : "Create your first project to get started."}
             </p>
-            <Button onClick={() => {
+            <AnimatedButton onClick={() => {
               setEditingProject(undefined);
               setIsProjectModalOpen(true);
             }}>
               <Plus className="mr-2 h-4 w-4" />
               Create Project
-            </Button>
+            </AnimatedButton>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
-            {filteredProjects.map((project) => (
-              <Card key={project.id} className="hover:shadow-md transition-shadow">
+            {filteredProjects.map((project, index) => (
+              <AnimatedCard 
+                key={project.id} 
+                delay={index * 0.1}
+                direction="up"
+                hover={true}
+              >
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center">
@@ -303,11 +313,19 @@ export default function Projects() {
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     <div>
                       <p className="text-xs text-muted-foreground mb-1">Total Budget</p>
-                      <p className="font-semibold text-sm break-words">{formatCurrency(project.totalBudget)}</p>
+                      <AnimatedNumber 
+                        value={Number(project.totalBudget)} 
+                        format="currency"
+                        className="font-semibold text-sm break-words"
+                      />
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground mb-1">Budget Spend</p>
-                      <p className="font-semibold text-sm break-words">{formatCurrency(project.actualCost || 0)}</p>
+                      <AnimatedNumber 
+                        value={Number(project.actualCost || 0)} 
+                        format="currency"
+                        className="font-semibold text-sm break-words"
+                      />
                     </div>
                   </div>
                   
@@ -338,7 +356,7 @@ export default function Projects() {
                   {/* Quick Actions */}
                   <div className="space-y-3 pt-4 border-t border-neutral-20">
                     <div className="grid grid-cols-1 gap-2">
-                      <Button 
+                      <AnimatedButton 
                         variant="outline" 
                         size="sm"
                         onClick={() => {
@@ -349,7 +367,7 @@ export default function Projects() {
                       >
                         <Plus className="h-4 w-4 mr-1" />
                         Add Expense
-                      </Button>
+                      </AnimatedButton>
                     </div>
                     
                     <div className="flex items-center justify-between">
@@ -389,7 +407,7 @@ export default function Projects() {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
+              </AnimatedCard>
             ))}
           </div>
         )}
@@ -755,6 +773,33 @@ export default function Projects() {
       
       {/* Keyboard Shortcuts Help */}
       <KeyboardShortcutsHelp />
+      
+      {/* Floating Action Button for Quick Actions */}
+      <FloatingActionButton
+        onClick={() => setIsProjectModalOpen(true)}
+        expanded={false}
+        actions={[
+          {
+            icon: Folder,
+            label: "New Project",
+            onClick: () => {
+              setEditingProject(undefined);
+              setIsProjectModalOpen(true);
+            }
+          },
+          {
+            icon: Plus,
+            label: "Add Expense",
+            onClick: () => {
+              if (projects && projects.length > 0) {
+                setChargeProject(projects[0]);
+                setIsQuickChargeOpen(true);
+              }
+            },
+            color: "bg-green-600 hover:bg-green-700"
+          }
+        ]}
+      />
     </>
   );
 }

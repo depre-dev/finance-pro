@@ -1,6 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import AnimatedCard from "@/components/ui/animated-card";
+import AnimatedButton from "@/components/ui/animated-button";
+import AnimatedProgress from "@/components/ui/animated-progress";
+import AnimatedNumber from "@/components/ui/animated-number";
+import FloatingActionButton from "@/components/ui/floating-action-button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
@@ -170,46 +175,57 @@ export default function Dashboard() {
 
       {/* Main Metrics */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 auto-rows-fr">
-        <Card>
+        <AnimatedCard delay={0}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Active Projects</CardTitle>
             <FolderOpen className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-xl font-bold">{filteredProjects.length}</div>
+            <AnimatedNumber 
+              value={filteredProjects.length}
+              className="text-xl font-bold"
+            />
             <p className="text-xs text-muted-foreground mt-1">
               Currently managed
             </p>
           </CardContent>
-        </Card>
+        </AnimatedCard>
 
-        <Card>
+        <AnimatedCard delay={0.1}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Budget</CardTitle>
             <Wallet className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-xl font-bold break-words">{formatCurrency(totalBudget)}</div>
+            <AnimatedNumber 
+              value={totalBudget}
+              format="currency"
+              className="text-xl font-bold break-words"
+            />
             <p className="text-xs text-muted-foreground mt-1">
               Allocated across all projects
             </p>
           </CardContent>
-        </Card>
+        </AnimatedCard>
 
-        <Card>
+        <AnimatedCard delay={0.2}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Spend</CardTitle>
             <CreditCard className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-xl font-bold break-words">{formatCurrency(totalSpent)}</div>
+            <AnimatedNumber 
+              value={totalSpent}
+              format="currency"
+              className="text-xl font-bold break-words"
+            />
             <p className="text-xs text-muted-foreground mt-1">
               {budgetUsagePercentage.toFixed(1)}% of total budget
             </p>
           </CardContent>
-        </Card>
+        </AnimatedCard>
 
-        <Card>
+        <AnimatedCard delay={0.3}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Budget Status</CardTitle>
             {remainingBudget < 0 ? (
@@ -226,11 +242,11 @@ export default function Dashboard() {
               {remainingBudget < 0 ? 'Over budget' : 'Remaining'}
             </p>
           </CardContent>
-        </Card>
+        </AnimatedCard>
       </div>
 
       {/* Budget Overview Progress */}
-      <Card>
+      <AnimatedCard delay={0.4}>
         <CardHeader>
           <CardTitle className="flex items-center">
             <BarChart3 className="mr-2 h-5 w-5" />
@@ -259,9 +275,11 @@ export default function Dashboard() {
                 </p>
               </div>
             </div>
-            <Progress 
+            <AnimatedProgress 
               value={Math.min(budgetUsagePercentage, 100)} 
               className="h-4"
+              animated={true}
+              color={budgetUsagePercentage > 100 ? "danger" : budgetUsagePercentage > 90 ? "warning" : "default"}
             />
             {budgetUsagePercentage > 90 && (
               <div className="flex items-center text-amber-600 text-sm">
@@ -271,7 +289,7 @@ export default function Dashboard() {
             )}
           </div>
         </CardContent>
-      </Card>
+      </AnimatedCard>
 
       {/* Charts Section */}
       <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
