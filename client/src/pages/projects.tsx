@@ -58,8 +58,13 @@ export default function Projects() {
 
   // Fetch charge history for the viewing project
   const { data: chargeHistory = [] } = useQuery<ChargeHistory[]>({
-    queryKey: ["/api/projects", viewingProject?.id, "charge-history"],
+    queryKey: [`/api/projects/${viewingProject?.id}/charge-history`],
     enabled: !!viewingProject?.id,
+    retry: false,
+    throwOnError: false,
+    onError: (error) => {
+      console.log('Charge history fetch error (handled):', error);
+    }
   });
 
   // Get unique target releases for filter dropdown

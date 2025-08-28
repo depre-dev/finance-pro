@@ -43,7 +43,7 @@ export default function QuickChargeModal({ isOpen, onClose, project }: QuickChar
 
   const createChargeMutation = useMutation({
     mutationFn: (data: QuickChargeData) => 
-      apiRequest("/api/charge-history", "POST", {
+      apiRequest("POST", "/api/charge-history", {
         projectId: project.id,
         amount: data.amount,
         description: data.description,
@@ -52,6 +52,7 @@ export default function QuickChargeModal({ isOpen, onClose, project }: QuickChar
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/charge-history"] });
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${project.id}/charge-history`] });
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       queryClient.invalidateQueries({ queryKey: ["/api/dashboard/metrics"] });
       toast({
