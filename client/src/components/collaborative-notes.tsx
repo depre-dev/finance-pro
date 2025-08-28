@@ -64,7 +64,7 @@ export default function CollaborativeNotes({ projectId, projectName }: Collabora
   // Create note mutation
   const createNoteMutation = useMutation({
     mutationFn: async (noteData: NoteFormData) => {
-      return apiRequest(`/api/projects/${projectId}/notes`, "POST", noteData);
+      return apiRequest("POST", `/api/projects/${projectId}/notes`, noteData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects", projectId, "notes"] });
@@ -76,7 +76,7 @@ export default function CollaborativeNotes({ projectId, projectName }: Collabora
   // Update note mutation
   const updateNoteMutation = useMutation({
     mutationFn: async ({ id, noteData }: { id: number; noteData: Partial<NoteFormData> }) => {
-      return apiRequest(`/api/notes/${id}`, "PUT", noteData);
+      return apiRequest("PUT", `/api/notes/${id}`, noteData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects", projectId, "notes"] });
@@ -89,7 +89,7 @@ export default function CollaborativeNotes({ projectId, projectName }: Collabora
   // Delete note mutation
   const deleteNoteMutation = useMutation({
     mutationFn: async (id: number) => {
-      return apiRequest(`/api/notes/${id}`, "DELETE");
+      return apiRequest("DELETE", `/api/notes/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects", projectId, "notes"] });

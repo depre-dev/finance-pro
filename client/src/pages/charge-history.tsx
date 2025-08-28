@@ -45,7 +45,7 @@ export default function ChargeHistoryPage() {
   // Create charge mutation
   const createChargeMutation = useMutation({
     mutationFn: (data: ChargeFormData) => 
-      apiRequest("/api/charge-history", "POST", {
+      apiRequest("POST", "/api/charge-history", {
         ...data,
         projectId: parseInt(data.projectId),
         amount: data.amount,
