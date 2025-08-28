@@ -34,7 +34,9 @@ import ProjectModal from "@/components/modals/project-modal-new";
 
 import QuickChargeModal from "@/components/quick-charge-modal";
 import CollaborativeNotes from "@/components/collaborative-notes";
+import KeyboardShortcutsHelp from "@/components/keyboard-shortcuts-help";
 import { format } from "date-fns";
+import { useKeyboardShortcuts, COMMON_SHORTCUTS } from "@/hooks/useKeyboardShortcuts";
 
 export default function Projects() {
   const { toast } = useToast();
@@ -50,6 +52,34 @@ export default function Projects() {
 
   const [isQuickChargeOpen, setIsQuickChargeOpen] = useState(false);
   const [chargeProject, setChargeProject] = useState<Project | undefined>(undefined);
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts({
+    shortcuts: [
+      {
+        ...COMMON_SHORTCUTS.NEW_PROJECT,
+        action: () => setIsProjectModalOpen(true)
+      },
+      {
+        ...COMMON_SHORTCUTS.NEW_EXPENSE,
+        action: () => {
+          if (projects && projects.length > 0) {
+            setChargeProject(projects[0]);
+            setIsQuickChargeOpen(true);
+          }
+        }
+      },
+      {
+        ...COMMON_SHORTCUTS.ESCAPE,
+        action: () => {
+          setIsProjectModalOpen(false);
+          setIsQuickChargeOpen(false);
+          setIsDetailViewOpen(false);
+          setIsDeleteDialogOpen(false);
+        }
+      }
+    ]
+  });
 
   const { data: projects, isLoading } = useQuery<Project[]>({
     queryKey: ["/api/projects"],
@@ -722,6 +752,9 @@ export default function Projects() {
           }}
         />
       )}
+      
+      {/* Keyboard Shortcuts Help */}
+      <KeyboardShortcutsHelp />
     </>
   );
 }

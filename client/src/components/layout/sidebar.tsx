@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/hooks/useAuth";
+import { ThemeToggle } from "@/components/theme-toggle";
+import EnhancedSearch from "@/components/enhanced-search";
 import { 
   BarChart3, 
   Calculator, 
@@ -87,12 +89,20 @@ export default function Sidebar() {
   const [location] = useLocation();
 
   return (
-    <aside className="w-64 bg-white border-r border-neutral-20 flex flex-col">
+    <aside className="w-64 bg-background border-r border-border flex flex-col">
       <div className="p-6 border-b border-neutral-20">
-        <h1 className="text-xl font-semibold text-foreground flex items-center">
-          <BarChart3 className="text-primary mr-2 h-6 w-6" />
-          FinancePro
-        </h1>
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-xl font-semibold text-foreground flex items-center">
+            <BarChart3 className="text-primary mr-2 h-6 w-6" />
+            FinancePro
+          </h1>
+          <ThemeToggle />
+        </div>
+        
+        {/* Enhanced Search */}
+        <div className="mt-4">
+          <EnhancedSearch placeholder="Search..." showFilters={false} />
+        </div>
       </div>
       
       <nav className="flex-1 p-4">
