@@ -15,6 +15,7 @@ import ImportExport from "@/pages/import-export";
 import UploadedData from "@/pages/uploaded-data";
 import ChargeHistory from "@/pages/charge-history";
 import CATSBooking from "@/pages/cats-booking";
+import ApiIntegrations from "@/pages/api-integrations";
 import LoginPage from "@/pages/login";
 import RegisterPage from "@/pages/register";
 import Sidebar from "@/components/layout/sidebar";
@@ -35,6 +36,7 @@ function AuthenticatedApp() {
           <Route path="/uploaded-data" component={UploadedData} />
           <Route path="/charge-history" component={ChargeHistory} />
           <Route path="/cats-booking" component={CATSBooking} />
+          <Route path="/api-integrations" component={ApiIntegrations} />
           <Route component={NotFound} />
         </Switch>
       </main>

@@ -2,11 +2,14 @@ import type { Express, Request } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { AuthService, authenticate, optionalAuth } from "./auth";
+import { apiIntegrationService } from "./api-integrations";
 import { 
   insertProjectSchema,
   insertFinancialRecordSchema,
   insertBudgetCategorySchema,
   insertProjectNoteSchema,
+  insertApiConfigurationSchema,
+  insertApiSyncLogSchema,
   loginSchema,
   registerSchema
 } from "@shared/schema";
@@ -753,6 +756,252 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ message: "Note deleted successfully" });
     } catch (error) {
       res.status(500).json({ message: "Failed to delete note" });
+    }
+  });
+
+  // API Integration endpoints
+  app.get("/api/integrations/configs", authenticate, async (req, res) => {
+    try {
+      const configs = await storage.getApiConfigurations(req.user!.id);
+      res.json(configs);
+    } catch (error) {
+      console.error("Error fetching API configurations:", error);
+      res.status(500).json({ message: "Failed to fetch API configurations" });
+    }
+  });
+
+  app.post("/api/integrations/configs", authenticate, async (req, res) => {
+    try {
+      const validatedData = insertApiConfigurationSchema.parse({
+        ...req.body,
+        userId: req.user!.id
+      });
+      
+      const config = await storage.createApiConfiguration(validatedData);
+      
+      // Register the API with the integration service
+      apiIntegrationService.registerApi(config.name, {
+        name: config.name,
+        baseUrl: config.baseUrl,
+        apiKey: config.apiKey || undefined,
+        authType: config.authType as any,
+        headers: config.headers as Record<string, string> || {},
+        timeout: config.timeout
+      });
+      
+      res.status(201).json(config);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid configuration data", errors: error.errors });
+      }
+      console.error("Error creating API configuration:", error);
+      res.status(500).json({ message: "Failed to create API configuration" });
+    }
+  });
+
+  app.put("/api/integrations/configs/:id", authenticate, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const validatedData = insertApiConfigurationSchema.partial().parse(req.body);
+      
+      const config = await storage.updateApiConfiguration(id, validatedData, req.user!.id);
+      if (!config) {
+        return res.status(404).json({ message: "API configuration not found" });
+      }
+      
+      // Re-register the API with updated configuration
+      apiIntegrationService.registerApi(config.name, {
+        name: config.name,
+        baseUrl: config.baseUrl,
+        apiKey: config.apiKey || undefined,
+        authType: config.authType as any,
+        headers: config.headers as Record<string, string> || {},
+        timeout: config.timeout
+      });
+      
+      res.json(config);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid configuration data", errors: error.errors });
+      }
+      console.error("Error updating API configuration:", error);
+      res.status(500).json({ message: "Failed to update API configuration" });
+    }
+  });
+
+  app.delete("/api/integrations/configs/:id", authenticate, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteApiConfiguration(id, req.user!.id);
+      
+      if (!deleted) {
+        return res.status(404).json({ message: "API configuration not found" });
+      }
+      
+      res.json({ message: "API configuration deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting API configuration:", error);
+      res.status(500).json({ message: "Failed to delete API configuration" });
+    }
+  });
+
+  // Test API connection
+  app.post("/api/integrations/test/:id", authenticate, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const config = await storage.getApiConfigurationById(id, req.user!.id);
+      
+      if (!config) {
+        return res.status(404).json({ message: "API configuration not found" });
+      }
+      
+      // Register and test the API
+      apiIntegrationService.registerApi(config.name, {
+        name: config.name,
+        baseUrl: config.baseUrl,
+        apiKey: config.apiKey || undefined,
+        authType: config.authType as any,
+        headers: config.headers as Record<string, string> || {},
+        timeout: config.timeout
+      });
+      
+      const result = await apiIntegrationService.testConnection(config.name);
+      
+      // Log the test result
+      await storage.createApiSyncLog({
+        apiConfigId: config.id,
+        syncType: 'test',
+        status: result.success ? 'success' : 'failed',
+        recordsProcessed: 0,
+        errorMessage: result.success ? undefined : result.message,
+        responseTime: 0, // Could be improved to measure actual response time
+        userId: req.user!.id
+      });
+      
+      res.json(result);
+    } catch (error) {
+      console.error("Error testing API connection:", error);
+      res.status(500).json({ message: "Failed to test API connection" });
+    }
+  });
+
+  // Sync data from external API
+  app.post("/api/integrations/sync/:id", authenticate, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { type } = req.body; // 'projects' or 'financial-records'
+      
+      const config = await storage.getApiConfigurationById(id, req.user!.id);
+      if (!config) {
+        return res.status(404).json({ message: "API configuration not found" });
+      }
+      
+      const startTime = Date.now();
+      let recordsProcessed = 0;
+      let status = 'success';
+      let errorMessage;
+      
+      try {
+        // Register the API
+        apiIntegrationService.registerApi(config.name, {
+          name: config.name,
+          baseUrl: config.baseUrl,
+          apiKey: config.apiKey || undefined,
+          authType: config.authType as any,
+          headers: config.headers as Record<string, string> || {},
+          timeout: config.timeout
+        });
+        
+        if (type === 'projects') {
+          const externalProjects = await apiIntegrationService.fetchProjects(config.name);
+          
+          for (const extProject of externalProjects) {
+            try {
+              await storage.createProject({
+                name: extProject.name,
+                projectId: extProject.projectId,
+                businessUnit: extProject.businessUnit,
+                wbs: extProject.wbs,
+                totalBudget: extProject.totalBudget.toString(),
+                targetRelease: extProject.targetRelease,
+                status: extProject.status === 'Active' ? 'active' : 'inactive',
+                actualCost: '0',
+                userId: req.user!.id
+              });
+              recordsProcessed++;
+            } catch (err) {
+              console.warn('Failed to import project:', extProject.name, err);
+            }
+          }
+        } else if (type === 'financial-records') {
+          const externalRecords = await apiIntegrationService.fetchFinancialRecords(config.name);
+          
+          for (const extRecord of externalRecords) {
+            try {
+              // Find matching project by projectId
+              const projects = await storage.getAllProjects(req.user!.id);
+              const matchingProject = projects.find(p => p.projectId === extRecord.projectId);
+              
+              if (matchingProject) {
+                await storage.createFinancialRecord({
+                  projectId: matchingProject.id,
+                  type: extRecord.type,
+                  category: extRecord.category,
+                  description: extRecord.description,
+                  amount: extRecord.amount.toString(),
+                  date: new Date(extRecord.date),
+                  userId: req.user!.id
+                });
+                recordsProcessed++;
+              }
+            } catch (err) {
+              console.warn('Failed to import financial record:', extRecord.description, err);
+            }
+          }
+        }
+        
+      } catch (error) {
+        status = 'failed';
+        errorMessage = error instanceof Error ? error.message : 'Sync failed';
+      }
+      
+      const responseTime = Date.now() - startTime;
+      
+      // Log the sync result
+      await storage.createApiSyncLog({
+        apiConfigId: config.id,
+        syncType: type,
+        status,
+        recordsProcessed,
+        errorMessage,
+        responseTime,
+        userId: req.user!.id
+      });
+      
+      // Update last sync time
+      await storage.updateApiConfiguration(id, { lastSyncAt: new Date() }, req.user!.id);
+      
+      if (status === 'failed') {
+        return res.status(500).json({ message: errorMessage, recordsProcessed });
+      }
+      
+      res.json({ message: `Successfully synced ${recordsProcessed} ${type}`, recordsProcessed });
+      
+    } catch (error) {
+      console.error("Error syncing data:", error);
+      res.status(500).json({ message: "Failed to sync data" });
+    }
+  });
+
+  // Get sync logs for an API configuration
+  app.get("/api/integrations/configs/:id/logs", authenticate, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const logs = await storage.getApiSyncLogs(id, req.user!.id);
+      res.json(logs);
+    } catch (error) {
+      console.error("Error fetching sync logs:", error);
+      res.status(500).json({ message: "Failed to fetch sync logs" });
     }
   });
 

@@ -101,6 +101,35 @@ export const uploadedData = pgTable("uploaded_data", {
   userId: integer("user_id").notNull(),
 });
 
+// API Integration configurations
+export const apiConfigurations = pgTable("api_configurations", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  baseUrl: text("base_url").notNull(),
+  apiKey: text("api_key"),
+  authType: varchar("auth_type", { length: 20 }).notNull().default("none"),
+  headers: json("headers").default({}),
+  timeout: integer("timeout").default(30000),
+  isActive: boolean("is_active").default(true),
+  userId: integer("user_id").notNull().references(() => users.id),
+  lastSyncAt: timestamp("last_sync_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// API sync logs to track integration history
+export const apiSyncLogs = pgTable("api_sync_logs", {
+  id: serial("id").primaryKey(),
+  apiConfigId: integer("api_config_id").notNull().references(() => apiConfigurations.id),
+  syncType: varchar("sync_type", { length: 50 }).notNull(), // 'projects', 'financial-records', 'export'
+  status: varchar("status", { length: 20 }).notNull(), // 'success', 'failed', 'partial'
+  recordsProcessed: integer("records_processed").default(0),
+  errorMessage: text("error_message"),
+  responseTime: integer("response_time"), // in milliseconds
+  userId: integer("user_id").notNull().references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Relations
 export const projectsRelations = relations(projects, ({ one, many }) => ({
   user: one(users, {
@@ -221,6 +250,18 @@ export const insertUploadedDataSchema = createInsertSchema(uploadedData).omit({
   uploadedAt: true,
 });
 
+export const insertApiConfigurationSchema = createInsertSchema(apiConfigurations).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  lastSyncAt: true,
+});
+
+export const insertApiSyncLogSchema = createInsertSchema(apiSyncLogs).omit({
+  id: true,
+  createdAt: true,
+});
+
 export const insertProjectNoteSchema = createInsertSchema(projectNotes).omit({
   id: true,
   createdAt: true,
@@ -254,3 +295,9 @@ export type UploadedData = typeof uploadedData.$inferSelect;
 
 export type InsertProjectNote = z.infer<typeof insertProjectNoteSchema>;
 export type ProjectNote = typeof projectNotes.$inferSelect;
+
+export type InsertApiConfiguration = z.infer<typeof insertApiConfigurationSchema>;
+export type ApiConfiguration = typeof apiConfigurations.$inferSelect;
+
+export type InsertApiSyncLog = z.infer<typeof insertApiSyncLogSchema>;
+export type ApiSyncLog = typeof apiSyncLogs.$inferSelect;

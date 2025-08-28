@@ -7,6 +7,8 @@ import {
   uploadedData,
   projectNotes,
   sessions,
+  apiConfigurations,
+  apiSyncLogs,
   type User, 
   type InsertUser,
   type Project,
@@ -23,6 +25,10 @@ import {
   type InsertProjectNote,
   type Session,
   type InsertSession,
+  type ApiConfiguration,
+  type InsertApiConfiguration,
+  type ApiSyncLog,
+  type InsertApiSyncLog,
   type LoginRequest,
   type RegisterRequest
 } from "@shared/schema";
@@ -96,6 +102,17 @@ export interface IStorage {
   createProjectNote(note: InsertProjectNote): Promise<ProjectNote>;
   updateProjectNote(id: number, note: Partial<InsertProjectNote>): Promise<ProjectNote | undefined>;
   deleteProjectNote(id: number): Promise<boolean>;
+
+  // API configuration methods
+  getApiConfigurations(userId: number): Promise<ApiConfiguration[]>;
+  getApiConfigurationById(id: number, userId: number): Promise<ApiConfiguration | undefined>;
+  createApiConfiguration(config: InsertApiConfiguration): Promise<ApiConfiguration>;
+  updateApiConfiguration(id: number, config: Partial<InsertApiConfiguration>, userId: number): Promise<ApiConfiguration | undefined>;
+  deleteApiConfiguration(id: number, userId: number): Promise<boolean>;
+
+  // API sync log methods
+  getApiSyncLogs(configId: number, userId: number): Promise<ApiSyncLog[]>;
+  createApiSyncLog(log: InsertApiSyncLog): Promise<ApiSyncLog>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -520,6 +537,69 @@ export class DatabaseStorage implements IStorage {
   async deleteProjectNote(id: number): Promise<boolean> {
     const result = await db.delete(projectNotes).where(eq(projectNotes.id, id));
     return result.rowCount! > 0;
+  }
+
+  // API configuration methods
+  async getApiConfigurations(userId: number): Promise<ApiConfiguration[]> {
+    return await db
+      .select()
+      .from(apiConfigurations)
+      .where(eq(apiConfigurations.userId, userId))
+      .orderBy(desc(apiConfigurations.createdAt));
+  }
+
+  async getApiConfigurationById(id: number, userId: number): Promise<ApiConfiguration | undefined> {
+    const [config] = await db
+      .select()
+      .from(apiConfigurations)
+      .where(and(eq(apiConfigurations.id, id), eq(apiConfigurations.userId, userId)));
+    return config || undefined;
+  }
+
+  async createApiConfiguration(insertConfig: InsertApiConfiguration): Promise<ApiConfiguration> {
+    const [config] = await db
+      .insert(apiConfigurations)
+      .values(insertConfig)
+      .returning();
+    return config;
+  }
+
+  async updateApiConfiguration(
+    id: number, 
+    updateConfig: Partial<InsertApiConfiguration>, 
+    userId: number
+  ): Promise<ApiConfiguration | undefined> {
+    const [config] = await db
+      .update(apiConfigurations)
+      .set({ ...updateConfig, updatedAt: new Date() })
+      .where(and(eq(apiConfigurations.id, id), eq(apiConfigurations.userId, userId)))
+      .returning();
+    return config || undefined;
+  }
+
+  async deleteApiConfiguration(id: number, userId: number): Promise<boolean> {
+    const result = await db
+      .delete(apiConfigurations)
+      .where(and(eq(apiConfigurations.id, id), eq(apiConfigurations.userId, userId)));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  // API sync log methods
+  async getApiSyncLogs(configId: number, userId: number): Promise<ApiSyncLog[]> {
+    return await db
+      .select()
+      .from(apiSyncLogs)
+      .where(and(eq(apiSyncLogs.apiConfigId, configId), eq(apiSyncLogs.userId, userId)))
+      .orderBy(desc(apiSyncLogs.createdAt))
+      .limit(50); // Limit to last 50 logs
+  }
+
+  async createApiSyncLog(insertLog: InsertApiSyncLog): Promise<ApiSyncLog> {
+    const [log] = await db
+      .insert(apiSyncLogs)
+      .values(insertLog)
+      .returning();
+    return log;
   }
 }
 
