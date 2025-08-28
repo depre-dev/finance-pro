@@ -554,9 +554,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Charge history endpoints
-  app.get("/api/charge-history", async (req, res) => {
+  app.get("/api/charge-history", authenticate, async (req, res) => {
     try {
-      const userId = 1; // Mock user ID
+      const userId = req.user!.id;
       const charges = await storage.getAllChargeHistory(userId);
       res.json(charges);
     } catch (error) {
@@ -577,15 +577,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/charge-history", async (req, res) => {
+  app.post("/api/charge-history", authenticate, async (req, res) => {
     try {
-      const userId = 1; // Mock user ID
+      const userId = req.user!.id;
       const chargeData = { 
         ...req.body, 
         userId,
         date: req.body.date ? new Date(req.body.date) : new Date()
       };
+      console.log("Creating charge history:", chargeData);
       const newCharge = await storage.createChargeHistory(chargeData);
+      console.log("Created charge history:", newCharge);
       res.status(201).json(newCharge);
     } catch (error) {
       console.error("Error creating charge history:", error);
