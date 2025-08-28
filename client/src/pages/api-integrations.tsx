@@ -60,8 +60,9 @@ export default function ApiIntegrations() {
   });
 
   // Fetch API configurations
-  const { data: apiConfigs = [], isLoading } = useQuery<ApiConfig[]>({
+  const { data: apiConfigs = [], isLoading, error } = useQuery<ApiConfig[]>({
     queryKey: ["/api/integrations/configs"],
+    retry: false,
   });
 
   // Create/Update API configuration
@@ -228,7 +229,24 @@ export default function ApiIntegrations() {
                   </Card>
                 ))}
               </div>
-            ) : apiConfigs.length === 0 ? (
+            ) : error ? (
+              <Card className="border-red-200 bg-red-50">
+                <CardContent className="p-6 text-center">
+                  <AlertTriangle className="mx-auto h-12 w-12 text-red-500 mb-4" />
+                  <p className="text-red-700 font-medium">Session Expired</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    Please refresh the page to re-authenticate and access API integrations
+                  </p>
+                  <Button 
+                    onClick={() => window.location.reload()} 
+                    className="mt-3"
+                    size="sm"
+                  >
+                    Refresh Page
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : !apiConfigs || apiConfigs.length === 0 ? (
               <Card className="border-dashed">
                 <CardContent className="p-6 text-center">
                   <Globe className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
@@ -239,7 +257,7 @@ export default function ApiIntegrations() {
                 </CardContent>
               </Card>
             ) : (
-              apiConfigs.map((config) => (
+              (apiConfigs || []).map((config) => (
                 <Card key={config.id} className="relative">
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between">
