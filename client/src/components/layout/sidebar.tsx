@@ -24,7 +24,6 @@ const navigation = [
   { name: "Projects", href: "/projects", icon: Folder },
   { name: "Budget Planning", href: "/budget-planning", icon: Calculator },
   { name: "Financial Records", href: "/financial-records", icon: Receipt },
-  { name: "Charge History", href: "/charge-history", icon: CreditCard },
   { name: "CATS Booking", href: "/cats-booking", icon: Calendar },
   { name: "API Integrations", href: "/api-integrations", icon: Zap },
   { name: "Reports", href: "/reports", icon: TrendingUp },

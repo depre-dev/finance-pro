@@ -106,7 +106,6 @@ export default function Projects() {
   };
 
   const getTotalChargesForProject = (projectId: number) => {
-    if (!chargeHistory || !Array.isArray(chargeHistory)) return 0;
     return chargeHistory
       .filter(charge => charge.projectId === projectId)
       .reduce((total, charge) => total + parseFloat(charge.amount || "0"), 0);
@@ -155,6 +154,25 @@ export default function Projects() {
       });
     },
   });
+
+  const calculateBudgetUsage = (totalBudget: string, actualCost: string) => {
+    const budget = parseFloat(totalBudget || "0");
+    const spent = parseFloat(actualCost || "0");
+    if (budget === 0) return 0;
+    return Math.min((spent / budget) * 100, 100);
+  };
+
+  const getRemainingBudget = (totalBudget: string, actualCost: string) => {
+    const budget = parseFloat(totalBudget || "0");
+    const spent = parseFloat(actualCost || "0");
+    return budget - spent;
+  };
+
+  const getTotalChargesForProject = (projectId: number) => {
+    return chargeHistory
+      .filter(charge => charge.projectId === projectId)
+      .reduce((total, charge) => total + parseFloat(charge.amount || "0"), 0);
+  };
 
   return (
     <>
@@ -513,48 +531,22 @@ export default function Projects() {
               {/* Charge History */}
               <Card>
                 <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle className="flex items-center">
-                        <CreditCard className="mr-2 h-5 w-5" />
-                        Charge History
-                      </CardTitle>
-                      <CardDescription>
-                        Complete record of all expenses and costs for this project
-                      </CardDescription>
-                    </div>
-                    <Button
-                      size="sm"
-                      onClick={() => {
-                        setChargeProject(viewingProject);
-                        setIsQuickChargeOpen(true);
-                      }}
-                      className="flex items-center gap-2"
-                    >
-                      <Plus className="h-4 w-4" />
-                      Add Charge
-                    </Button>
-                  </div>
+                  <CardTitle className="flex items-center">
+                    <CreditCard className="mr-2 h-5 w-5" />
+                    Charge History
+                  </CardTitle>
+                  <CardDescription>
+                    Complete record of all expenses and costs for this project
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {!chargeHistory || chargeHistory.length === 0 ? (
+                  {chargeHistory.length === 0 ? (
                     <div className="text-center py-8">
                       <CreditCard className="mx-auto h-12 w-12 text-gray-400" />
                       <h3 className="mt-2 text-sm font-semibold text-gray-900">No charges recorded</h3>
                       <p className="mt-1 text-sm text-gray-500">
                         No expenses have been recorded for this project yet.
                       </p>
-                      <Button
-                        size="sm"
-                        className="mt-4"
-                        onClick={() => {
-                          setChargeProject(viewingProject);
-                          setIsQuickChargeOpen(true);
-                        }}
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add First Charge
-                      </Button>
                     </div>
                   ) : (
                     <div className="space-y-4">
