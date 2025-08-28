@@ -21,8 +21,14 @@ export default function AnimatedButton({
 }: AnimatedButtonProps) {
   return (
     <motion.div
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={{ 
+        scale: 1.02,
+        transition: { duration: 0.2, ease: "easeOut" }
+      }}
+      whileTap={{ 
+        scale: 0.95,
+        transition: { duration: 0.1, ease: "easeInOut" }
+      }}
       animate={pulse ? {
         scale: [1, 1.05, 1],
         transition: {

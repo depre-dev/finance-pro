@@ -62,8 +62,14 @@ export default function FloatingActionButton({
                     {action.label}
                   </motion.span>
                   <motion.div
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
+                    whileHover={{ 
+                      scale: 1.05,
+                      transition: { duration: 0.2, ease: "easeOut" }
+                    }}
+                    whileTap={{ 
+                      scale: 0.95,
+                      transition: { duration: 0.1, ease: "easeInOut" }
+                    }}
                   >
                     <Button
                       size="icon"
@@ -84,8 +90,14 @@ export default function FloatingActionButton({
       </AnimatePresence>
 
       <motion.div
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
+        whileHover={{ 
+          scale: 1.05,
+          transition: { duration: 0.2, ease: "easeOut" }
+        }}
+        whileTap={{ 
+          scale: 0.95,
+          transition: { duration: 0.1, ease: "easeInOut" }
+        }}
         animate={expanded ? { rotate: 45 } : { rotate: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
       >
@@ -107,12 +119,12 @@ export default function FloatingActionButton({
           
           {/* Ripple effect */}
           <motion.div
-            className="absolute inset-0 bg-white/20 rounded-full"
+            className="absolute inset-0 bg-white/30 rounded-full"
             initial={{ scale: 0, opacity: 0 }}
             whileTap={{
-              scale: 2,
-              opacity: [0, 0.5, 0],
-              transition: { duration: 0.4 }
+              scale: 1.5,
+              opacity: [0, 0.6, 0],
+              transition: { duration: 0.3, ease: "easeOut" }
             }}
           />
           
