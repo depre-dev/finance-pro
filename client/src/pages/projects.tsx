@@ -15,7 +15,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { 
@@ -91,15 +91,19 @@ export default function Projects() {
   });
 
   // Fetch charge history for the viewing project
-  const { data: chargeHistory = [] } = useQuery<ChargeHistory[]>({
+  const { data: chargeHistory = [], error: chargeHistoryError } = useQuery<ChargeHistory[]>({
     queryKey: [`/api/projects/${viewingProject?.id}/charge-history`],
     enabled: !!viewingProject?.id,
     retry: false,
     throwOnError: false,
-    onError: (error) => {
-      console.log('Charge history fetch error (handled):', error);
-    }
   });
+
+  // Handle charge history errors
+  React.useEffect(() => {
+    if (chargeHistoryError) {
+      console.log('Charge history fetch error (handled):', chargeHistoryError);
+    }
+  }, [chargeHistoryError]);
 
   // Get unique target releases for filter dropdown
   const uniqueTargetReleases = Array.from(new Set(
@@ -147,7 +151,7 @@ export default function Projects() {
   const getTotalChargesForProject = (projectId: number) => {
     if (!chargeHistory || !Array.isArray(chargeHistory)) return 0;
     // chargeHistory is already filtered by project in the query
-    return chargeHistory.reduce((total, charge) => total + parseFloat(charge.amount || "0"), 0);
+    return chargeHistory.reduce((total, charge) => total + parseFloat(charge.amount.toString() || "0"), 0);
   };
 
   const handleViewProject = (project: Project) => {
@@ -636,9 +640,9 @@ export default function Projects() {
                               const totalBudget = parseFloat(viewingProject.totalBudget || "0");
                               
                               return (chargeHistory || [])
-                                .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-                                .map((charge, index) => {
-                                  runningTotal += parseFloat(charge.amount || "0");
+                                .sort((a: ChargeHistory, b: ChargeHistory) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                                .map((charge: ChargeHistory, index: number) => {
+                                  runningTotal += parseFloat(charge.amount.toString() || "0");
                                   const remainingBudget = totalBudget - runningTotal;
                                   const usagePercent = totalBudget > 0 ? (runningTotal / totalBudget) * 100 : 0;
                                   
@@ -658,7 +662,7 @@ export default function Projects() {
                                         </Badge>
                                       </TableCell>
                                       <TableCell className="text-right font-mono break-words">
-                                        {formatCurrency(charge.amount)}
+                                        {formatCurrency(charge.amount.toString())}
                                       </TableCell>
                                       <TableCell className="text-right font-mono">
                                         <div className="flex flex-col">
