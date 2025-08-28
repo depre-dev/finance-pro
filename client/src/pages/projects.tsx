@@ -354,23 +354,21 @@ export default function Projects() {
                   </div>
                   
                   {/* Quick Actions */}
-                  <div className="space-y-3 pt-4 border-t border-neutral-20">
-                    <div className="grid grid-cols-1 gap-2">
-                      <AnimatedButton 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => {
-                          setChargeProject(project);
-                          setIsQuickChargeOpen(true);
-                        }}
-                        className="text-green-600 border-green-200 hover:bg-green-50"
-                      >
-                        <Plus className="h-4 w-4 mr-1" />
-                        Add Expense
-                      </AnimatedButton>
-                    </div>
+                  <div className="space-y-3 pt-3 border-t border-neutral-200">
+                    <AnimatedButton 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => {
+                        setChargeProject(project);
+                        setIsQuickChargeOpen(true);
+                      }}
+                      className="w-full text-green-600 border-green-200 hover:bg-green-50 justify-center"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Expense
+                    </AnimatedButton>
                     
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between pt-2">
                       <div className="flex items-center space-x-1">
                         <Button 
                           variant="ghost" 
@@ -401,7 +399,7 @@ export default function Projects() {
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
-                      <p className="text-xs text-neutral-50">
+                      <p className="text-xs text-muted-foreground">
                         Updated {new Date(project.updatedAt).toLocaleDateString()}
                       </p>
                     </div>
