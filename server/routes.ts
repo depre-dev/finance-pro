@@ -565,9 +565,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/projects/:id/charge-history", async (req, res) => {
+  app.get("/api/projects/:id/charge-history", authenticate, async (req, res) => {
     try {
-      const userId = 1; // Mock user ID
+      const userId = req.user!.id;
       const projectId = parseInt(req.params.id);
       const charges = await storage.getChargeHistory(projectId, userId);
       res.json(charges);

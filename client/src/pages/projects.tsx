@@ -107,9 +107,8 @@ export default function Projects() {
 
   const getTotalChargesForProject = (projectId: number) => {
     if (!chargeHistory || !Array.isArray(chargeHistory)) return 0;
-    return chargeHistory
-      .filter(charge => charge.projectId === projectId)
-      .reduce((total, charge) => total + parseFloat(charge.amount || "0"), 0);
+    // chargeHistory is already filtered by project in the query
+    return chargeHistory.reduce((total, charge) => total + parseFloat(charge.amount || "0"), 0);
   };
 
   const handleViewProject = (project: Project) => {
@@ -561,7 +560,7 @@ export default function Projects() {
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <div className="text-center p-3 bg-slate-50 rounded-lg min-h-[80px] flex flex-col justify-center">
                           <div className="text-lg font-bold text-slate-600">
-                            {chargeHistory.length}
+                            {chargeHistory?.length || 0}
                           </div>
                           <div className="text-sm text-slate-600 mt-1">Total Charges</div>
                         </div>
@@ -573,7 +572,9 @@ export default function Projects() {
                         </div>
                         <div className="text-center p-3 bg-indigo-50 rounded-lg min-h-[80px] flex flex-col justify-center">
                           <div className="text-lg font-bold text-indigo-600">
-                            {format(new Date(chargeHistory[0]?.date), "MMM dd")}
+                            {chargeHistory && chargeHistory.length > 0 && chargeHistory[0]?.date 
+                              ? format(new Date(chargeHistory[0].date), "MMM dd")
+                              : "No charges"}
                           </div>
                           <div className="text-sm text-indigo-600 mt-1">Latest Charge</div>
                         </div>
@@ -596,7 +597,7 @@ export default function Projects() {
                               let runningTotal = 0;
                               const totalBudget = parseFloat(viewingProject.totalBudget || "0");
                               
-                              return chargeHistory
+                              return (chargeHistory || [])
                                 .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
                                 .map((charge, index) => {
                                   runningTotal += parseFloat(charge.amount || "0");
