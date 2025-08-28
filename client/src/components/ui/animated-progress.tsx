@@ -35,10 +35,13 @@ export default function AnimatedProgress({
 
   useEffect(() => {
     setMounted(true);
-    if (animated) {
+  }, []);
+
+  useEffect(() => {
+    if (mounted && animated) {
       springValue.set(value);
     }
-  }, [value, animated, springValue]);
+  }, [value, animated, springValue, mounted]);
 
   const colorClasses = {
     default: "bg-primary",

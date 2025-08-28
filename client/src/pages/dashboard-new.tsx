@@ -7,6 +7,7 @@ import AnimatedProgress from "@/components/ui/animated-progress";
 import AnimatedNumber from "@/components/ui/animated-number";
 import FloatingActionButton from "@/components/ui/floating-action-button";
 import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
@@ -275,12 +276,18 @@ export default function Dashboard() {
                 </p>
               </div>
             </div>
-            <AnimatedProgress 
-              value={Math.min(budgetUsagePercentage, 100)} 
-              className="h-4"
-              animated={true}
-              color={budgetUsagePercentage > 100 ? "danger" : budgetUsagePercentage > 90 ? "warning" : "default"}
-            />
+            <div className="w-full bg-secondary rounded-full h-4 overflow-hidden">
+              <motion.div
+                className={`h-full rounded-full transition-colors duration-300 ${
+                  budgetUsagePercentage > 100 ? 'bg-red-500' : 
+                  budgetUsagePercentage > 90 ? 'bg-yellow-500' : 
+                  'bg-primary'
+                }`}
+                initial={{ width: "0%" }}
+                animate={{ width: `${Math.min(budgetUsagePercentage, 100)}%` }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+              />
+            </div>
             {budgetUsagePercentage > 90 && (
               <div className="flex items-center text-amber-600 text-sm">
                 <AlertTriangle className="mr-2 h-4 w-4" />
