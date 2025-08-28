@@ -317,7 +317,7 @@ export default function Projects() {
                         }}
                         className="text-green-600 border-green-200 hover:bg-green-50"
                       >
-                        <DollarSign className="h-4 w-4 mr-1" />
+                        <Plus className="h-4 w-4 mr-1" />
                         Add Expense
                       </Button>
                     </div>
