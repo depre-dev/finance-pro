@@ -31,7 +31,7 @@ import {
 } from "lucide-react";
 import type { Project, ChargeHistory } from "@shared/schema";
 import ProjectModal from "@/components/modals/project-modal-new";
-import BudgetSnapshot from "@/components/budget-snapshot";
+
 import QuickChargeModal from "@/components/quick-charge-modal";
 import CollaborativeNotes from "@/components/collaborative-notes";
 import { format } from "date-fns";
@@ -47,8 +47,7 @@ export default function Projects() {
   const [isDetailViewOpen, setIsDetailViewOpen] = useState(false);
   const [deletingProject, setDeletingProject] = useState<Project | undefined>(undefined);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [snapshotProject, setSnapshotProject] = useState<Project | undefined>(undefined);
-  const [isSnapshotOpen, setIsSnapshotOpen] = useState(false);
+
   const [isQuickChargeOpen, setIsQuickChargeOpen] = useState(false);
   const [chargeProject, setChargeProject] = useState<Project | undefined>(undefined);
 
@@ -131,10 +130,7 @@ export default function Projects() {
     setIsDeleteDialogOpen(true);
   };
 
-  const handleBudgetSnapshot = (project: Project) => {
-    setSnapshotProject(project);
-    setIsSnapshotOpen(true);
-  };
+
 
   const deleteProjectMutation = useMutation({
     mutationFn: async (projectId: number) => {
@@ -311,7 +307,7 @@ export default function Projects() {
                   
                   {/* Quick Actions */}
                   <div className="space-y-3 pt-4 border-t border-neutral-20">
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-1 gap-2">
                       <Button 
                         variant="outline" 
                         size="sm"
@@ -323,15 +319,6 @@ export default function Projects() {
                       >
                         <DollarSign className="h-4 w-4 mr-1" />
                         Add Expense
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => handleBudgetSnapshot(project)}
-                        className="text-primary border-blue-200 hover:bg-blue-50"
-                      >
-                        <Zap className="h-4 w-4 mr-1" />
-                        Budget View
                       </Button>
                     </div>
                     
@@ -696,17 +683,8 @@ export default function Projects() {
         </DialogContent>
       </Dialog>
 
-      {/* Budget Snapshot Modal */}
-      {snapshotProject && (
-        <BudgetSnapshot
-          project={snapshotProject}
-          isOpen={isSnapshotOpen}
-          onClose={() => {
-            setIsSnapshotOpen(false);
-            setSnapshotProject(undefined);
-          }}
-        />
-      )}
+
+
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
