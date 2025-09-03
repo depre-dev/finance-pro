@@ -428,10 +428,9 @@ export default function Dashboard() {
                             <span>{formatCurrency(spent)} spent</span>
                             <span>{formatCurrency(budget)} budget</span>
                           </div>
-                          <AnimatedProgress 
+                          <Progress 
                             value={Math.min(usage, 100)}
                             className="h-2"
-                            color={usage > 90 ? "destructive" : usage > 75 ? "warning" : "default"}
                           />
                           <div className="flex justify-between text-xs">
                             <span className="text-muted-foreground">{usage.toFixed(1)}% used</span>
