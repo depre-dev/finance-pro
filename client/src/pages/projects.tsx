@@ -320,7 +320,7 @@ export default function Projects() {
                       <AnimatedNumber 
                         value={Number(project.totalBudget)} 
                         format="currency"
-                        className="font-semibold text-sm break-words"
+                        className="font-semibold text-sm break-words text-foreground"
                       />
                     </div>
                     <div>
@@ -328,7 +328,7 @@ export default function Projects() {
                       <AnimatedNumber 
                         value={Number(project.actualCost || 0)} 
                         format="currency"
-                        className="font-semibold text-sm break-words"
+                        className="font-semibold text-sm break-words text-foreground"
                       />
                     </div>
                   </div>
@@ -348,7 +348,7 @@ export default function Projects() {
                             ? 'bg-red-50 text-red-700 border border-red-200' 
                             : 'bg-green-50 text-green-700 border border-green-200'
                         }`}>
-                          <span className="font-medium break-words">
+                          <span className="font-semibold break-words">
                             {isOverBudget ? 'Over Budget: ' : 'Remaining: '}
                             {formatCurrency(Math.abs(remainingBudget))}
                           </span>
@@ -359,18 +359,18 @@ export default function Projects() {
                   
                   {/* Quick Actions */}
                   <div className="space-y-3 pt-3 border-t border-neutral-200">
-                    <AnimatedButton 
+                    <Button 
                       variant="outline" 
                       size="sm"
                       onClick={() => {
                         setChargeProject(project);
                         setIsQuickChargeOpen(true);
                       }}
-                      className="w-full text-green-600 border-green-200 hover:bg-green-50"
+                      className="w-full text-green-600 border-green-200 hover:bg-green-50 flex items-center justify-center gap-2 h-9"
                     >
-                      <Plus className="h-3.5 w-3.5 mr-2" />
-                      Add Expense
-                    </AnimatedButton>
+                      <Plus className="h-4 w-4" />
+                      <span className="font-medium">Add Expense</span>
+                    </Button>
                     
                     <div className="flex items-center justify-between pt-2">
                       <div className="flex items-center space-x-1">
@@ -601,19 +601,19 @@ export default function Projects() {
                     <div className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <div className="text-center p-3 bg-slate-50 rounded-lg min-h-[80px] flex flex-col justify-center">
-                          <div className="text-lg font-bold text-slate-600">
+                          <div className="text-lg font-semibold text-slate-600">
                             {chargeHistory?.length || 0}
                           </div>
                           <div className="text-sm text-slate-600 mt-1">Total Charges</div>
                         </div>
                         <div className="text-center p-3 bg-purple-50 rounded-lg min-h-[80px] flex flex-col justify-center">
-                          <div className="text-lg font-bold text-purple-600 break-words">
+                          <div className="text-lg font-semibold text-purple-600 break-words">
                             {formatCurrency(getTotalChargesForProject(viewingProject.id))}
                           </div>
                           <div className="text-sm text-purple-600 mt-1">Total Amount</div>
                         </div>
                         <div className="text-center p-3 bg-indigo-50 rounded-lg min-h-[80px] flex flex-col justify-center">
-                          <div className="text-lg font-bold text-indigo-600">
+                          <div className="text-lg font-semibold text-indigo-600">
                             {chargeHistory && chargeHistory.length > 0 && chargeHistory[0]?.date 
                               ? format(new Date(chargeHistory[0].date), "MMM dd")
                               : "No charges"}
@@ -661,10 +661,12 @@ export default function Projects() {
                                           {charge.category || "General"}
                                         </Badge>
                                       </TableCell>
-                                      <TableCell className="text-right font-mono break-words">
-                                        {formatCurrency(charge.amount.toString())}
+                                      <TableCell className="text-right break-words">
+                                        <span className="font-semibold text-foreground">
+                                          {formatCurrency(charge.amount.toString())}
+                                        </span>
                                       </TableCell>
-                                      <TableCell className="text-right font-mono">
+                                      <TableCell className="text-right">
                                         <div className="flex flex-col">
                                           <span className="text-blue-600 font-semibold">
                                             {formatCurrency(runningTotal)}
@@ -674,7 +676,7 @@ export default function Projects() {
                                           </span>
                                         </div>
                                       </TableCell>
-                                      <TableCell className="text-right font-mono">
+                                      <TableCell className="text-right">
                                         <div className={`flex flex-col ${remainingBudget < 0 ? 'text-red-600' : 'text-green-600'}`}>
                                           <span className="font-semibold">
                                             {remainingBudget < 0 ? '-' : ''}{formatCurrency(Math.abs(remainingBudget))}
