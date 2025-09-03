@@ -20,7 +20,10 @@ import ApiIntegrations from "@/pages/api-integrations";
 import LoginPage from "@/pages/login";
 import RegisterPage from "@/pages/register";
 import Sidebar from "@/components/layout/sidebar";
+import InstallPrompt from "@/components/pwa/InstallPrompt";
+import OfflineIndicator from "@/components/pwa/OfflineIndicator";
 import { Loader2 } from "lucide-react";
+import { registerSW } from "@/utils/serviceWorker";
 
 function AuthenticatedApp() {
   return (
@@ -87,11 +90,23 @@ function Router() {
 }
 
 function App() {
+  // Register service worker for PWA functionality
+  React.useEffect(() => {
+    if (process.env.NODE_ENV === 'production') {
+      registerSW({
+        onSuccess: () => console.log('PWA installed successfully'),
+        onUpdate: () => console.log('PWA update available')
+      });
+    }
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="system" storageKey="financepro-ui-theme">
         <TooltipProvider>
           <Toaster />
+          <OfflineIndicator />
+          <InstallPrompt />
           <Router />
         </TooltipProvider>
       </ThemeProvider>

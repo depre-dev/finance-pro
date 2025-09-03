@@ -16,6 +16,7 @@ import {
 import { z } from "zod";
 import * as XLSX from "xlsx";
 import cookieParser from 'cookie-parser';
+import reportsRoutes from "./routes/reports";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Add cookie parser middleware
@@ -1006,6 +1007,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch sync logs" });
     }
   });
+
+  // Reports routes
+  app.use("/api/reports", reportsRoutes);
 
   const httpServer = createServer(app);
   return httpServer;

@@ -130,6 +130,38 @@ export const apiSyncLogs = pgTable("api_sync_logs", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// Automated reporting tables
+export const reportConfigurations = pgTable("report_configurations", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  description: text("description"),
+  type: varchar("type", { length: 50 }).notNull(), // 'budget_summary', 'project_status', 'expense_analysis', 'variance_report', 'custom'
+  schedule: varchar("schedule", { length: 20 }).notNull().default("manual"), // 'manual', 'daily', 'weekly', 'monthly', 'quarterly'
+  format: varchar("format", { length: 10 }).notNull().default("pdf"), // 'pdf', 'excel', 'csv', 'json'
+  recipients: json("recipients").$type<string[]>().notNull(), // Email addresses
+  filters: json("filters").default({}), // Report filters and parameters
+  isActive: boolean("is_active").default(true),
+  lastExecuted: timestamp("last_executed"),
+  nextExecution: timestamp("next_execution"),
+  userId: integer("user_id").notNull().references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const reportExecutions = pgTable("report_executions", {
+  id: serial("id").primaryKey(),
+  reportConfigId: integer("report_config_id").notNull().references(() => reportConfigurations.id),
+  status: varchar("status", { length: 20 }).notNull().default("pending"), // 'pending', 'generating', 'completed', 'failed'
+  startedAt: timestamp("started_at").defaultNow().notNull(),
+  completedAt: timestamp("completed_at"),
+  filePath: text("file_path"), // Path to generated report file
+  fileSize: integer("file_size"), // File size in bytes
+  errorMessage: text("error_message"),
+  executionTime: integer("execution_time"), // Time taken in milliseconds
+  recipientsSent: json("recipients_sent").$type<string[]>(), // Successfully sent recipients
+  userId: integer("user_id").notNull().references(() => users.id),
+});
+
 // Relations
 export const projectsRelations = relations(projects, ({ one, many }) => ({
   user: one(users, {
@@ -268,6 +300,19 @@ export const insertProjectNoteSchema = createInsertSchema(projectNotes).omit({
   updatedAt: true,
 });
 
+export const insertReportConfigurationSchema = createInsertSchema(reportConfigurations).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  lastExecuted: true,
+  nextExecution: true,
+});
+
+export const insertReportExecutionSchema = createInsertSchema(reportExecutions).omit({
+  id: true,
+  startedAt: true,
+});
+
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -301,3 +346,9 @@ export type ApiConfiguration = typeof apiConfigurations.$inferSelect;
 
 export type InsertApiSyncLog = z.infer<typeof insertApiSyncLogSchema>;
 export type ApiSyncLog = typeof apiSyncLogs.$inferSelect;
+
+export type InsertReportConfiguration = z.infer<typeof insertReportConfigurationSchema>;
+export type ReportConfiguration = typeof reportConfigurations.$inferSelect;
+
+export type InsertReportExecution = z.infer<typeof insertReportExecutionSchema>;
+export type ReportExecution = typeof reportExecutions.$inferSelect;
