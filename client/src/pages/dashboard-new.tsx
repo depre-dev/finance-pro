@@ -255,9 +255,17 @@ export default function Dashboard() {
           <CardTitle className="flex items-center">
             <BarChart3 className="mr-2 h-5 w-5" />
             Budget Overview
+            {targetReleaseFilter !== "all" && (
+              <Badge variant="secondary" className="ml-2">
+                {targetReleaseFilter || "No Release"}
+              </Badge>
+            )}
           </CardTitle>
           <CardDescription>
-            Overall budget utilization across all projects
+            {targetReleaseFilter === "all" 
+              ? "Overall budget utilization across all projects"
+              : `Budget utilization for ${targetReleaseFilter || "No Release"} release`
+            }
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -309,9 +317,17 @@ export default function Dashboard() {
             <CardTitle className="flex items-center">
               <BarChart3 className="mr-2 h-5 w-5 text-primary" />
               Project Budget vs Spending
+              {targetReleaseFilter !== "all" && (
+                <Badge variant="outline" className="ml-2">
+                  {targetReleaseFilter || "No Release"}
+                </Badge>
+              )}
             </CardTitle>
             <CardDescription>
-              Compare budgeted amounts with actual spending across projects
+              {targetReleaseFilter === "all"
+                ? "Compare budgeted amounts with actual spending across all projects"
+                : `Budget comparison for ${targetReleaseFilter || "No Release"} release projects`
+              }
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -325,9 +341,17 @@ export default function Dashboard() {
             <CardTitle className="flex items-center">
               <PieChart className="mr-2 h-5 w-5 text-primary" />
               Budget Distribution
+              {targetReleaseFilter !== "all" && (
+                <Badge variant="outline" className="ml-2">
+                  {targetReleaseFilter || "No Release"}
+                </Badge>
+              )}
             </CardTitle>
             <CardDescription>
-              Current allocation of your total budget
+              {targetReleaseFilter === "all"
+                ? "Current allocation of your total budget"
+                : `Budget allocation for ${targetReleaseFilter || "No Release"} release`
+              }
             </CardDescription>
           </CardHeader>
           <CardContent className="relative">
@@ -339,18 +363,39 @@ export default function Dashboard() {
       {/* Project Health Overview with Recent Activity */}
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <ProjectHealthWidget 
-            projects={filteredProjects.map(project => ({
-              id: project.id,
-              name: project.name,
-              budget: parseFloat(project.totalBudget || "0"),
-              spent: parseFloat(project.actualCost || "0"),
-              status: project.status || "Active",
-              healthScore: Math.max(0, Math.min(100, 
-                100 - (parseFloat(project.actualCost || "0") / parseFloat(project.totalBudget || "1") * 100)
-              ))
-            }))}
-          />
+          <Card className="h-full">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg font-semibold flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-primary" />
+                Project Health Overview
+                {targetReleaseFilter !== "all" && (
+                  <Badge variant="outline" className="ml-2">
+                    {targetReleaseFilter || "No Release"}
+                  </Badge>
+                )}
+              </CardTitle>
+              <CardDescription>
+                {targetReleaseFilter === "all"
+                  ? "Health status of all active projects"
+                  : `Health status for ${targetReleaseFilter || "No Release"} release projects`
+                }
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ProjectHealthWidget 
+                projects={filteredProjects.map(project => ({
+                  id: project.id,
+                  name: project.name,
+                  budget: parseFloat(project.totalBudget || "0"),
+                  spent: parseFloat(project.actualCost || "0"),
+                  status: project.status || "Active",
+                  healthScore: Math.max(0, Math.min(100, 
+                    100 - (parseFloat(project.actualCost || "0") / parseFloat(project.totalBudget || "1") * 100)
+                  ))
+                }))}
+              />
+            </CardContent>
+          </Card>
         </div>
         
         {/* Recent Activity Summary */}
