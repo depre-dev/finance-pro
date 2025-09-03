@@ -29,7 +29,7 @@ export class ReportService {
   // Generate Budget Summary Report
   async generateBudgetSummaryReport(userId: number, filters: any = {}): Promise<ReportData> {
     const projects = await storage.getProjects(userId);
-    const chargeHistory = await storage.getChargeHistory(null, userId);
+    const chargeHistory = await storage.getAllChargeHistory(userId);
     
     const totalBudget = projects.reduce((sum, project) => sum + parseFloat(project.totalBudget), 0);
     const totalSpent = chargeHistory.reduce((sum, charge) => sum + parseFloat(charge.amount), 0);
@@ -50,7 +50,7 @@ export class ReportService {
           .filter(charge => charge.projectId === project.id)
           .reduce((sum, charge) => sum + parseFloat(charge.amount), 0),
         status: project.status,
-        client: project.client
+        client: project.businessUnit
       }))
     };
   }
@@ -58,7 +58,7 @@ export class ReportService {
   // Generate Project Status Report
   async generateProjectStatusReport(userId: number, filters: any = {}): Promise<ReportData> {
     const projects = await storage.getProjects(userId);
-    const chargeHistory = await storage.getChargeHistory(null, userId);
+    const chargeHistory = await storage.getAllChargeHistory(userId);
     
     const projectsWithStatus = projects.map(project => {
       const spent = chargeHistory
@@ -82,9 +82,9 @@ export class ReportService {
         remaining,
         percentComplete: Math.round(percentComplete),
         healthStatus,
-        startDate: project.startDate,
-        endDate: project.endDate,
-        client: project.client
+        startDate: project.createdAt,
+        endDate: project.updatedAt,
+        client: project.businessUnit
       };
     });
 
@@ -96,7 +96,7 @@ export class ReportService {
 
   // Generate Expense Analysis Report
   async generateExpenseAnalysisReport(userId: number, filters: any = {}): Promise<ReportData> {
-    const chargeHistory = await storage.getChargeHistory(null, userId);
+    const chargeHistory = await storage.getAllChargeHistory(userId);
     const projects = await storage.getProjects(userId);
     
     const expensesByCategory = chargeHistory.reduce((acc, charge) => {
@@ -129,8 +129,15 @@ export class ReportService {
   // Generate Variance Report
   async generateVarianceReport(userId: number, filters: any = {}): Promise<ReportData> {
     const projects = await storage.getProjects(userId);
-    const chargeHistory = await storage.getChargeHistory(null, userId);
-    const budgetCategories = await storage.getBudgetCategories(userId);
+    const chargeHistory = await storage.getAllChargeHistory(userId);
+    try {
+      const budgetCategories = await storage.getBudgetCategories(userId);
+      // Continue with existing logic...
+    } catch (error) {
+      console.warn("Budget categories not available, skipping variance calculation");
+      const budgetCategories: any[] = [];
+      // Continue with empty array...
+    }
     
     const projectVariances = projects.map(project => {
       const spent = chargeHistory
@@ -153,16 +160,16 @@ export class ReportService {
     });
 
     const budgetVariances = budgetCategories.map(category => {
-      const variance = parseFloat(category.actualAmount) - parseFloat(category.plannedAmount);
-      const variancePercent = parseFloat(category.plannedAmount) > 0 
-        ? (variance / parseFloat(category.plannedAmount)) * 100 
-        : 0;
+      const actualAmount = parseFloat(category.actualAmount || "0");
+      const plannedAmount = parseFloat(category.budgetedAmount || "0");
+      const variance = actualAmount - plannedAmount;
+      const variancePercent = plannedAmount > 0 ? (variance / plannedAmount) * 100 : 0;
       
       return {
         id: category.id,
-        category: category.category,
-        planned: parseFloat(category.plannedAmount),
-        actual: parseFloat(category.actualAmount),
+        category: category.name,
+        planned: plannedAmount,
+        actual: actualAmount,
         variance,
         variancePercent: Math.round(variancePercent * 100) / 100,
         status: variance > 0 ? 'Over Budget' : variance < 0 ? 'Under Budget' : 'On Budget'

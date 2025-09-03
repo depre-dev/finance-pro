@@ -54,10 +54,7 @@ router.post("/configurations", async (req, res) => {
 
     const [config] = await db
       .insert(reportConfigurations)
-      .values({
-        ...validatedData,
-        recipients: validatedData.recipients || []
-      })
+      .values(validatedData)
       .returning();
 
     res.status(201).json(config);
@@ -82,7 +79,6 @@ router.put("/configurations/:id", async (req, res) => {
       .update(reportConfigurations)
       .set({
         ...validatedData,
-        recipients: validatedData.recipients || [],
         updatedAt: new Date()
       })
       .where(and(
