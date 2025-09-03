@@ -2,190 +2,68 @@
 
 ## Overview
 
-FinancePro is a full-stack financial management application built with React, Express, and PostgreSQL. It provides a comprehensive dashboard for tracking projects, budgets, financial records, and generating reports. The application follows a modern full-stack architecture with a React frontend, Express backend, and uses Drizzle ORM for database management.
+FinancePro is a full-stack financial management application designed to provide a comprehensive dashboard for tracking projects, budgets, financial records, and generating reports. It aims to offer real-time insights into financial performance, streamline financial management workflows, and provide robust reporting capabilities. The application is built with a modern full-stack architecture, utilizing React for the frontend, Express for the backend, and PostgreSQL with Drizzle ORM for database management. Its core purpose is to offer a comprehensive solution for financial oversight and management, enhancing decision-making through clear data visualization and reporting.
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
 
-## Recent Changes
-
-### September 3, 2025
-- **Dashboard Redesign**: Completely redesigned Project Budget vs Spending and Budget Distribution sections with fresh, modern look
-- **Enhanced Chart Components**: Created new EnhancedBudgetChart and EnhancedDistributionChart with smooth animations and improved tooltips
-- **Project Health Widget**: Added comprehensive project health overview with visual indicators and progress tracking
-- **Unified Recent Activity**: Merged duplicate Recent Activity sections into single enhanced panel with project context
-- **Improved Visual Hierarchy**: Enhanced spacing, typography, and color scheme throughout dashboard
-- **Interactive Elements**: Added hover effects, animated transitions, and better user feedback
-
-### August 28, 2025
-- **Animated Micro-Interactions System**: Implemented comprehensive animation system using framer-motion for delightful user experience
-- **Enhanced User Interface Animations**: Added animated cards with staggered entrance effects, animated buttons with hover/tap feedback, and smooth number counters
-- **Interactive Progress Components**: Created animated progress bars with color-coded states, shimmer effects, and completion animations
-- **Floating Action Button**: Built expandable FAB with quick actions menu for streamlined workflow
-- **Loading State Animations**: Added multiple loading animation variants (spinner, dots, pulse, skeleton) for better perceived performance
-- **Motion-Enhanced Dashboard**: Upgraded dashboard with animated metrics cards, smooth transitions, and responsive micro-interactions
-- **API Integration System**: Implemented comprehensive external API connection system to replace Excel import/export functionality
-- **API Configuration Management**: Created database tables for storing API endpoint configurations, authentication methods, and connection parameters  
-- **External Data Synchronization**: Built service layer to fetch projects and financial records from external APIs with proper validation and error handling
-- **API Integration UI**: Added complete user interface for managing API connections, testing endpoints, and monitoring sync operations
-- **Database Schema Updates**: Added apiConfigurations and apiSyncLogs tables with proper relationships and audit trails
-- **Integration Service**: Created ApiIntegrationService class supporting Bearer tokens, API keys, and multiple authentication methods
-- **Sync Workflow**: Implemented bidirectional data sync with external systems, including project creation and financial record imports
-- **Navigation Integration**: Added API Integrations page to sidebar navigation with proper routing and authentication
-- **Charge History Integration**: Moved charge history functionality from standalone page into project budget view with enhanced features
-- **Enhanced Project Detail View**: Added comprehensive charge history display with running totals, budget impact tracking, and quick charge addition
-- **Streamlined Navigation**: Removed charge history from sidebar navigation and integrated it as part of project management workflow
-
-### August 27, 2025
-- **Authentication System Debugging and Fix**: Resolved complex authentication flow issues in Replit's iframe environment
-- **localStorage Session Management**: Implemented hybrid authentication using localStorage to bypass cross-origin cookie restrictions
-- **Cross-Origin Authentication Support**: Added CORS headers and x-session-id header support for Replit's iframe architecture
-- **Session Persistence Fix**: Fixed session management to work reliably across browser refreshes and navigation
-- **Dashboard Error Resolution**: Fixed null reference errors in dashboard component with proper data handling
-- **Authentication State Management**: Enhanced React Query integration for seamless authentication state updates
-- **Production-Ready Authentication**: Cleaned up debug logging and finalized robust authentication system
-
-### January 27, 2025
-- **Comprehensive User Authentication System**: Implemented complete session-based authentication with bcrypt password hashing for secure credential management
-- **Database Schema Updates**: Added users and sessions tables with proper relationships, foreign keys, and data integrity constraints
-- **Authentication Middleware**: Created robust middleware protecting all API routes with session validation and automatic token refresh
-- **Login/Registration UI**: Built professional authentication components with form validation, error handling, and responsive design
-- **Secure Session Management**: Implemented HTTP-only cookies with proper expiration, secure flags, and automatic cleanup
-- **Application Routing**: Updated app structure to handle authenticated and unauthenticated states with automatic redirects
-- **User Interface Integration**: Enhanced sidebar with user avatar, role display, and logout functionality
-- **API Security**: Protected all existing endpoints requiring user authentication, ensuring data access control
-
-### January 24, 2025
-- **CATS Booking View**: Built comprehensive WBS search and filtering system across all project releases and business units
-- **Re-booking Export System**: Created Excel export functionality matching exact Infosys template format for financial re-posting
-- **Project Selection Modal**: Added advanced project selection interface with budget summaries and export configuration
-- **Excel Template Integration**: Implemented proper .xlsx file generation with correct column structure and formatting
-- **PSP Element Integration**: Connected WBS data from Excel imports to proper PSP element assignment in re-booking exports
-- **Financial Re-posting Workflow**: Added complete workflow for Capex re-postings with vendor, responsible person, and voucher description fields
-- **Simplified Charge Addition System**: Completely re-imagined expense workflow with streamlined QuickChargeModal featuring budget impact preview, preset common expenses, and direct project card integration
-- **Custom Expense Categories**: Updated expense categories to specific business requirements: Training and onboarding, Development, Quality Assurance, Test automation, Performance and load testing, Security testing, Penetration testing, Infrastructure
-
-### January 23, 2025
-- **Complete Dashboard Redesign**: Rebuilt dashboard with improved layout, better alignment, and enhanced budget overview charts
-- **Enhanced Budget Visualizations**: Added comprehensive budget progress bars, pie charts for distribution, and project comparison bar charts
-- **Budget Planning Feature**: Built comprehensive budget category management with variance analysis and visual charts
-- **Improved Metrics Display**: Added 4-card metric overview with total budget, spent amounts, and status indicators
-- **Project Status Overview**: Added detailed project status cards with individual progress tracking
-- **Recent Activity Feed**: Integrated charge history display showing latest transactions and expenses
-- **Comprehensive Charge History System**: Added complete charge tracking with database table, API endpoints, and UI components
-- **Detailed Project View**: Implemented expandable project details modal with full budget breakdown and charge history
-- **Excel Upload Workflow Redesign**: Modified system to store Excel data first in uploadedData table, then allow project creation from stored data
-- **Project Creation from Uploaded Data**: Added blue banner in project modal showing available Excel project names for easy selection
-- **Updated Upload Process**: Users can now upload Excel files without selecting projects first - data is stored and projects created later
-- **Project Deletion Feature**: Added delete functionality with confirmation dialog for safe project removal
-- **Terminology Update**: Changed all "Actual Cost" labels to "Budget Spend" and "spent" to "spend" for consistent terminology throughout the application
-
 ## System Architecture
 
 ### Frontend Architecture
 - **Framework**: React 18 with TypeScript
-- **Routing**: Wouter for client-side routing
-- **UI Components**: Radix UI primitives with shadcn/ui design system
-- **Styling**: Tailwind CSS with CSS variables for theming
-- **State Management**: TanStack Query (React Query) for server state
-- **Forms**: React Hook Form with Zod validation
-- **Charts**: Recharts for data visualization
-- **Build Tool**: Vite for fast development and building
+- **UI Components**: Radix UI primitives with shadcn/ui design system, styled using Tailwind CSS and CSS variables.
+- **State Management**: TanStack Query (React Query) for server state management.
+- **Forms**: React Hook Form with Zod validation.
+- **Charts**: Recharts for data visualization.
+- **Routing**: Wouter for client-side routing.
+- **Build Tool**: Vite.
+- **UI/UX Decisions**: Emphasizes a clean, professional, and modern design with comprehensive animated micro-interactions using framer-motion, including animated cards, buttons, progress bars, and loading states. Features include a redesigned dashboard with enhanced budget charts, project summary cards, unified recent activity, and release filter integration.
 
 ### Backend Architecture
-- **Framework**: Express.js with TypeScript
-- **Database**: PostgreSQL with Neon serverless driver
-- **ORM**: Drizzle ORM for type-safe database operations
-- **API Design**: RESTful API with structured error handling
-- **Authentication**: Session-based authentication with bcrypt password hashing
-- **Session Management**: Secure HTTP-only cookies with PostgreSQL session store
-- **Security**: Authentication middleware protecting all API endpoints with automatic session validation
+- **Framework**: Express.js with TypeScript.
+- **Database**: PostgreSQL with Neon serverless driver.
+- **ORM**: Drizzle ORM for type-safe database operations.
+- **API Design**: RESTful API with structured error handling.
+- **Authentication**: Session-based authentication with bcrypt password hashing, secure HTTP-only cookies, and PostgreSQL session store. Authentication middleware protects all API endpoints.
+- **API Integration System**: Comprehensive system for connecting to external APIs, replacing manual Excel import/export. Includes configuration management, external data synchronization services, and a dedicated UI for managing connections.
 
 ### Database Schema
-The application uses six main tables:
-- **users**: User authentication with encrypted passwords, roles, and profile information
-- **sessions**: Secure session management with expiration tracking and user relationships
-- **projects**: Project details with budgets, timelines, and user ownership
-- **financialRecords**: Income and expense tracking linked to projects and users
-- **budgetCategories**: Budget planning and actual vs planned tracking with user context
-- **chargeHistory**: Complete audit trail of all financial transactions and modifications
+The application utilizes six core tables:
+- **users**: For user authentication, roles, and profiles.
+- **sessions**: For secure session management.
+- **projects**: For project details, budgets, and ownership.
+- **financialRecords**: For income and expense tracking linked to projects.
+- **budgetCategories**: For budget planning and variance analysis.
+- **chargeHistory**: For an audit trail of all financial transactions.
 
-## Key Components
-
-### Dashboard System
-- Real-time metrics display (active projects, budgets, spending)
-- Interactive charts showing budget vs actual spending
-- Quick action buttons for creating projects and records
-- Project search and filtering capabilities
-
-### Project Management
-- Full CRUD operations for projects
-- Budget tracking with status indicators
-- Client and timeline management
-- Project-specific financial record association
-
-### Financial Tracking
-- Income and expense categorization
-- Date-based transaction recording
-- Project-specific financial record management
-- Budget category allocation and tracking
-
-### UI Components
-- Comprehensive component library using Radix UI primitives
-- Consistent design system with theme support
-- Form components with validation
-- Modal dialogs for data entry
-- Responsive layout with sidebar navigation
-
-## Data Flow
-
-1. **Client Requests**: React components make API calls using TanStack Query
-2. **API Layer**: Express routes handle requests with validation
-3. **Database Operations**: Drizzle ORM executes type-safe database queries
-4. **Response Handling**: Data is returned through standardized API responses
-5. **State Updates**: TanStack Query manages cache invalidation and updates
-6. **UI Updates**: React components re-render with updated data
+### Key Features and Implementations
+- **Dashboard System**: Real-time metrics, interactive budget charts, project summary cards, and a unified recent activity feed with release filtering.
+- **Reporting System**: Real-time generation of Budget Summary, Project Status, and Expense Analysis reports with export capabilities (CSV, JSON, TXT) and Swiss Franc currency formatting.
+- **Project Management**: Full CRUD operations for projects, budget tracking, and integration of a comprehensive charge history. Includes streamlined expense workflow with a QuickChargeModal and custom expense categories.
+- **Excel Integration**: Allows storing uploaded Excel data first, then creating projects from this data, updating the workflow to be more flexible.
+- **User Authentication**: Secure session-based authentication with bcrypt hashing, robust session management, and integrated login/registration UI.
+- **API Integration**: System for connecting to external APIs to fetch financial and project data, supporting various authentication methods and ensuring bidirectional data synchronization.
 
 ## External Dependencies
 
 ### Core Dependencies
-- **@neondatabase/serverless**: PostgreSQL serverless connection
-- **drizzle-orm**: Type-safe ORM with PostgreSQL support
-- **@tanstack/react-query**: Server state management
-- **react-hook-form**: Form handling and validation
-- **zod**: Schema validation
-- **wouter**: Lightweight React router
+- `@neondatabase/serverless`: For PostgreSQL serverless connection.
+- `drizzle-orm`: For type-safe ORM operations.
+- `@tanstack/react-query`: For server state management.
+- `react-hook-form`: For form handling and validation.
+- `zod`: For schema validation.
+- `wouter`: For client-side routing.
 
 ### UI Dependencies
-- **@radix-ui/***: Accessible UI primitives
-- **tailwindcss**: Utility-first CSS framework
-- **recharts**: React charting library
-- **lucide-react**: Icon library
-- **class-variance-authority**: Component variant management
+- `@radix-ui/*`: For accessible UI primitives.
+- `tailwindcss`: For utility-first CSS styling.
+- `recharts`: For charting and data visualization.
+- `lucide-react`: For icons.
+- `class-variance-authority`: For component variant management.
+- `framer-motion`: For animations and micro-interactions.
 
 ### Development Dependencies
-- **vite**: Build tool and dev server
-- **typescript**: Type checking and development
-- **esbuild**: Fast JavaScript bundler for production builds
-
-## Deployment Strategy
-
-### Development Environment
-- Vite dev server with hot module replacement
-- Express server with automatic restarts using tsx
-- Database migrations using Drizzle Kit
-- Environment variable configuration for database connections
-
-### Production Build
-1. Frontend assets built with Vite to `dist/public`
-2. Backend compiled with esbuild to `dist/index.js`
-3. Single Node.js server serves both API and static files
-4. Database migrations applied via Drizzle Kit push command
-
-### Environment Configuration
-- `DATABASE_URL`: PostgreSQL connection string
-- `NODE_ENV`: Environment mode (development/production)
-- Build scripts handle both frontend and backend compilation
-
-The application is designed for easy deployment to platforms like Replit, with automatic database provisioning and environment setup.
+- `vite`: For build tool and development server.
+- `typescript`: For type checking.
+- `esbuild`: For fast JavaScript bundling.

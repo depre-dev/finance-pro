@@ -67,7 +67,7 @@ export interface IStorage {
 
   // Budget category methods
   getAllBudgetCategories(userId: number): Promise<BudgetCategory[]>;
-  getBudgetCategories(userId: number): Promise<BudgetCategory[]>;
+  getBudgetCategories(projectId: number, userId: number): Promise<BudgetCategory[]>;
   createBudgetCategory(category: InsertBudgetCategory): Promise<BudgetCategory>;
   updateBudgetCategory(id: number, userId: number, category: Partial<InsertBudgetCategory>): Promise<BudgetCategory | undefined>;
   deleteBudgetCategory(id: number, userId: number): Promise<boolean>;

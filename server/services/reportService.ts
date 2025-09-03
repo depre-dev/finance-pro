@@ -130,14 +130,7 @@ export class ReportService {
   async generateVarianceReport(userId: number, filters: any = {}): Promise<ReportData> {
     const projects = await storage.getProjects(userId);
     const chargeHistory = await storage.getAllChargeHistory(userId);
-    try {
-      const budgetCategories = await storage.getBudgetCategories(userId);
-      // Continue with existing logic...
-    } catch (error) {
-      console.warn("Budget categories not available, skipping variance calculation");
-      const budgetCategories: any[] = [];
-      // Continue with empty array...
-    }
+    const budgetCategories = await storage.getAllBudgetCategories(userId);
     
     const projectVariances = projects.map(project => {
       const spent = chargeHistory
