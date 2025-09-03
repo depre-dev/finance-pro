@@ -11,7 +11,7 @@ import Dashboard from "@/pages/dashboard-new";
 import Projects from "@/pages/projects";
 import BudgetPlanning from "@/pages/budget-planning";
 import FinancialRecords from "@/pages/financial-records";
-import Reports from "@/pages/reports-simple";
+import Reports from "@/pages/reports-working";
 import ImportExport from "@/pages/import-export";
 import UploadedData from "@/pages/uploaded-data";
 

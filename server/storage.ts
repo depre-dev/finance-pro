@@ -73,8 +73,8 @@ export interface IStorage {
   deleteBudgetCategory(id: number, userId: number): Promise<boolean>;
 
   // Charge history methods
-  getChargeHistory(projectId: number, userId: number): Promise<ChargeHistory[]>;
   getAllChargeHistory(userId: number): Promise<ChargeHistory[]>;
+  getChargeHistory(projectId: number, userId: number): Promise<ChargeHistory[]>;
   createChargeHistory(charge: InsertChargeHistory): Promise<ChargeHistory>;
 
   // Dashboard metrics
