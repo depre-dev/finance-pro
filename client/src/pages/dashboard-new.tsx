@@ -34,6 +34,9 @@ import type { Project, ChargeHistory } from "@shared/schema";
 import ProjectModal from "@/components/modals/project-modal-new";
 import BudgetSnapshot from "@/components/budget-snapshot";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart as RechartsPieChart, Pie, Cell, Legend } from "recharts";
+import EnhancedBudgetChart from "@/components/charts/enhanced-budget-chart";
+import EnhancedDistributionChart from "@/components/charts/enhanced-distribution-chart";
+import ProjectHealthWidget from "@/components/charts/project-health-widget";
 
 interface DashboardMetrics {
   activeProjects: number;
@@ -298,98 +301,106 @@ export default function Dashboard() {
         </CardContent>
       </AnimatedCard>
 
-      {/* Charts Section */}
-      <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
-        {/* Project Budget Comparison */}
-        <Card>
+      {/* Enhanced Charts Section */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Enhanced Project Budget vs Spending Chart */}
+        <AnimatedCard delay={0.5} className="lg:col-span-1">
           <CardHeader>
             <CardTitle className="flex items-center">
-              <BarChart3 className="mr-2 h-5 w-5" />
+              <BarChart3 className="mr-2 h-5 w-5 text-primary" />
               Project Budget vs Spending
             </CardTitle>
             <CardDescription>
-              Budget allocation and actual spending by project
+              Compare budgeted amounts with actual spending across projects
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={projectChartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis 
-                    dataKey="name" 
-                    tick={{ fontSize: 12 }}
-                    interval={0}
-                    angle={-45}
-                    textAnchor="end"
-                    height={80}
-                  />
-                  <YAxis tick={{ fontSize: 12 }} />
-                  <Tooltip 
-                    formatter={(value, name) => [formatCurrency(value as number), name]}
-                    labelStyle={{ color: '#000' }}
-                  />
-                  <Legend />
-                  <Bar dataKey="budget" fill="#3b82f6" name="Total Budget" />
-                  <Bar dataKey="spent" fill="#f59e0b" name="Actual Spent" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            <EnhancedBudgetChart data={projectChartData} />
           </CardContent>
-        </Card>
+        </AnimatedCard>
 
-        {/* Budget Distribution Pie Chart */}
-        <Card>
+        {/* Enhanced Budget Distribution Chart */}
+        <AnimatedCard delay={0.6} className="lg:col-span-1">
           <CardHeader>
             <CardTitle className="flex items-center">
-              <PieChart className="mr-2 h-5 w-5" />
+              <PieChart className="mr-2 h-5 w-5 text-primary" />
               Budget Distribution
             </CardTitle>
             <CardDescription>
-              Current budget allocation status
+              Current allocation of your total budget
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="relative">
+            <EnhancedDistributionChart data={budgetStatusData} />
+          </CardContent>
+        </AnimatedCard>
+      </div>
+
+      {/* Project Health Overview */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <ProjectHealthWidget 
+            projects={filteredProjects.map(project => ({
+              id: project.id,
+              name: project.name,
+              budget: parseFloat(project.totalBudget || "0"),
+              spent: parseFloat(project.actualCost || "0"),
+              status: project.status || "Active",
+              healthScore: Math.max(0, Math.min(100, 
+                100 - (parseFloat(project.actualCost || "0") / parseFloat(project.totalBudget || "1") * 100)
+              ))
+            }))}
+          />
+        </div>
+        
+        {/* Recent Activity Summary */}
+        <AnimatedCard delay={0.8} className="lg:col-span-1">
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Activity className="mr-2 h-5 w-5 text-primary" />
+              Recent Activity
+            </CardTitle>
+            <CardDescription>
+              Latest financial transactions
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <RechartsPieChart>
-                  <Pie
-                    data={budgetStatusData}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                  >
-                    {budgetStatusData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip 
-                    formatter={(value) => formatCurrency(value as number)}
-                  />
-                  <Legend />
-                </RechartsPieChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="grid grid-cols-3 gap-4 mt-4">
-              {budgetStatusData.map((item, index) => (
-                <div key={item.name} className="text-center">
-                  <div className="flex items-center justify-center mb-1">
-                    <div 
-                      className="w-3 h-3 rounded mr-2" 
-                      style={{ backgroundColor: item.color }}
-                    ></div>
-                    <span className="text-sm font-medium">{item.name}</span>
+            <div className="space-y-3">
+              {recentCharges.map((charge, index) => (
+                <motion.div
+                  key={charge.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.9 + index * 0.1 }}
+                  className="flex items-center justify-between p-3 rounded-lg border border-border bg-card/50"
+                >
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground truncate">
+                      {charge.description}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {new Date(charge.date).toLocaleDateString()}
+                    </p>
                   </div>
-                  <p className="text-lg font-bold break-words">{formatCurrency(item.value)}</p>
-                </div>
+                  <div className="text-right ml-2">
+                    <p className="text-sm font-semibold text-foreground">
+                      {formatCurrency(charge.amount)}
+                    </p>
+                    <Badge variant="outline" className="text-xs">
+                      {charge.category}
+                    </Badge>
+                  </div>
+                </motion.div>
               ))}
+              {recentCharges.length === 0 && (
+                <div className="text-center py-6 text-muted-foreground">
+                  <Activity className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">No recent activity</p>
+                </div>
+              )}
             </div>
           </CardContent>
-        </Card>
+        </AnimatedCard>
       </div>
 
       {/* Project Status and Recent Activity */}
