@@ -360,14 +360,14 @@ export default function Dashboard() {
         </AnimatedCard>
       </div>
 
-      {/* Project Health Overview with Recent Activity */}
+      {/* Project Summary with Recent Activity */}
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <Card className="h-full">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-primary" />
-                Project Health Overview
+          <AnimatedCard delay={0.7}>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Target className="mr-2 h-5 w-5 text-primary" />
+                Project Summary
                 {targetReleaseFilter !== "all" && (
                   <Badge variant="outline" className="ml-2">
                     {targetReleaseFilter || "No Release"}
@@ -376,26 +376,87 @@ export default function Dashboard() {
               </CardTitle>
               <CardDescription>
                 {targetReleaseFilter === "all"
-                  ? "Health status of all active projects"
-                  : `Health status for ${targetReleaseFilter || "No Release"} release projects`
+                  ? "Quick overview of all active projects"
+                  : `Project overview for ${targetReleaseFilter || "No Release"} release`
                 }
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <ProjectHealthWidget 
-                projects={filteredProjects.map(project => ({
-                  id: project.id,
-                  name: project.name,
-                  budget: parseFloat(project.totalBudget || "0"),
-                  spent: parseFloat(project.actualCost || "0"),
-                  status: project.status || "Active",
-                  healthScore: Math.max(0, Math.min(100, 
-                    100 - (parseFloat(project.actualCost || "0") / parseFloat(project.totalBudget || "1") * 100)
-                  ))
-                }))}
-              />
+              <div className="space-y-4">
+                {filteredProjects.slice(0, 6).map((project, index) => {
+                  const budget = parseFloat(project.totalBudget || "0");
+                  const spent = parseFloat(project.actualCost || "0");
+                  const usage = budget > 0 ? (spent / budget) * 100 : 0;
+                  const isOverBudget = spent > budget;
+                  
+                  return (
+                    <motion.div
+                      key={project.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.8 + index * 0.1 }}
+                      className="flex items-center justify-between p-4 rounded-lg border border-border bg-card/30 hover:bg-card/60 transition-colors"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-medium text-sm text-foreground truncate">
+                            {project.name}
+                          </h4>
+                          <div className="flex items-center space-x-2 ml-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                setSnapshotProject(project);
+                                setIsSnapshotOpen(true);
+                              }}
+                              className="h-6 w-6 p-0 text-primary hover:text-primary"
+                              title="Quick Budget Snapshot"
+                            >
+                              <Zap className="h-3 w-3" />
+                            </Button>
+                            <Badge 
+                              variant={isOverBudget ? "destructive" : usage > 80 ? "secondary" : "default"}
+                              className="text-xs"
+                            >
+                              {isOverBudget ? "Over Budget" : usage > 80 ? "At Risk" : "On Track"}
+                            </Badge>
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-xs text-muted-foreground">
+                            <span>{formatCurrency(spent)} spent</span>
+                            <span>{formatCurrency(budget)} budget</span>
+                          </div>
+                          <AnimatedProgress 
+                            value={Math.min(usage, 100)}
+                            className="h-2"
+                            color={usage > 90 ? "destructive" : usage > 75 ? "warning" : "default"}
+                          />
+                          <div className="flex justify-between text-xs">
+                            <span className="text-muted-foreground">{usage.toFixed(1)}% used</span>
+                            <span className={`font-medium ${
+                              isOverBudget ? 'text-red-600' : 
+                              usage > 80 ? 'text-amber-600' : 
+                              'text-emerald-600'
+                            }`}>
+                              {formatCurrency(budget - spent)} remaining
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+                {filteredProjects.length === 0 && (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Target className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                    <p>No projects found for the selected filter</p>
+                  </div>
+                )}
+              </div>
             </CardContent>
-          </Card>
+          </AnimatedCard>
         </div>
         
         {/* Recent Activity Summary */}
