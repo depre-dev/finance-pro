@@ -26,7 +26,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { format } from "date-fns";
-import type { ReportConfiguration, ReportExecution } from "@shared/schema";
+// import type { ReportConfiguration, ReportExecution } from "@shared/schema";
 import AnimatedCard from "@/components/ui/animated-card";
 import AnimatedButton from "@/components/ui/animated-button";
 
@@ -42,7 +42,7 @@ export default function Reports() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [selectedConfig, setSelectedConfig] = useState<ReportConfiguration | null>(null);
+  const [selectedConfig, setSelectedConfig] = useState<any | null>(null);
   const [previewData, setPreviewData] = useState<ReportPreview | null>(null);
   const [loadingPreview, setLoadingPreview] = useState(false);
 
@@ -58,7 +58,7 @@ export default function Reports() {
   });
 
   // Fetch report configurations
-  const { data: configurations, isLoading: configsLoading } = useQuery<ReportConfiguration[]>({
+  const { data: configurations, isLoading: configsLoading } = useQuery<any[]>({
     queryKey: ["/api/reports/configurations"],
   });
 

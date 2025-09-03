@@ -67,7 +67,7 @@ export interface IStorage {
 
   // Budget category methods
   getAllBudgetCategories(userId: number): Promise<BudgetCategory[]>;
-  getBudgetCategories(projectId: number, userId: number): Promise<BudgetCategory[]>;
+  getBudgetCategories(userId: number): Promise<BudgetCategory[]>;
   createBudgetCategory(category: InsertBudgetCategory): Promise<BudgetCategory>;
   updateBudgetCategory(id: number, userId: number, category: Partial<InsertBudgetCategory>): Promise<BudgetCategory | undefined>;
   deleteBudgetCategory(id: number, userId: number): Promise<boolean>;
@@ -113,6 +113,17 @@ export interface IStorage {
   // API sync log methods
   getApiSyncLogs(configId: number, userId: number): Promise<ApiSyncLog[]>;
   createApiSyncLog(log: InsertApiSyncLog): Promise<ApiSyncLog>;
+
+  // Report configuration methods
+  getReportConfigurations(userId: number): Promise<any[]>;
+  createReportConfiguration(config: any): Promise<any>;
+  updateReportConfiguration(id: number, config: any, userId: number): Promise<any>;
+  deleteReportConfiguration(id: number, userId: number): Promise<boolean>;
+
+  // Report execution methods
+  createReportExecution(execution: any): Promise<number>;
+  updateReportExecution(id: number, execution: any): Promise<void>;
+  getReportExecutions(userId: number): Promise<any[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -600,6 +611,36 @@ export class DatabaseStorage implements IStorage {
       .values(insertLog)
       .returning();
     return log;
+  }
+
+  // Report configuration methods (stub implementations for now)
+  async getReportConfigurations(userId: number): Promise<any[]> {
+    return [];
+  }
+
+  async createReportConfiguration(config: any): Promise<any> {
+    return { id: 1, ...config };
+  }
+
+  async updateReportConfiguration(id: number, config: any, userId: number): Promise<any> {
+    return { id, ...config };
+  }
+
+  async deleteReportConfiguration(id: number, userId: number): Promise<boolean> {
+    return true;
+  }
+
+  // Report execution methods (stub implementations for now)
+  async createReportExecution(execution: any): Promise<number> {
+    return 1;
+  }
+
+  async updateReportExecution(id: number, execution: any): Promise<void> {
+    // Stub implementation
+  }
+
+  async getReportExecutions(userId: number): Promise<any[]> {
+    return [];
   }
 }
 

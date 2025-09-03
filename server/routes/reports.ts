@@ -8,16 +8,20 @@ import {
   insertReportExecutionSchema 
 } from "@shared/schema";
 import { ReportService } from "../services/reportService";
+import { authenticate } from "../auth";
 import * as path from 'path';
 import * as fs from 'fs';
 
 const router = Router();
 const reportService = ReportService.getInstance();
 
+// Apply authentication middleware to all routes
+router.use(authenticate);
+
 // Get all report configurations for the user
 router.get("/configurations", async (req, res) => {
   try {
-    const userId = (req as any).session?.userId;
+    const userId = req.user!.id;
     if (!userId) {
       return res.status(401).json({ message: "Authentication required" });
     }
@@ -38,7 +42,7 @@ router.get("/configurations", async (req, res) => {
 // Create a new report configuration
 router.post("/configurations", async (req, res) => {
   try {
-    const userId = (req as any).session?.userId;
+    const userId = req.user!.id;
     if (!userId) {
       return res.status(401).json({ message: "Authentication required" });
     }
@@ -50,7 +54,10 @@ router.post("/configurations", async (req, res) => {
 
     const [config] = await db
       .insert(reportConfigurations)
-      .values(validatedData)
+      .values({
+        ...validatedData,
+        recipients: validatedData.recipients || []
+      })
       .returning();
 
     res.status(201).json(config);
@@ -63,7 +70,7 @@ router.post("/configurations", async (req, res) => {
 // Update a report configuration
 router.put("/configurations/:id", async (req, res) => {
   try {
-    const userId = (req as any).session?.userId;
+    const userId = req.user!.id;
     if (!userId) {
       return res.status(401).json({ message: "Authentication required" });
     }
@@ -75,6 +82,7 @@ router.put("/configurations/:id", async (req, res) => {
       .update(reportConfigurations)
       .set({
         ...validatedData,
+        recipients: validatedData.recipients || [],
         updatedAt: new Date()
       })
       .where(and(
@@ -97,7 +105,7 @@ router.put("/configurations/:id", async (req, res) => {
 // Delete a report configuration
 router.delete("/configurations/:id", async (req, res) => {
   try {
-    const userId = (req as any).session?.userId;
+    const userId = req.user!.id;
     if (!userId) {
       return res.status(401).json({ message: "Authentication required" });
     }
@@ -126,7 +134,7 @@ router.delete("/configurations/:id", async (req, res) => {
 // Execute a report
 router.post("/configurations/:id/execute", async (req, res) => {
   try {
-    const userId = (req as any).session?.userId;
+    const userId = req.user!.id;
     if (!userId) {
       return res.status(401).json({ message: "Authentication required" });
     }
@@ -162,7 +170,7 @@ router.post("/configurations/:id/execute", async (req, res) => {
 // Get report executions for a configuration
 router.get("/configurations/:id/executions", async (req, res) => {
   try {
-    const userId = (req as any).session?.userId;
+    const userId = req.user!.id;
     if (!userId) {
       return res.status(401).json({ message: "Authentication required" });
     }
@@ -188,7 +196,7 @@ router.get("/configurations/:id/executions", async (req, res) => {
 // Get all report executions for the user
 router.get("/executions", async (req, res) => {
   try {
-    const userId = (req as any).session?.userId;
+    const userId = req.user!.id;
     if (!userId) {
       return res.status(401).json({ message: "Authentication required" });
     }
@@ -221,7 +229,7 @@ router.get("/executions", async (req, res) => {
 // Download a generated report
 router.get("/download/:filename", async (req, res) => {
   try {
-    const userId = (req as any).session?.userId;
+    const userId = req.user!.id;
     if (!userId) {
       return res.status(401).json({ message: "Authentication required" });
     }
@@ -276,7 +284,7 @@ router.get("/download/:filename", async (req, res) => {
 // Generate preview data for a report type
 router.post("/preview", async (req, res) => {
   try {
-    const userId = (req as any).session?.userId;
+    const userId = req.user!.id;
     if (!userId) {
       return res.status(401).json({ message: "Authentication required" });
     }
