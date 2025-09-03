@@ -304,7 +304,7 @@ export default function Dashboard() {
       {/* Enhanced Charts Section */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Enhanced Project Budget vs Spending Chart */}
-        <AnimatedCard delay={0.5} className="lg:col-span-1">
+        <AnimatedCard delay={0.5}>
           <CardHeader>
             <CardTitle className="flex items-center">
               <BarChart3 className="mr-2 h-5 w-5 text-primary" />
@@ -320,7 +320,7 @@ export default function Dashboard() {
         </AnimatedCard>
 
         {/* Enhanced Budget Distribution Chart */}
-        <AnimatedCard delay={0.6} className="lg:col-span-1">
+        <AnimatedCard delay={0.6}>
           <CardHeader>
             <CardTitle className="flex items-center">
               <PieChart className="mr-2 h-5 w-5 text-primary" />
@@ -336,7 +336,7 @@ export default function Dashboard() {
         </AnimatedCard>
       </div>
 
-      {/* Project Health Overview */}
+      {/* Project Health Overview with Recent Activity */}
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <ProjectHealthWidget 
@@ -354,7 +354,7 @@ export default function Dashboard() {
         </div>
         
         {/* Recent Activity Summary */}
-        <AnimatedCard delay={0.8} className="lg:col-span-1">
+        <AnimatedCard delay={0.8}>
           <CardHeader>
             <CardTitle className="flex items-center">
               <Activity className="mr-2 h-5 w-5 text-primary" />
@@ -366,32 +366,35 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {recentCharges.map((charge, index) => (
-                <motion.div
-                  key={charge.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.9 + index * 0.1 }}
-                  className="flex items-center justify-between p-3 rounded-lg border border-border bg-card/50"
-                >
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground truncate">
-                      {charge.description}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {new Date(charge.date).toLocaleDateString()}
-                    </p>
-                  </div>
-                  <div className="text-right ml-2">
-                    <p className="text-sm font-semibold text-foreground">
-                      {formatCurrency(charge.amount)}
-                    </p>
-                    <Badge variant="outline" className="text-xs">
-                      {charge.category}
-                    </Badge>
-                  </div>
-                </motion.div>
-              ))}
+              {recentCharges.map((charge, index) => {
+                const project = projects?.find(p => p.id === charge.projectId);
+                return (
+                  <motion.div
+                    key={charge.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.9 + index * 0.1 }}
+                    className="flex items-center justify-between p-3 rounded-lg border border-border bg-card/50 hover:bg-card/80 transition-colors"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-foreground truncate">
+                        {charge.description}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {project?.name || "Unknown Project"} • {new Date(charge.date).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <div className="text-right ml-2">
+                      <p className="text-sm font-semibold text-foreground">
+                        {formatCurrency(charge.amount)}
+                      </p>
+                      <Badge variant="outline" className="text-xs">
+                        {charge.category || "General"}
+                      </Badge>
+                    </div>
+                  </motion.div>
+                );
+              })}
               {recentCharges.length === 0 && (
                 <div className="text-center py-6 text-muted-foreground">
                   <Activity className="w-8 h-8 mx-auto mb-2 opacity-50" />
@@ -403,113 +406,7 @@ export default function Dashboard() {
         </AnimatedCard>
       </div>
 
-      {/* Project Status and Recent Activity */}
-      <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
-        {/* Project Status */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Target className="mr-2 h-5 w-5" />
-              Project Status
-            </CardTitle>
-            <CardDescription>
-              Current status of all active projects
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {projects?.slice(0, 5).map(project => {
-                const budget = parseFloat(project.totalBudget || "0");
-                const spent = parseFloat(project.actualCost || "0");
-                const usage = budget > 0 ? (spent / budget) * 100 : 0;
-                const isOverBudget = spent > budget;
-                
-                return (
-                  <div key={project.id} className="flex items-center justify-between p-3 border rounded-lg">
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium text-sm">{project.name}</h4>
-                        <div className="flex items-center space-x-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                              setSnapshotProject(project);
-                              setIsSnapshotOpen(true);
-                            }}
-                            className="h-6 w-6 p-0 text-primary hover:text-primary"
-                            title="Quick Budget Snapshot"
-                          >
-                            <Zap className="h-3 w-3" />
-                          </Button>
-                          <Badge variant={isOverBudget ? "destructive" : usage > 80 ? "secondary" : "default"}>
-                            {isOverBudget ? "Over Budget" : usage > 80 ? "At Risk" : "On Track"}
-                          </Badge>
-                        </div>
-                      </div>
-                      <div className="space-y-1">
-                        <div className="flex justify-between text-xs text-muted-foreground">
-                          <span>{formatCurrency(spent)} spend</span>
-                          <span>{formatCurrency(budget)} budget</span>
-                        </div>
-                        <Progress value={Math.min(usage, 100)} className="h-2" />
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
 
-        {/* Recent Activity */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Activity className="mr-2 h-5 w-5" />
-              Recent Activity
-            </CardTitle>
-            <CardDescription>
-              Latest charges and transactions
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {recentCharges.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <Activity className="mx-auto h-8 w-8 mb-2" />
-                  <p>No recent activity</p>
-                </div>
-              ) : (
-                recentCharges.map(charge => {
-                  const project = projects?.find(p => p.id === charge.projectId);
-                  return (
-                    <div key={charge.id} className="flex items-center space-x-3 p-3 border rounded-lg">
-                      <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                        <CreditCard className="h-5 w-5 text-orange-600" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium truncate">
-                          {charge.description}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {project?.name || "Unknown Project"} • {new Date(charge.date).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm font-medium">{formatCurrency(charge.amount)}</p>
-                        <Badge variant="outline" className="text-xs">
-                          {charge.category || "General"}
-                        </Badge>
-                      </div>
-                    </div>
-                  );
-                })
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
 
       <ProjectModal
         isOpen={isProjectModalOpen}
