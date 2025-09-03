@@ -36,79 +36,81 @@ export default function Reports() {
   const [selectedReportType, setSelectedReportType] = useState("budget_summary");
 
   // Get projects and financial data for report generation
-  const { data: projects } = useQuery<any[]>({
+  const { data: projects = [] } = useQuery<any[]>({
     queryKey: ["/api/projects"],
   });
 
-  const { data: chargeHistory } = useQuery<any[]>({
+  const { data: chargeHistory = [] } = useQuery<any[]>({
     queryKey: ["/api/charge-history"],
   });
 
   // Calculate report data
   const generateReportData = (type: string) => {
-    if (!projects || !chargeHistory) return null;
+    if (!projects?.length || !chargeHistory) return null;
 
     switch (type) {
       case "budget_summary":
-        const totalBudget = projects.reduce((sum, p) => sum + parseFloat(p.totalBudget || "0"), 0);
-        const totalSpent = chargeHistory.reduce((sum, c) => sum + parseFloat(c.amount || "0"), 0);
+        const totalBudget = projects?.reduce((sum, p) => sum + parseFloat(p.totalBudget || "0"), 0) || 0;
+        const totalSpent = chargeHistory?.reduce((sum, c) => sum + parseFloat(c.amount || "0"), 0) || 0;
         const budgetUtilization = totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
         return {
           totalBudget: totalBudget.toLocaleString('en-US', { style: 'currency', currency: 'CHF' }),
           totalSpent: totalSpent.toLocaleString('en-US', { style: 'currency', currency: 'CHF' }),
           remaining: (totalBudget - totalSpent).toLocaleString('en-US', { style: 'currency', currency: 'CHF' }),
           utilization: `${budgetUtilization.toFixed(1)}%`,
-          projects: projects.length,
-          overBudget: projects.filter(p => {
+          projects: projects?.length || 0,
+          overBudget: projects?.filter(p => {
             const spent = chargeHistory
-              .filter(c => c.projectId === p.id)
-              .reduce((sum, c) => sum + parseFloat(c.amount || "0"), 0);
+              ?.filter(c => c.projectId === p.id)
+              ?.reduce((sum, c) => sum + parseFloat(c.amount || "0"), 0) || 0;
             return spent > parseFloat(p.totalBudget || "0");
-          }).length
+          })?.length || 0
         };
 
       case "project_status":
-        const activeProjects = projects.filter(p => p.status === 'active').length;
-        const completedProjects = projects.filter(p => p.status === 'completed').length;
-        const avgBudgetUsage = projects.reduce((sum, p) => {
+        const activeProjects = projects?.filter(p => p.status === 'active')?.length || 0;
+        const completedProjects = projects?.filter(p => p.status === 'completed')?.length || 0;
+        const avgBudgetUsage = projects?.reduce((sum, p) => {
           const spent = chargeHistory
-            .filter(c => c.projectId === p.id)
-            .reduce((sum, c) => sum + parseFloat(c.amount || "0"), 0);
+            ?.filter(c => c.projectId === p.id)
+            ?.reduce((sum, c) => sum + parseFloat(c.amount || "0"), 0) || 0;
           const budget = parseFloat(p.totalBudget || "0");
           return sum + (budget > 0 ? (spent / budget) * 100 : 0);
-        }, 0) / (projects.length || 1);
+        }, 0) / (projects?.length || 1) || 0;
         
         return {
-          totalProjects: projects.length,
+          totalProjects: projects?.length || 0,
           activeProjects,
           completedProjects,
           avgBudgetUsage: `${avgBudgetUsage.toFixed(1)}%`,
-          recentActivity: chargeHistory.slice(0, 5)
+          recentActivity: chargeHistory?.slice(0, 5) || []
         };
 
       case "expense_analysis":
-        const expensesByCategory = chargeHistory.reduce((acc, charge) => {
+        const expensesByCategory = chargeHistory?.reduce((acc, charge) => {
           const category = charge.category || 'Uncategorized';
           if (!acc[category]) acc[category] = 0;
           acc[category] += parseFloat(charge.amount || "0");
           return acc;
-        }, {} as Record<string, number>);
+        }, {} as Record<string, number>) || {};
 
         const sortedCategories = Object.entries(expensesByCategory)
-          .sort(([,a], [,b]) => b - a)
+          .sort(([,a], [,b]) => (b as number) - (a as number))
           .slice(0, 5);
 
+        const totalExpenseAmount = Object.values(expensesByCategory).reduce((sum, amount) => sum + (amount as number), 0);
+
         return {
-          totalExpenses: Object.values(expensesByCategory).reduce((sum, amount) => sum + amount, 0).toLocaleString('en-US', { style: 'currency', currency: 'CHF' }),
+          totalExpenses: totalExpenseAmount.toLocaleString('en-US', { style: 'currency', currency: 'CHF' }),
           categories: sortedCategories.length,
           topCategory: sortedCategories[0] ? {
             name: sortedCategories[0][0],
-            amount: sortedCategories[0][1].toLocaleString('en-US', { style: 'currency', currency: 'CHF' })
+            amount: (sortedCategories[0][1] as number).toLocaleString('en-US', { style: 'currency', currency: 'CHF' })
           } : null,
           breakdown: sortedCategories.map(([name, amount]) => ({
             name,
-            amount: amount.toLocaleString('en-US', { style: 'currency', currency: 'CHF' }),
-            percentage: ((amount / Object.values(expensesByCategory).reduce((sum, a) => sum + a, 0)) * 100).toFixed(1)
+            amount: (amount as number).toLocaleString('en-US', { style: 'currency', currency: 'CHF' }),
+            percentage: (((amount as number) / totalExpenseAmount) * 100).toFixed(1)
           }))
         };
 
