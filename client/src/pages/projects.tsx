@@ -366,10 +366,10 @@ export default function Projects() {
                         setChargeProject(project);
                         setIsQuickChargeOpen(true);
                       }}
-                      className="w-full text-green-600 border-green-200 hover:bg-green-50 flex items-center justify-center gap-2"
+                      className="w-full text-green-600 border-green-200 hover:bg-green-50"
                     >
-                      <Plus className="h-3.5 w-3.5" />
-                      <span className="font-medium">Add Expense</span>
+                      <Plus className="h-3.5 w-3.5 mr-2" />
+                      Add Expense
                     </AnimatedButton>
                     
                     <div className="flex items-center justify-between pt-2">
