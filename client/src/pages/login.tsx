@@ -27,9 +27,11 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginRequest) => {
     try {
       await login(data);
-      // Redirect immediately after successful login
-      // The auth state is already updated by the mutation onSuccess
-      setLocation("/");
+      // Add a small delay to ensure the auth state is fully updated
+      // This prevents the 404 error that occurs from routing race conditions
+      setTimeout(() => {
+        setLocation("/");
+      }, 50);
     } catch (error) {
       // Error is handled by the mutation
       console.error("Login failed:", error);
