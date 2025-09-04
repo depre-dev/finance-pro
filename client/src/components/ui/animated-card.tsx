@@ -1,9 +1,10 @@
 import { motion } from "framer-motion";
-import { Card, CardProps } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-interface AnimatedCardProps extends CardProps {
+interface AnimatedCardProps {
   children: React.ReactNode;
+  className?: string;
   delay?: number;
   direction?: "up" | "down" | "left" | "right";
   scale?: boolean;
@@ -16,8 +17,7 @@ export default function AnimatedCard({
   delay = 0, 
   direction = "up",
   scale = false,
-  hover = true,
-  ...props 
+  hover = true
 }: AnimatedCardProps) {
   const directionVariants = {
     up: { y: 20, opacity: 0 },
@@ -47,8 +47,7 @@ export default function AnimatedCard({
           "transition-shadow duration-300",
           hover && "hover:shadow-lg hover:shadow-primary/5",
           className
-        )} 
-        {...props}
+        )}
       >
         {children}
       </Card>

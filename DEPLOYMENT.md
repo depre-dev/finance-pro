@@ -1,0 +1,94 @@
+# FinancePro Deployment Guide
+
+## Prerequisites
+
+1. **Node.js** (version 18 or higher)
+2. **PostgreSQL** database
+3. **Environment variables** configured
+
+## Environment Setup
+
+1. Copy the example environment file:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Update the `.env` file with your production values:
+   - `DATABASE_URL`: Your PostgreSQL connection string
+   - `SESSION_SECRET`: A strong random secret for session management
+   - `NODE_ENV`: Set to `production`
+   - `PORT`: Server port (default: 5000)
+
+## Installation
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Set up the database:
+   ```bash
+   npm run db:push
+   ```
+
+## Build and Deploy
+
+### Development
+```bash
+npm run dev
+```
+
+### Production Build
+```bash
+npm run build
+npm start
+```
+
+## Production Deployment
+
+### Docker (Recommended)
+```dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+RUN npm run build
+EXPOSE 5000
+CMD ["npm", "start"]
+```
+
+### Traditional Server
+1. Clone the repository
+2. Install dependencies: `npm ci --only=production`
+3. Build the application: `npm run build`
+4. Set environment variables
+5. Start the server: `npm start`
+
+## Database Migration
+
+The application uses Drizzle ORM with PostgreSQL:
+- Schema is defined in `shared/schema.ts`
+- Use `npm run db:push` to apply schema changes
+- Database migrations are handled automatically
+
+## Security Considerations
+
+- Generate a strong `SESSION_SECRET`
+- Use HTTPS in production
+- Configure proper CORS origins
+- Ensure database credentials are secure
+- Regular security updates for dependencies
+
+## Monitoring
+
+- Application logs are output to console
+- API response times are logged for performance monitoring
+- Database connection status is checked on startup
+
+## Troubleshooting
+
+1. **Database connection issues**: Check `DATABASE_URL` format
+2. **Build failures**: Ensure all dependencies are installed
+3. **Session issues**: Verify `SESSION_SECRET` is set
+4. **CORS errors**: Configure `ALLOWED_ORIGINS` if needed
