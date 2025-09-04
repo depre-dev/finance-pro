@@ -70,8 +70,8 @@ export function useAuth() {
     onSuccess: (data) => {
       // console.log('Setting auth data in cache');
       queryClient.setQueryData(['/api/auth/me'], data);
-      // Force refresh of auth query after successful login
-      queryClient.invalidateQueries({ queryKey: ['/api/auth/me'] });
+      // Don't invalidate immediately after login to avoid race condition
+      // The cache is already updated with fresh data
     },
   });
 
@@ -94,8 +94,8 @@ export function useAuth() {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(['/api/auth/me'], data);
-      // Force refresh of auth query after successful registration
-      queryClient.invalidateQueries({ queryKey: ['/api/auth/me'] });
+      // Don't invalidate immediately after registration to avoid race condition
+      // The cache is already updated with fresh data
     },
   });
 

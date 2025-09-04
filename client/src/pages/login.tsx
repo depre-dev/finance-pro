@@ -27,10 +27,9 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginRequest) => {
     try {
       await login(data);
-      // Give a small delay to ensure authentication state updates
-      setTimeout(() => {
-        setLocation("/");
-      }, 100);
+      // Redirect immediately after successful login
+      // The auth state is already updated by the mutation onSuccess
+      setLocation("/");
     } catch (error) {
       // Error is handled by the mutation
       console.error("Login failed:", error);
