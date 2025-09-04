@@ -94,8 +94,16 @@ function App() {
   React.useEffect(() => {
     if (process.env.NODE_ENV === 'production') {
       registerSW({
-        onSuccess: () => console.log('PWA installed successfully'),
-        onUpdate: () => console.log('PWA update available')
+        onSuccess: () => {
+          if (process.env.NODE_ENV === 'development') {
+            console.log('PWA installed successfully');
+          }
+        },
+        onUpdate: () => {
+          if (process.env.NODE_ENV === 'development') {
+            console.log('PWA update available');
+          }
+        }
       });
     }
   }, []);

@@ -101,7 +101,10 @@ export default function Projects() {
   // Handle charge history errors
   React.useEffect(() => {
     if (chargeHistoryError) {
-      console.log('Charge history fetch error (handled):', chargeHistoryError);
+      // Error is already handled by the query component, no need to log in production
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Charge history fetch error (handled):', chargeHistoryError);
+      }
     }
   }, [chargeHistoryError]);
 

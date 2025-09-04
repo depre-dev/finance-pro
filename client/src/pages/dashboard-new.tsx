@@ -1,3 +1,4 @@
+import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -80,27 +81,44 @@ export default function Dashboard() {
     return targetReleaseFilter === "all" || project.targetRelease === targetReleaseFilter;
   }) || [];
 
-  // Calculate enhanced metrics from filtered projects
-  const totalSpent = filteredProjects.reduce((sum, project) => sum + parseFloat(project.actualCost || "0"), 0) || 0;
-  const totalBudget = filteredProjects.reduce((sum, project) => sum + parseFloat(project.totalBudget || "0"), 0) || 0;
-  const remainingBudget = totalBudget - totalSpent;
-  const budgetUsagePercentage = totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
+  // Calculate enhanced metrics from filtered projects (memoized for performance)
+  const { totalSpent, totalBudget, remainingBudget, budgetUsagePercentage } = React.useMemo(() => {
+    const spent = filteredProjects.reduce((sum, project) => sum + parseFloat(project.actualCost || "0"), 0) || 0;
+    const budget = filteredProjects.reduce((sum, project) => sum + parseFloat(project.totalBudget || "0"), 0) || 0;
+    const remaining = budget - spent;
+    const usage = budget > 0 ? (spent / budget) * 100 : 0;
+    
+    return {
+      totalSpent: spent,
+      totalBudget: budget,
+      remainingBudget: remaining,
+      budgetUsagePercentage: usage
+    };
+  }, [filteredProjects]);
 
-  // Prepare chart data from filtered projects
-  const projectChartData = filteredProjects.map(project => ({
-    name: project.name.length > 20 ? project.name.substring(0, 20) + "..." : project.name,
-    budget: parseFloat(project.totalBudget || "0"),
-    spent: parseFloat(project.actualCost || "0"),
-    remaining: parseFloat(project.totalBudget || "0") - parseFloat(project.actualCost || "0"),
-  })) || [];
+  // Prepare chart data from filtered projects (memoized for performance)
+  const { projectChartData, recentProjects, budgetStatusData } = React.useMemo(() => {
+    const chartData = filteredProjects.map(project => ({
+      name: project.name.length > 20 ? project.name.substring(0, 20) + "..." : project.name,
+      budget: parseFloat(project.totalBudget || "0"),
+      spent: parseFloat(project.actualCost || "0"),
+      remaining: parseFloat(project.totalBudget || "0") - parseFloat(project.actualCost || "0"),
+    })) || [];
 
-  const recentProjects = filteredProjects.slice(0, 5) || [];
+    const recent = filteredProjects.slice(0, 5) || [];
 
-  const budgetStatusData = [
-    { name: "Spend", value: totalSpent, color: "#f59e0b" },
-    { name: "Remaining", value: remainingBudget > 0 ? remainingBudget : 0, color: "#10b981" },
-    { name: "Over Budget", value: remainingBudget < 0 ? Math.abs(remainingBudget) : 0, color: "#ef4444" },
-  ].filter(item => item.value > 0);
+    const statusData = [
+      { name: "Spend", value: totalSpent, color: "#f59e0b" },
+      { name: "Remaining", value: remainingBudget > 0 ? remainingBudget : 0, color: "#10b981" },
+      { name: "Over Budget", value: remainingBudget < 0 ? Math.abs(remainingBudget) : 0, color: "#ef4444" },
+    ].filter(item => item.value > 0);
+
+    return {
+      projectChartData: chartData,
+      recentProjects: recent,
+      budgetStatusData: statusData
+    };
+  }, [filteredProjects, totalSpent, remainingBudget]);
 
   // Recent charges for activity feed
   const recentCharges = (chargeHistory || [])

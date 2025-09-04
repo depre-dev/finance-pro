@@ -29,6 +29,10 @@ import {
   type InsertApiConfiguration,
   type ApiSyncLog,
   type InsertApiSyncLog,
+  type ReportConfiguration,
+  type InsertReportConfiguration,
+  type ReportExecution,
+  type InsertReportExecution,
   type LoginRequest,
   type RegisterRequest
 } from "@shared/schema";
@@ -115,15 +119,15 @@ export interface IStorage {
   createApiSyncLog(log: InsertApiSyncLog): Promise<ApiSyncLog>;
 
   // Report configuration methods
-  getReportConfigurations(userId: number): Promise<any[]>;
-  createReportConfiguration(config: any): Promise<any>;
-  updateReportConfiguration(id: number, config: any, userId: number): Promise<any>;
+  getReportConfigurations(userId: number): Promise<ReportConfiguration[]>;
+  createReportConfiguration(config: InsertReportConfiguration): Promise<ReportConfiguration>;
+  updateReportConfiguration(id: number, config: Partial<InsertReportConfiguration>, userId: number): Promise<ReportConfiguration | undefined>;
   deleteReportConfiguration(id: number, userId: number): Promise<boolean>;
 
   // Report execution methods
-  createReportExecution(execution: any): Promise<number>;
-  updateReportExecution(id: number, execution: any): Promise<void>;
-  getReportExecutions(userId: number): Promise<any[]>;
+  createReportExecution(execution: InsertReportExecution): Promise<number>;
+  updateReportExecution(id: number, execution: Partial<InsertReportExecution>): Promise<void>;
+  getReportExecutions(userId: number): Promise<ReportExecution[]>;
 }
 
 export class DatabaseStorage implements IStorage {
