@@ -110,7 +110,7 @@ export default function BudgetSnapshot({ project, isOpen, onClose }: BudgetSnaps
                   <DollarSign className="h-4 w-4 text-blue-600" />
                   <span className="text-sm font-medium">Total Budget</span>
                 </div>
-                <div className="text-xl font-bold text-blue-600 mt-1 break-words">
+                <div className="text-xl font-bold text-blue-600 mt-1 break-words font-mono-numbers">
                   {formatCurrency(totalBudget)}
                 </div>
               </CardContent>
@@ -122,7 +122,7 @@ export default function BudgetSnapshot({ project, isOpen, onClose }: BudgetSnaps
                   <TrendingUp className="h-4 w-4 text-orange-600" />
                   <span className="text-sm font-medium">Current Spend</span>
                 </div>
-                <div className="text-xl font-bold text-orange-600 mt-1 break-words">
+                <div className="text-xl font-bold text-orange-600 mt-1 break-words font-mono-numbers">
                   {formatCurrency(totalSpend)}
                 </div>
               </CardContent>
@@ -140,7 +140,7 @@ export default function BudgetSnapshot({ project, isOpen, onClose }: BudgetSnaps
                     {isOverBudget ? "Over Budget" : "Remaining"}
                   </span>
                 </div>
-                <div className={`text-xl font-bold mt-1 break-words ${
+                <div className={`text-xl font-bold mt-1 break-words font-mono-numbers ${
                   isOverBudget ? "text-red-600" : "text-green-600"
                 }`}>
                   {formatCurrency(Math.abs(remainingBudget))}
@@ -154,7 +154,7 @@ export default function BudgetSnapshot({ project, isOpen, onClose }: BudgetSnaps
                   <BarChart3 className="h-4 w-4 text-purple-600" />
                   <span className="text-sm font-medium">Usage</span>
                 </div>
-                <div className="text-xl font-bold text-purple-600 mt-1">
+                <div className="text-xl font-bold text-purple-600 mt-1 font-mono-numbers">
                   {budgetUsagePercentage.toFixed(1)}%
                 </div>
               </CardContent>
@@ -170,7 +170,7 @@ export default function BudgetSnapshot({ project, isOpen, onClose }: BudgetSnaps
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span>Progress</span>
-                  <span>{budgetUsagePercentage.toFixed(1)}% used</span>
+                  <span className="font-mono-numbers">{budgetUsagePercentage.toFixed(1)}% used</span>
                 </div>
                 <Progress 
                   value={Math.min(budgetUsagePercentage, 100)} 

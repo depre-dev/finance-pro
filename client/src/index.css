@@ -69,6 +69,18 @@
 }
 
 @layer utilities {
+  /* Consistent font for numerical values */
+  .font-mono-numbers {
+    font-feature-settings: "tnum" 1;
+    font-variant-numeric: tabular-nums;
+  }
+  
+  .font-numeric {
+    font-family: 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+    font-feature-settings: "tnum" 1;
+    font-variant-numeric: tabular-nums;
+  }
+  
   .text-neutral-10 {
     color: var(--neutral-10);
   }

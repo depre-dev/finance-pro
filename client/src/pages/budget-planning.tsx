@@ -283,7 +283,7 @@ export default function BudgetPlanning() {
             <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(totalBudgeted)}</div>
+            <div className="text-2xl font-bold font-mono-numbers">{formatCurrency(totalBudgeted)}</div>
             <p className="text-xs text-muted-foreground">
               Across {filteredCategories.length} categories
             </p>
@@ -296,9 +296,9 @@ export default function BudgetPlanning() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(totalActual)}</div>
+            <div className="text-2xl font-bold font-mono-numbers">{formatCurrency(totalActual)}</div>
             <p className="text-xs text-muted-foreground">
-              {totalBudgeted > 0 ? `${((totalActual / totalBudgeted) * 100).toFixed(1)}% of budget` : "No budget set"}
+              <span className="font-mono-numbers">{totalBudgeted > 0 ? `${((totalActual / totalBudgeted) * 100).toFixed(1)}% of budget` : "No budget set"}</span>
             </p>
           </CardContent>
         </Card>
@@ -313,11 +313,11 @@ export default function BudgetPlanning() {
             )}
           </CardHeader>
           <CardContent>
-            <div className={`text-2xl font-bold ${variance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+            <div className={`text-2xl font-bold font-mono-numbers ${variance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
               {formatCurrency(Math.abs(variance))}
             </div>
             <p className="text-xs text-muted-foreground">
-              {variance >= 0 ? 'Under budget' : 'Over budget'} by {Math.abs(variancePercentage).toFixed(1)}%
+              {variance >= 0 ? 'Under budget' : 'Over budget'} by <span className="font-mono-numbers">{Math.abs(variancePercentage).toFixed(1)}%</span>
             </p>
           </CardContent>
         </Card>

@@ -438,7 +438,7 @@ export default function ChargeHistoryPage() {
                             charge.budgetUsagePercent > 100 ? 'text-red-600' : 
                             charge.budgetUsagePercent > 90 ? 'text-amber-600' : 'text-green-600'
                           }`}>
-                            {charge.budgetUsagePercent.toFixed(1)}%
+                            <span className="font-mono-numbers">{charge.budgetUsagePercent.toFixed(1)}%</span>
                           </span>
                           <div className="w-16 h-1 bg-gray-200 rounded-full mt-1">
                             <div 
