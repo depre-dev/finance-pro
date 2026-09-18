@@ -300,7 +300,11 @@ export const insertProjectNoteSchema = createInsertSchema(projectNotes).omit({
   updatedAt: true,
 });
 
-export const insertReportConfigurationSchema = createInsertSchema(reportConfigurations).omit({
+export const insertReportConfigurationSchema = createInsertSchema(reportConfigurations, {
+  // drizzle-zod does not infer json().$type<string[]>() as a real string[],
+  // so declare it explicitly to keep the insert/update types assignable.
+  recipients: z.array(z.string()),
+}).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
@@ -343,6 +347,11 @@ export type ProjectNote = typeof projectNotes.$inferSelect;
 
 export type InsertApiConfiguration = z.infer<typeof insertApiConfigurationSchema>;
 export type ApiConfiguration = typeof apiConfigurations.$inferSelect;
+// lastSyncAt is omitted from the insert schema because clients never set it,
+// but the server stamps it after a sync, so updates may carry it.
+export type UpdateApiConfiguration = Partial<InsertApiConfiguration> & {
+  lastSyncAt?: Date | null;
+};
 
 export type InsertApiSyncLog = z.infer<typeof insertApiSyncLogSchema>;
 export type ApiSyncLog = typeof apiSyncLogs.$inferSelect;

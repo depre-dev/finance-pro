@@ -781,7 +781,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         apiKey: config.apiKey || undefined,
         authType: config.authType as any,
         headers: config.headers as Record<string, string> || {},
-        timeout: config.timeout
+        timeout: config.timeout ?? 30000
       });
       
       res.status(201).json(config);
@@ -811,7 +811,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         apiKey: config.apiKey || undefined,
         authType: config.authType as any,
         headers: config.headers as Record<string, string> || {},
-        timeout: config.timeout
+        timeout: config.timeout ?? 30000
       });
       
       res.json(config);
@@ -857,7 +857,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         apiKey: config.apiKey || undefined,
         authType: config.authType as any,
         headers: config.headers as Record<string, string> || {},
-        timeout: config.timeout
+        timeout: config.timeout ?? 30000
       });
       
       const result = await apiIntegrationService.testConnection(config.name);
@@ -904,7 +904,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           apiKey: config.apiKey || undefined,
           authType: config.authType as any,
           headers: config.headers as Record<string, string> || {},
-          timeout: config.timeout
+          timeout: config.timeout ?? 30000
         });
         
         if (type === 'projects') {
@@ -934,7 +934,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           for (const extRecord of externalRecords) {
             try {
               // Find matching project by projectId
-              const projects = await storage.getAllProjects(req.user!.id);
+              const projects = await storage.getProjects(req.user!.id);
               const matchingProject = projects.find(p => p.projectId === extRecord.projectId);
               
               if (matchingProject) {
