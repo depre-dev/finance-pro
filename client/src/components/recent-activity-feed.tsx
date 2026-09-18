@@ -56,7 +56,7 @@ export default function RecentActivityFeed() {
           amount: Number(charge.amount),
           timestamp: new Date(charge.date),
           icon: CreditCard,
-          variant: Number(charge.amount) > 1000 ? 'warning' : 'default' as const
+          variant: Number(charge.amount) > 1000 ? ('warning' as const) : ('default' as const)
         };
       }),
     

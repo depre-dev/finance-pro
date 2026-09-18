@@ -86,7 +86,7 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
   }, [excelProjectNames]);
 
   // Group Excel projects by target release
-  const projectsByRelease = excelProjectsData.reduce((acc, project) => {
+  const projectsByRelease: Record<string, any[]> = excelProjectsData.reduce((acc, project) => {
     const release = project["Target Release"] || "No Release";
     if (!acc[release]) acc[release] = [];
     acc[release].push(project);

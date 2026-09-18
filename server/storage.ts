@@ -27,6 +27,7 @@ import {
   type InsertSession,
   type ApiConfiguration,
   type InsertApiConfiguration,
+  type UpdateApiConfiguration,
   type ApiSyncLog,
   type InsertApiSyncLog,
   type ReportConfiguration,
@@ -111,7 +112,7 @@ export interface IStorage {
   getApiConfigurations(userId: number): Promise<ApiConfiguration[]>;
   getApiConfigurationById(id: number, userId: number): Promise<ApiConfiguration | undefined>;
   createApiConfiguration(config: InsertApiConfiguration): Promise<ApiConfiguration>;
-  updateApiConfiguration(id: number, config: Partial<InsertApiConfiguration>, userId: number): Promise<ApiConfiguration | undefined>;
+  updateApiConfiguration(id: number, config: UpdateApiConfiguration, userId: number): Promise<ApiConfiguration | undefined>;
   deleteApiConfiguration(id: number, userId: number): Promise<boolean>;
 
   // API sync log methods
@@ -581,7 +582,7 @@ export class DatabaseStorage implements IStorage {
 
   async updateApiConfiguration(
     id: number, 
-    updateConfig: Partial<InsertApiConfiguration>, 
+    updateConfig: UpdateApiConfiguration, 
     userId: number
   ): Promise<ApiConfiguration | undefined> {
     const [config] = await db
