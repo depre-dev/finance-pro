@@ -31,6 +31,9 @@
    npm run db:push
    ```
 
+   This exits non-zero if the schema is not applied. Do not continue to the
+   build or the start step until it succeeds.
+
 ## Build and Deploy
 
 ### Development
@@ -71,6 +74,9 @@ The application uses Drizzle ORM with PostgreSQL:
 - Schema is defined in `shared/schema.ts`
 - Use `npm run db:push` to apply schema changes
 - Database migrations are handled automatically
+- `npm run db:push` exits non-zero when the push fails, so a deploy script can
+  chain on it (`npm run db:push && npm start`) and stop before restarting the
+  application against an unapplied schema
 
 ## Security Considerations
 
