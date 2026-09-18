@@ -230,8 +230,8 @@ The application will be available at `http://localhost:5000`
 # Push schema changes to database
 npm run db:push
 
-# Force push (use with caution)
-npm run db:push --force
+# Force push, skipping the confirmation prompt (use with caution)
+npm run db:push -- --force
 ```
 
 ### Building for Production
