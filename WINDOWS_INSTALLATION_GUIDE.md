@@ -111,6 +111,10 @@ Before you begin, ensure you have:
    npm run db:push
    ```
 
+   This command fails with a non-zero exit code if the schema is not applied.
+   If it reports an error, stop here and fix it before continuing; the
+   application cannot run against a schema that was never pushed.
+
 ## Step 7: Set Up Windows Service (Recommended)
 
 ### Option A: Using PM2 (Recommended)
@@ -249,24 +253,29 @@ pg_dump -h [host] -U [username] -d [database] > backup_%date%.sql
 ```
 
 ### Application Updates
+
+Chain the rebuild and the restart with `&&` so the sequence stops at the first
+failing step. Run as separate lines, the restart still follows a failed
+`npm run db:push`, and the application comes back up against a schema that was
+never applied.
+
 ```cmd
-# Stop service
+rem Stop service
 pm2 stop financepro
-# or: net stop FinancePro
+rem or: net stop FinancePro
 
-# Update code
+rem Update code
 git pull
-# or manually replace files
+rem or manually replace files
 
-# Rebuild
-npm install
-npm run build
-npm run db:push
-
-# Restart service
-pm2 start financepro
-# or: net start FinancePro
+rem Rebuild and restart; && stops the chain at the first failure
+npm install && npm run build && npm run db:push && pm2 start financepro
+rem or: npm install && npm run build && npm run db:push && net start FinancePro
 ```
+
+If the chain stops early the service stays stopped, which is deliberate: fix the
+reported error and run the chain again rather than starting the service on a
+half-applied update.
 
 ### Log Management
 - Logs are stored in `C:\FinancePro\logs\` (PM2)
