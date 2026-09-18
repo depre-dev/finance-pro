@@ -1,7 +1,13 @@
 import type { Express, Request } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { AuthService, authenticate, optionalAuth } from "./auth";
+import {
+  AuthService,
+  authenticate,
+  optionalAuth,
+  sessionCookieOptions,
+  clearSessionCookieOptions,
+} from "./auth";
 import { apiIntegrationService } from "./api-integrations";
 import { 
   insertProjectSchema,
@@ -28,14 +34,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const data = registerSchema.parse(req.body);
       const { user, sessionId } = await AuthService.register(data);
       
-      // Set session cookie with Replit-friendly settings
-      res.cookie('sessionId', sessionId, {
-        httpOnly: false, // Allow JS access for debugging
-        secure: false, // HTTP for development
-        sameSite: 'none', // Cross-origin support
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        path: '/',
-      });
+      res.cookie('sessionId', sessionId, sessionCookieOptions);
 
       // Return user without password
       const { password, ...userWithoutPassword } = user;
@@ -51,14 +50,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const data = loginSchema.parse(req.body);
       const { user, sessionId } = await AuthService.login(data);
       
-      // Set session cookie with Replit-friendly settings
-      res.cookie('sessionId', sessionId, {
-        httpOnly: false, // Allow JS access for debugging
-        secure: false, // HTTP for development
-        sameSite: 'none', // Cross-origin support
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        path: '/',
-      });
+      res.cookie('sessionId', sessionId, sessionCookieOptions);
 
       // Return user without password and include session ID
       const { password, ...userWithoutPassword } = user;
@@ -77,7 +69,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (req.sessionId) {
         await AuthService.logout(req.sessionId);
       }
-      res.clearCookie('sessionId');
+      res.clearCookie('sessionId', clearSessionCookieOptions);
       res.json({ message: 'Logged out successfully' });
     } catch (error) {
       console.error('Logout error:', error);

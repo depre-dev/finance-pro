@@ -7,6 +7,30 @@ import type { User, LoginRequest, RegisterRequest } from '@shared/schema';
 const SALT_ROUNDS = 12;
 const SESSION_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
 
+// Transport settings for the session cookie.
+//
+// `secure` deliberately does not follow NODE_ENV: the Windows deployment in
+// WINDOWS_INSTALLATION_GUIDE.md is a production install reached over plain
+// http://SERVER-IP:5000, and a Secure cookie would never be stored there.
+// Set COOKIE_SECURE=true once the app is served over HTTPS.
+const COOKIE_SECURE = process.env.COOKIE_SECURE === 'true';
+
+export const sessionCookieOptions = {
+  httpOnly: true,
+  secure: COOKIE_SECURE,
+  sameSite: 'lax' as const,
+  maxAge: SESSION_DURATION,
+  path: '/',
+};
+
+// clearCookie only matches a cookie whose attributes line up, expiry aside.
+export const clearSessionCookieOptions = {
+  httpOnly: true,
+  secure: COOKIE_SECURE,
+  sameSite: 'lax' as const,
+  path: '/',
+};
+
 // Extend Express Request type to include user
 declare global {
   namespace Express {
@@ -167,7 +191,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     const user = await AuthService.validateSession(sessionId);
     if (!user) {
       // Clear invalid cookie
-      res.clearCookie('sessionId');
+      res.clearCookie('sessionId', clearSessionCookieOptions);
       res.status(401).json({ message: 'Invalid or expired session' });
       return;
     }

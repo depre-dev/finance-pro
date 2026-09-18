@@ -4,18 +4,38 @@ import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
 
-// CORS configuration for Replit environment
+// CORS. This process serves the client and the API on the same origin, so the
+// app itself needs no CORS headers at all; ALLOWED_ORIGINS exists only to opt
+// specific extra origins in. Reflecting req.headers.origin back would hand
+// every website on the internet a credentialed read of this API.
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin,X-Requested-With,Content-Type,Accept,Authorization,Cache-Control,Pragma');
-  
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-  } else {
-    next();
+  const origin = req.headers.origin;
+  const isAllowed = !!origin && allowedOrigins.includes(origin);
+
+  if (allowedOrigins.length > 0) {
+    // The response depends on Origin, so it must not be cached per-URL.
+    // res.vary appends rather than clobbering any Vary set downstream.
+    res.vary('Origin');
   }
+
+  if (isAllowed) {
+    res.header('Access-Control-Allow-Origin', origin!);
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin,X-Requested-With,Content-Type,Accept,Authorization,Cache-Control,Pragma');
+
+    if (req.method === 'OPTIONS') {
+      res.sendStatus(204);
+      return;
+    }
+  }
+
+  next();
 });
 
 app.use(express.json());
